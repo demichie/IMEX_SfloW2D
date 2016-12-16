@@ -207,9 +207,11 @@ CONTAINS
 !> \date OCTOBER 2016
 !> \param    x           original grid                (\b input)
 !> \param    y           original grid                (\b input)
+!> \param    Bj          original grid                (\b input)
 !---------------------------------------------------------------------------
   REAL*8 FUNCTION thickness_function(x,y,Bj)
-    USE geometry_2d, ONLY : topography_function
+
+    USE parameters_2d, ONLY : released_volume , x_release , y_release
 
     IMPLICIT NONE
     
@@ -217,7 +219,7 @@ CONTAINS
     REAL*8, INTENT(IN) :: Bj
     
     REAL*8, PARAMETER :: pig = 4.0*ATAN(1.0)
-    REAL*8 :: Volume , R
+    REAL*8 :: R
 
     ! example 1D from Kurganov and Petrova 2007    
     !IF(y.LE.0.d0)THEN
@@ -229,14 +231,16 @@ CONTAINS
     ! example 2D from Kurganov and Petrova 2007    
     ! thickness_function=MAX(0.25,Bj)
     
-    Volume = 0.5*10.d0**(6)
+    R = ( released_volume / pig )**(1.0/3.0)
     
-    R = (Volume/pig)**(1.0/3.0)
-    
-    IF(DSQRT((x-500800.0)**2+(y-4177850.0)**2).LE.R)THEN
-      thickness_function = R+Bj
+    IF ( DSQRT( (x-x_release)**2 + (y-y_release)**2 ) .LE. R ) THEN
+
+      thickness_function = Bj + R
+
     ELSE
+
       thickness_function = Bj
+
     ENDIF
 
   END FUNCTION thickness_function

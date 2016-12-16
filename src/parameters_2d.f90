@@ -41,6 +41,15 @@ MODULE parameters_2d
   !> .
   LOGICAL :: riemann_flag
 
+  !> Initial volume of the flow
+  REAL*8 :: released_volume
+
+  !> Initial x-coordiante of the pile
+  REAL*8 :: x_release
+
+  !> Initial y-coordinate of the pile
+  REAL*8 :: y_release
+
   INTEGER, PARAMETER :: n_vars = 3        !< Number of conservative variables
   INTEGER, PARAMETER :: n_eqns = n_vars   !< Number of equations
 

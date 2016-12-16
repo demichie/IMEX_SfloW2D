@@ -25,6 +25,7 @@ MODULE inpout_2d
   USE geometry_2d, ONLY : topography_profile , n_topography_profile_x ,         &
        n_topography_profile_y
   USE init_2d, ONLY : riemann_interface
+  USE parameters_2d, ONLY : released_volume , x_release , y_release
 
   ! -- Variables for the namelist LEFT_STATE
   USE init_2d, ONLY : hB_L , u_L , v_L
@@ -112,7 +113,7 @@ MODULE inpout_2d
   NAMELIST / restart_parameters / restart_file
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
-       cell_size
+       cell_size , released_volume , x_release , y_release
 
   NAMELIST / left_state / hB_L , u_L , v_L
 
@@ -255,7 +256,8 @@ CONTAINS
        n_topography_profile_x = 2
        n_topography_profile_y = 2
 
-       ALLOCATE( topography_profile(2,n_topography_profile_x,n_topography_profile_y) )
+       ALLOCATE( topography_profile( 2 , n_topography_profile_x ,               &
+            n_topography_profile_y) )
 
        topography_profile(1,1,1) = 0.d0
        topography_profile(2,1,1) = 0.d0
