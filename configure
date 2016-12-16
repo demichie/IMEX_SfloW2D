@@ -2828,8 +2828,6 @@ ac_config_files="$ac_config_files src/Makefile"
 
 
 
-
-
 # finally this generates the Makefiles etc. for the build
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure

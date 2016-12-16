@@ -77,8 +77,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/configure $(am__configure_deps) install-sh \
-	missing
+	$(top_srcdir)/configure $(am__configure_deps) AUTHORS COPYING \
+	ChangeLog INSTALL NEWS install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -186,12 +186,12 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/demichie/Codes/SW_LARI/DISTRO_TEST2/missing aclocal-1.14
+ACLOCAL = ${SHELL} /home/demichie/Codes/IMEX_SfloW2D-master/missing aclocal-1.14
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /home/demichie/Codes/SW_LARI/DISTRO_TEST2/missing autoconf
-AUTOHEADER = ${SHELL} /home/demichie/Codes/SW_LARI/DISTRO_TEST2/missing autoheader
-AUTOMAKE = ${SHELL} /home/demichie/Codes/SW_LARI/DISTRO_TEST2/missing automake-1.14
+AUTOCONF = ${SHELL} /home/demichie/Codes/IMEX_SfloW2D-master/missing autoconf
+AUTOHEADER = ${SHELL} /home/demichie/Codes/IMEX_SfloW2D-master/missing autoheader
+AUTOMAKE = ${SHELL} /home/demichie/Codes/IMEX_SfloW2D-master/missing automake-1.14
 AWK = gawk
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"IMEX-SfloW2D\" -DPACKAGE_TARNAME=\"imex-sflow2d\" -DPACKAGE_VERSION=\"0.9\" -DPACKAGE_STRING=\"IMEX-SfloW2D\ 0.9\" -DPACKAGE_BUGREPORT=\"mattia.demichielivitturi@ingv.it\" -DPACKAGE_URL=\"\" -DPACKAGE=\"imex-sflow2d\" -DVERSION=\"0.9\"
@@ -210,7 +210,7 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/demichie/Codes/SW_LARI/DISTRO_TEST2/missing makeinfo
+MAKEINFO = ${SHELL} /home/demichie/Codes/IMEX_SfloW2D-master/missing makeinfo
 MKDIR_P = /bin/mkdir -p
 OBJEXT = o
 PACKAGE = imex-sflow2d
@@ -225,10 +225,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = 
 VERSION = 0.9
-abs_builddir = /home/demichie/Codes/SW_LARI/DISTRO_TEST2
-abs_srcdir = /home/demichie/Codes/SW_LARI/DISTRO_TEST2
-abs_top_builddir = /home/demichie/Codes/SW_LARI/DISTRO_TEST2
-abs_top_srcdir = /home/demichie/Codes/SW_LARI/DISTRO_TEST2
+abs_builddir = /home/demichie/Codes/IMEX_SfloW2D-master
+abs_srcdir = /home/demichie/Codes/IMEX_SfloW2D-master
+abs_top_builddir = /home/demichie/Codes/IMEX_SfloW2D-master
+abs_top_srcdir = /home/demichie/Codes/IMEX_SfloW2D-master
 ac_ct_FC = 
 am__leading_dot = .
 am__tar = $${TAR-tar} chof - "$$tardir"
@@ -245,7 +245,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/demichie/Codes/SW_LARI/DISTRO_TEST2/install-sh
+install_sh = ${SHELL} /home/demichie/Codes/IMEX_SfloW2D-master/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -266,7 +266,7 @@ top_build_prefix =
 top_builddir = .
 top_srcdir = .
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = src doc examples man scripts
+SUBDIRS = src 
 all: all-recursive
 
 .SUFFIXES:
