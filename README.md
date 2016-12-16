@@ -1,8 +1,7 @@
-## Welcome to GitHub Pages
+## Welcome to IMEX_SfloW2D
 
-You can use the [editor on GitHub](https://github.com/demichie/IMEX_SfloW2D/edit/gh-pages/README.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+IMEX_SfloW is a FORTRAN90 code designed to solve the shallow water equations, written as a hyperbolic system of partial differential equations with relaxation and source terms. The model is discretized in time with an explicit-implicit Runge-Kutta method where the hyperbolic part is solved explicetely and the other terms (relaxation and surce) are treated implicitely. The finite volume solver for the hyperbolic part of the system is based on a semidiscrete central scheme and it is not tied on the specific eigenstructure of the model. The implicit part is solved with a Newton-Raphson method where the elements of the Jacobian of the nonlinear system are evaluated numerically with a complex step derivative technique.
 
 ### Markdown
 
