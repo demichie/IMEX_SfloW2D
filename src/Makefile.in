@@ -76,7 +76,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = PLUMEMoM$(EXEEXT)
+bin_PROGRAMS = IMEX_SfloW2d$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -88,12 +88,12 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_PLUMEMoM_OBJECTS = moments.$(OBJEXT) plume.$(OBJEXT) \
-	variables.$(OBJEXT) meteo.$(OBJEXT) particles.$(OBJEXT) \
-	mixture.$(OBJEXT) solver_rise.$(OBJEXT) inpout.$(OBJEXT) \
-	rise.$(OBJEXT) plume_model.$(OBJEXT)
-PLUMEMoM_OBJECTS = $(am_PLUMEMoM_OBJECTS)
-PLUMEMoM_LDADD = $(LDADD)
+am_IMEX_SfloW2d_OBJECTS = complexify.$(OBJEXT) parameters_2d.$(OBJEXT) \
+	geometry_2d.$(OBJEXT) constitutive_2d.$(OBJEXT) \
+	solver_2d.$(OBJEXT) init_2d.$(OBJEXT) inpout_2d.$(OBJEXT) \
+	IMEX_Sflow_2d.$(OBJEXT)
+IMEX_SfloW2d_OBJECTS = $(am_IMEX_SfloW2d_OBJECTS)
+IMEX_SfloW2d_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -119,8 +119,8 @@ AM_V_FCLD = $(am__v_FCLD_@AM_V@)
 am__v_FCLD_ = $(am__v_FCLD_@AM_DEFAULT_V@)
 am__v_FCLD_0 = @echo "  FCLD    " $@;
 am__v_FCLD_1 = 
-SOURCES = $(PLUMEMoM_SOURCES)
-DIST_SOURCES = $(PLUMEMoM_SOURCES)
+SOURCES = $(IMEX_SfloW2d_SOURCES)
+DIST_SOURCES = $(IMEX_SfloW2d_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -160,7 +160,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
 FC = gfortran
-FCFLAGS = -g -O3 -ffast-math
+FCFLAGS = -Wunused -O3 -funroll-all-loops
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -228,17 +228,15 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 
 # list of sources for the binary
-PLUMEMoM_SOURCES = \
-		moments.f90 \
-		plume.f90 \
-                variables.f90 \
-		meteo.f90 \
-		particles.f90 \
-                mixture.f90 \
-                solver_rise.f90 \
-                inpout.f90 \
-		rise.f90 \
-                plume_model.f90
+IMEX_SfloW2d_SOURCES = \
+                complexify.f90 \
+                parameters_2d.f90 \
+                geometry_2d.f90 \
+                constitutive_2d.f90 \
+                solver_2d.f90 \
+                init_2d.f90 \
+                inpout_2d.f90 \
+                IMEX_Sflow_2d.f90
 
 FCDEBUGFLAGS = -Wall -g
 MPFC = gfortran
@@ -320,9 +318,9 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-PLUMEMoM$(EXEEXT): $(PLUMEMoM_OBJECTS) $(PLUMEMoM_DEPENDENCIES) $(EXTRA_PLUMEMoM_DEPENDENCIES) 
-	@rm -f PLUMEMoM$(EXEEXT)
-	$(AM_V_FCLD)$(FCLINK) $(PLUMEMoM_OBJECTS) $(PLUMEMoM_LDADD) $(LIBS)
+IMEX_SfloW2d$(EXEEXT): $(IMEX_SfloW2d_OBJECTS) $(IMEX_SfloW2d_DEPENDENCIES) $(EXTRA_IMEX_SfloW2d_DEPENDENCIES) 
+	@rm -f IMEX_SfloW2d$(EXEEXT)
+	$(AM_V_FCLD)$(FCLINK) $(IMEX_SfloW2d_OBJECTS) $(IMEX_SfloW2d_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
