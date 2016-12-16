@@ -12,10 +12,6 @@ AC_PROG_FC
 # files to generate via autotools (prepare .am or .in source files)
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([src/Makefile])
-AC_CONFIG_FILES([doc/Makefile])
-AC_CONFIG_FILES([scripts/Makefile])
-AC_CONFIG_FILES([man/Makefile])
-AC_CONFIG_FILES([examples/Makefile])
 
 
 AC_PREFIX_DEFAULT([..])
