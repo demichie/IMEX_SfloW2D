@@ -12,12 +12,16 @@ The implicit part is solved with a Newton-Raphson method where the elements of t
 To compile:
 
 ./configure
+
 make
+
 make install
+
+
 
 The executable is copied in the bin folder.
 
-To test the code copy the executable from the bin folder in the examples folder and:
+To test the code copy the executable from the bin folder to the examples folder and:
 
 ./IMEX_SfloW2d
 
