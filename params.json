@@ -1,0 +1,6 @@
+{
+  "name": "Template",
+  "tagline": "",
+  "body": "### Welcome to TEMPLATE.\r\nTemplate is a FORTRAN90 code designed to solve ....\r\n\r\n### Authors and Contributors\r\nMattia de' Michieli Vitturi (@demichie)\r\n\r\n### Documentation\r\nDoxygen generated documentation can be found at <http://demichie.github.io/template/html/>\r\n\r\n\r\n### References\r\nM. de’ Michieli Vitturi, 2016.",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
