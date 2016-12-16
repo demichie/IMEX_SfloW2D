@@ -1,5 +1,3 @@
-# this is example-file: Makefile.am
+AUTOMAKE_OPTIONS = foreign
+SUBDIRS = src doc examples man scripts
 
-# the subdirectories of the project to go into
-SUBDIRS =   \
-            src

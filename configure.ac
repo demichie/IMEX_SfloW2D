@@ -1,18 +1,21 @@
-# initial information about the project
-AC_INIT([PLUME-MoM], [1.0], [mattia.demichielivitturi@ingv.it])
+AC_PREREQ([2.69])
 
+# initial information about the project
+AC_INIT(IMEX-SfloW2D, 0.9,mattia.demichielivitturi@ingv.it)
+AM_INIT_AUTOMAKE(0.9)
 # check if the source folder is available
-AC_CONFIG_SRCDIR([src/plume_model.f90])
+AC_CONFIG_SRCDIR(src/IMEX_Sflow_2d.f90)
 
 # check for fortran compiler
 AC_PROG_FC
 
-# automake initialization (mandatory) including a check for automake API version >= 1.9
-AM_INIT_AUTOMAKE([1.9])
-
 # files to generate via autotools (prepare .am or .in source files)
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([src/Makefile])
+AC_CONFIG_FILES([doc/Makefile])
+AC_CONFIG_FILES([scripts/Makefile])
+AC_CONFIG_FILES([man/Makefile])
+AC_CONFIG_FILES([examples/Makefile])
 
 
 AC_PREFIX_DEFAULT([..])
