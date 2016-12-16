@@ -31,3 +31,6 @@ https://demichie.github.io/IMEX_SfloW2D/
 
 Doxygen generated documentation can be found at http://demichie.github.io/IMEX_SfloW2D/html/
 
+### Authors
+
+M. de' Michieli Vitturi, G. Lari
