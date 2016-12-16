@@ -1,0 +1,4 @@
+<map id="solver_2d::eval_flux_lxf" name="solver_2d::eval_flux_lxf">
+<area shape="rect" id="node2" href="$classsolver__2d.html#a9fb76f7b354218c0a688132d5d981281" title="Semidiscrete finite volume central scheme. " alt="" coords="213,5,389,46"/>
+<area shape="rect" id="node3" href="$classsolver__2d.html#aed3f7dbc437442d0fd6521af6eafc8cd" title="Runge&#45;Kutta integration. " alt="" coords="438,5,570,46"/>
+</map>

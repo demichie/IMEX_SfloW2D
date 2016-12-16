@@ -1,0 +1,11 @@
+\form#0:$\alpha_i, u_i, \rho_i, x_i, $
+\form#1:$ \rho $
+\form#2:$ h+B $
+\form#3:$ u $
+\form#4:$ h + B $
+\form#5:$ hu $
+\form#6:$ h $
+\form#7:$ v $
+\form#8:$\alpha_1, p_1, p_2, \rho u, w, T$
+\form#9:$ Q^{(i)} = Q^n - dt \sum_{j=1}^{i-1}\tilde{a}_{j}\partial_x F(Q^{(j)}) + dt \sum_{j=1}^{i-1} a_j NH(Q^{(j)}) + dt a_{diag} NH(Q^{(i)}) $
+\form#10:$\alpha_1, p_1, p_2, \rho u, w, T $

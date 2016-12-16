@@ -1,0 +1,6 @@
+<map id="constitutive_2d::eval_local_speeds2_y" name="constitutive_2d::eval_local_speeds2_y">
+<area shape="rect" id="node2" href="$classsolver__2d.html#ae00e8a8f9cf604ed48c8a524e9d24ce7" title="Time&#45;step computation. " alt="" coords="422,5,565,32"/>
+<area shape="rect" id="node4" href="$classsolver__2d.html#a24f04d82aa0f418dce078ce469dc0542" title="Characteristic speeds. " alt="" coords="198,56,357,83"/>
+<area shape="rect" id="node3" href="$IMEX__Sflow__2d_8f90.html#a25dafd83c863a358fdd1aa4541d30366" title="Github project page: http://demichie.github.io/IMEX_SfloW2D/ &#160;. " alt="" coords="629,5,739,32"/>
+<area shape="rect" id="node5" href="$classsolver__2d.html#a9fb76f7b354218c0a688132d5d981281" title="Semidiscrete finite volume central scheme. " alt="" coords="405,57,581,98"/>
+</map>
