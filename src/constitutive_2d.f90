@@ -4,6 +4,7 @@
 MODULE constitutive_2d
 
   USE parameters_2d, ONLY : n_eqns , n_vars
+  USE parameters_2d, ONLY : fischer_flag , rheology_flag
 
   IMPLICIT none
 
@@ -559,20 +560,24 @@ CONTAINS
     ! initialize and evaluate the forces terms
     forces_term(1:n_eqns) = DCMPLX(0.D0)
 
-    CALL phys_var(Bj,c_qj = qj)
+    IF (rheology_flag) THEN
+
+       CALL phys_var(Bj,c_qj = qj)
     
-    mod_vel = CDSQRT( u**2 + v**2 )
+       mod_vel = CDSQRT( u**2 + v**2 )
     
-    IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
+       IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
      
-       forces_term(2) = forces_term(2) - (u/mod_vel) *                          &
-          ( mu*h * ( - grav * grav3_surf + curvj_x * mod_vel**2 )               &
-          + ( grav / xi ) * mod_vel ** 2 )
+          forces_term(2) = forces_term(2) - (u/mod_vel) *                          &
+             ( mu*h * ( - grav * grav3_surf + curvj_x * mod_vel**2 )               &
+             + ( grav / xi ) * mod_vel ** 2 )
      
-       forces_term(3) = forces_term(3) - (v/mod_vel) *                          &
-          ( mu*h * ( - grav * grav3_surf + curvj_y * mod_vel**2 )               &
-          + ( grav / xi ) * mod_vel ** 2 )
+          forces_term(3) = forces_term(3) - (v/mod_vel) *                          &
+             ( mu*h * ( - grav * grav3_surf + curvj_y * mod_vel**2 )               &
+             + ( grav / xi ) * mod_vel ** 2 )
      
+       ENDIF
+       
     ENDIF
 
     nh_term = relaxation_term + forces_term
