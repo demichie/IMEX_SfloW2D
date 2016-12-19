@@ -23,7 +23,7 @@ IMEX_SfloW2d_SOURCES = \
 FCFLAGS         = -Wunused -O3 -funroll-all-loops
 FCDEBUGFLAGS    = -Wall -g
 
-LIBS            = -lz -lm -llapack
+LIBS            = -lm -llapack
 
 FC              = gfortran
 MPFC            = gfortran
