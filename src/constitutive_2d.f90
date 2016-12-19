@@ -125,7 +125,7 @@ CONTAINS
 
     CALL phys_var(Bj,r_qj = qj)
     
-    IF (fischer_flag) THEN
+    IF ( fischer_flag ) THEN
     
        vel_min(1:n_eqns) = REAL(u) - DSQRT( - grav * grav3_surf * REAL(h) )
        vel_max(1:n_eqns) = REAL(u) + DSQRT( - grav * grav3_surf * REAL(h) )
@@ -158,7 +158,7 @@ CONTAINS
     
     CALL phys_var(Bj,r_qj = qj)
     
-    IF (fischer_flag) THEN
+    IF ( fischer_flag ) THEN
     
        vel_min(1:n_eqns) = REAL(v) - DSQRT( - grav * grav3_surf * REAL(h) ) 
        vel_max(1:n_eqns) = REAL(v) + DSQRT( - grav * grav3_surf * REAL(h) )
