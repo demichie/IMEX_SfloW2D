@@ -137,7 +137,6 @@ CONTAINS
     
     ENDIF
     
-
   END SUBROUTINE eval_local_speeds_x
 
   !******************************************************************************
@@ -215,7 +214,6 @@ CONTAINS
         vel_max(1:n_eqns) = REAL(u_temp) + DSQRT( grav * REAL(h_temp) )
 
     ENDIF
-
 
   END SUBROUTINE eval_local_speeds2_x
 
@@ -675,15 +673,15 @@ CONTAINS
     
     IF ( fischer_flag ) THEN
 
-       expl_forces_term(2) = grav * h * Bprimej_x
-   
-       expl_forces_term(3) = grav * h * Bprimej_y
-    
-    ELSE
-    
        expl_forces_term(2) = grav * h * gravj_surf(1)
    
        expl_forces_term(3) = grav * h * gravj_surf(2)
+    
+    ELSE
+    
+       expl_forces_term(2) = grav * h * Bprimej_x
+   
+       expl_forces_term(3) = grav * h * Bprimej_y
        
     ENDIF
     
