@@ -125,11 +125,18 @@ CONTAINS
 
     CALL phys_var(Bj,r_qj = qj)
     
-    !vel_min(1:n_eqns) = REAL(u) - DSQRT( grav * REAL(h) )     ! old version 
-    !vel_max(1:n_eqns) = REAL(u) + DSQRT( grav * REAL(h) )     ! old version
-
-    vel_min(1:n_eqns) = REAL(u) - DSQRT( - grav * grav3_surf * REAL(h) ) 
-    vel_max(1:n_eqns) = REAL(u) + DSQRT( - grav * grav3_surf * REAL(h) )
+    IF (fischer_flag) THEN
+    
+       vel_min(1:n_eqns) = REAL(u) - DSQRT( - grav * grav3_surf * REAL(h) )
+       vel_max(1:n_eqns) = REAL(u) + DSQRT( - grav * grav3_surf * REAL(h) )
+       
+    ELSE
+    
+       vel_min(1:n_eqns) = REAL(u) - DSQRT( grav * REAL(h) )
+       vel_max(1:n_eqns) = REAL(u) + DSQRT( grav * REAL(h) )
+    
+    ENDIF
+    
 
   END SUBROUTINE eval_local_speeds_x
 
@@ -152,8 +159,17 @@ CONTAINS
     
     CALL phys_var(Bj,r_qj = qj)
     
-    vel_min(1:n_eqns) = REAL(v) - DSQRT( - grav * grav3_surf * REAL(h) ) 
-    vel_max(1:n_eqns) = REAL(v) + DSQRT( - grav * grav3_surf * REAL(h) )
+    IF (fischer_flag) THEN
+    
+       vel_min(1:n_eqns) = REAL(v) - DSQRT( - grav * grav3_surf * REAL(h) ) 
+       vel_max(1:n_eqns) = REAL(v) + DSQRT( - grav * grav3_surf * REAL(h) )
+
+    ELSE
+    
+       vel_min(1:n_eqns) = REAL(v) - DSQRT( grav * REAL(h) )
+       vel_max(1:n_eqns) = REAL(v) + DSQRT( grav * REAL(h) )
+       
+    ENDIF
 
   END SUBROUTINE eval_local_speeds_y
 
@@ -188,8 +204,17 @@ CONTAINS
 
     END IF
 
-    vel_min(1:n_eqns) = REAL(u_temp) - DSQRT( - grav * grav3_surf * REAL(h_temp)) 
-    vel_max(1:n_eqns) = REAL(u_temp) + DSQRT( - grav * grav3_surf * REAL(h_temp))
+   IF ( fischer_flag ) THEN
+
+        vel_min(1:n_eqns) = REAL(u_temp) - DSQRT( - grav * grav3_surf * REAL(h_temp) ) 
+        vel_max(1:n_eqns) = REAL(u_temp) + DSQRT( - grav * grav3_surf * REAL(h_temp) )
+
+    ELSE
+
+        vel_min(1:n_eqns) = REAL(u_temp) - DSQRT( grav * REAL(h_temp) )
+        vel_max(1:n_eqns) = REAL(u_temp) + DSQRT( grav * REAL(h_temp) )
+
+    ENDIF
 
 
   END SUBROUTINE eval_local_speeds2_x
@@ -225,9 +250,17 @@ CONTAINS
 
     END IF
 
-    vel_min(1:n_eqns) = REAL(v_temp) - DSQRT( - grav * grav3_surf * REAL(h_temp) ) 
-    vel_max(1:n_eqns) = REAL(v_temp) + DSQRT( - grav * grav3_surf * REAL(h_temp) )
+    IF ( fischer_flag ) THEN
 
+        vel_min(1:n_eqns) = REAL(v_temp) - DSQRT( - grav * grav3_surf * REAL(h_temp) ) 
+        vel_max(1:n_eqns) = REAL(v_temp) + DSQRT( - grav * grav3_surf * REAL(h_temp) )
+
+    ELSE
+
+        vel_min(1:n_eqns) = REAL(v_temp) - DSQRT( grav * REAL(h_temp) )
+        vel_max(1:n_eqns) = REAL(v_temp) + DSQRT( grav * REAL(h_temp) )
+
+    ENDIF
 
   END SUBROUTINE eval_local_speeds2_y
 
@@ -435,8 +468,16 @@ CONTAINS
        IF ( REAL(h_temp) .NE. 0.D0 ) THEN
 
           u_temp = qj(2) / h_temp
+          
+          IF ( fischer_flag ) THEN
 
-          flux(2) = h_temp * u_temp**2 - 0.5D0 * grav * grav3_surf * h_temp**2  
+             flux(2) = h_temp * u_temp**2 - 0.5D0 * grav * grav3_surf * h_temp**2  
+
+          ELSE
+          
+             flux(2) = h_temp * u_temp**2 + 0.5D0 * grav * h_temp**2  
+                     
+          ENDIF
 
           flux(3) = u_temp * qj(3)
 
@@ -462,7 +503,15 @@ CONTAINS
 
           flux(2) = v_temp * qj(2)
 
-          flux(3) = h_temp * v_temp**2 - 0.5D0 * grav * grav3_surf * h_temp**2
+          IF ( fischer_flag ) THEN
+
+             flux(3) = h_temp * v_temp**2 - 0.5D0 * grav * grav3_surf * h_temp**2
+             
+          ELSE
+          
+             flux(3) = h_temp * v_temp**2 + 0.5D0 * grav * h_temp**2
+
+          ENDIF
 
        ELSE
 
@@ -623,10 +672,20 @@ CONTAINS
     expl_forces_term(1:n_eqns) = 0.D0
 
     CALL phys_var(Bj,r_qj = qj)
+    
+    IF ( fischer_flag ) THEN
 
-    expl_forces_term(2) = grav * h * gravj_surf(1)
+       expl_forces_term(2) = grav * h * Bprimej_x
    
-    expl_forces_term(3) = grav * h * gravj_surf(2)
+       expl_forces_term(3) = grav * h * Bprimej_y
+    
+    ELSE
+    
+       expl_forces_term(2) = grav * h * gravj_surf(1)
+   
+       expl_forces_term(3) = grav * h * gravj_surf(2)
+       
+    ENDIF
     
   END SUBROUTINE eval_explicit_forces
 
