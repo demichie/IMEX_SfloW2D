@@ -114,7 +114,8 @@ MODULE inpout_2d
   NAMELIST / restart_parameters / restart_file
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
-       cell_size , released_volume , x_release , y_release
+       cell_size , fischer_flag , rheology_flag , released_volume ,             &
+       x_release , y_release
 
   NAMELIST / left_state / hB_L , u_L , v_L
 
@@ -187,6 +188,8 @@ CONTAINS
     y0 = 0.D0
     comp_cells_y = 500
     cell_size = 0.1
+    fischer_flag = .FALSE.
+    rheology_flag = .FALSE.
     riemann_interface = 0.5D0
 
     !-- Inizialization of the Variables for the namelist left_state
