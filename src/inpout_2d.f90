@@ -25,6 +25,7 @@ MODULE inpout_2d
   USE geometry_2d, ONLY : topography_profile , n_topography_profile_x ,         &
        n_topography_profile_y
   USE init_2d, ONLY : riemann_interface
+  USE parameters_2d, ONLY : rheology_flag, fischer_flag
   USE parameters_2d, ONLY : released_volume , x_release , y_release
 
   ! -- Variables for the namelist LEFT_STATE
