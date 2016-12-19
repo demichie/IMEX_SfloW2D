@@ -40,6 +40,19 @@ MODULE parameters_2d
   !> - F      => generic initial conditions (uploaded through functions, to be defined in inpout_2d.f90)
   !> .
   LOGICAL :: riemann_flag
+  
+  !> Flag to choose which version of shallow water equations
+  !> - T      => equations with g_x, g_y and g_z (as in Fischer et al. 2012)
+  !> - F      => basic equations (as Kurganov and Petrova 2007)
+  !> .
+  LOGICAL :: fischer_flag
+
+  !> Flag to choose if we add the rheology
+  !> - T      => Voellmy-Salm rheology
+  !> - F      => no rheology
+  !> .
+  LOGICAL :: rheology_flag
+
 
   !> Initial volume of the flow
   REAL*8 :: released_volume
