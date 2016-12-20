@@ -255,10 +255,17 @@ CONTAINS
 !> \param    y           original grid                (\b input)
 !---------------------------------------------------------------------------
   REAL*8 FUNCTION velocity_u_function(x,y,Bj)
+  
+    USE parameters_2d, ONLY : released_volume , x_release , y_release
+    USE parameters_2d, ONLY : velocity_mod_release, velocity_ang_release
+  
     IMPLICIT NONE
     
     REAL*8, INTENT(IN) :: x,y
     REAL*8, INTENT(IN) :: Bj
+    
+    REAL*8, PARAMETER :: pig = 4.0*ATAN(1.0)
+    REAL*8 :: R
     
     ! example 2D from Kurganov and Petrova 2007    
     !IF(ABS(y).LE.0.5)THEN
@@ -267,7 +274,19 @@ CONTAINS
     !   velocity_u_function=0.0
     !ENDIF
 
-    velocity_u_function=0.0
+    !velocity_u_function=0.0
+
+    R = ( released_volume / pig )**(1.0/3.0)
+    
+    IF ( DSQRT( (x-x_release)**2 + (y-y_release)**2 ) .LE. R ) THEN
+
+      velocity_u_function = velocity_mod_release*COS(velocity_ang_release*(2*pig/360.d0))
+
+    ELSE
+
+      velocity_u_function = 0.d0
+
+    ENDIF
 
   END FUNCTION velocity_u_function
 
@@ -281,15 +300,34 @@ CONTAINS
 !> \param    y           original grid                (\b input)
 !---------------------------------------------------------------------------
   REAL*8 FUNCTION velocity_v_function(x,y,Bj)
+  
+    USE parameters_2d, ONLY : released_volume , x_release , y_release
+    USE parameters_2d, ONLY : velocity_mod_release, velocity_ang_release
+  
     IMPLICIT NONE
     
     REAL*8, INTENT(IN) :: x,y
     REAL*8, INTENT(IN) :: Bj
    
+    REAL*8, PARAMETER :: pig = 4.0*ATAN(1.0)
+    REAL*8 :: R
+   
     ! example 2D from Kurganov and Petrova 2007    
     !velocity_v_function=0.0
 
-    velocity_v_function=0.0
+    !velocity_v_function=0.0
+
+    R = ( released_volume / pig )**(1.0/3.0)
+    
+    IF ( DSQRT( (x-x_release)**2 + (y-y_release)**2 ) .LE. R ) THEN
+
+      velocity_v_function = velocity_mod_release*SIN(velocity_ang_release*(2*pig/360.d0))
+
+    ELSE
+
+      velocity_v_function = 0.d0
+
+    ENDIF
 
   END FUNCTION velocity_v_function
   
