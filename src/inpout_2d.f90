@@ -27,6 +27,7 @@ MODULE inpout_2d
   USE init_2d, ONLY : riemann_interface
   USE parameters_2d, ONLY : rheology_flag, fischer_flag
   USE parameters_2d, ONLY : released_volume , x_release , y_release
+  USE parameters_2d, ONLY : velocity_mod_release , velocity_ang_release
 
   ! -- Variables for the namelist LEFT_STATE
   USE init_2d, ONLY : hB_L , u_L , v_L
@@ -115,7 +116,7 @@ MODULE inpout_2d
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
        cell_size , fischer_flag , rheology_flag , released_volume ,             &
-       x_release , y_release
+       x_release , y_release , velocity_mod_release , velocity_ang_release
 
   NAMELIST / left_state / hB_L , u_L , v_L
 
