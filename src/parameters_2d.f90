@@ -62,6 +62,12 @@ MODULE parameters_2d
 
   !> Initial y-coordinate of the pile
   REAL*8 :: y_release
+  
+    !> Initial velocity module of the pile
+  REAL*8 :: velocity_mod_release
+
+  !> Initial velocity direction (angle in degree, departing from positive x-axis)
+  REAL*8 :: velocity_ang_release
 
   INTEGER, PARAMETER :: n_vars = 3        !< Number of conservative variables
   INTEGER, PARAMETER :: n_eqns = n_vars   !< Number of equations
