@@ -7,3 +7,7 @@
 
 4) move the parameters related to the numerical scheme from the run_parameters namelist to a new one
 
+5) add a check for the coverage of the DEM and the size of the computational domain
+
+
+
