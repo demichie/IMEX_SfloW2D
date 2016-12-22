@@ -590,6 +590,8 @@ CONTAINS
 
     WRITE(backup_unit,left_boundary_conditions)
     WRITE(backup_unit,right_boundary_conditions)
+    WRITE(backup_unit,top_boundary_conditions)
+    WRITE(backup_unit,bottom_boundary_conditions)
 
     WRITE(backup_unit, source_parameters )
 
