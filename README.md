@@ -1,11 +1,12 @@
 # IMEX_SfloW2D
-IMEX_SfloW is a FORTRAN90 code designed to solve an hyperbolic system of partial differential equations with relaxation and source terms. 
+IMEX_SfloW is a FORTRAN90 code designed to model shallow water granular flow over digital elevation models (DEM) of natural terrain, with the friction forces described by the Voellmy-Salm rheology. The system is described by an hyperbolic system of partial differential equations with relaxation and source terms.
 
-The model is discretized in time with an explicit-implicit Runge-Kutta method where the hyperbolic part is solved explicetely and the other terms (relaxation and surce) are treated implicitely.
+The model is discretized in time with an explicit-implicit Runge-Kutta method where the hyperbolic part is solved explicetely and the other terms (relaxation and surce) are treated implicitely to allow for larger time steps and to enforce the stopping condition.
 
-The finite volume solver for the hyperbolic part of the system is based on a semidiscrete central scheme and it is not tied on the specific eigenstructure of the model.
+The finite volume solver for the hyperbolic part of the system is based on the Kurganov and Petrova 2007 semidiscrete central scheme and it is not tied on the specific eigenstructure of the model.
 
-The implicit part is solved with a Newton-Raphson method where the elements of the Jacobian of the nonlinear system are evaluated numerically with a complex step derivative technique.
+The implicit part is solved with a Newton-Raphson method where the elements of the Jacobian of the nonlinear system are evaluated numerically with a complex step derivative technique. This automatic procedure allows for easy changes of the friction term.
+
 
 ### Compilation
 
@@ -37,4 +38,4 @@ Doxygen generated documentation can be found at http://demichie.github.io/IMEX_S
 
 ### Authors
 
-M. de' Michieli Vitturi, G. Lari
+Mattia de' Michieli Vitturi, Giacomo Lari
