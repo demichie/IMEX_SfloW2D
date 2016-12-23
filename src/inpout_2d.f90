@@ -540,6 +540,41 @@ CONTAINS
        READ(2001,*) chara, cellsize
        READ(2001,*) chara, nodata_value
 
+       IF ( x0 .LT. xllcorner ) THEN 
+
+          WRITE(*,*) 'Computational domain problem'
+          WRITE(*,*) 'x0 < xllcorner',x0,xllcorner
+          STOP
+
+       END IF
+
+       IF ( x0+comp_cells_x*cell_size .GT. xllcorner+ncols*cellsize ) THEN 
+
+          WRITE(*,*) 'Computational domain problem'
+          WRITE(*,*) 'right edge > xllcorner+ncols*cellsize',                   &
+               x0+comp_cells_x*cell_size , xllcorner+ncols*cellsize
+          STOP
+
+       END IF
+
+       IF ( y0 .LT. yllcorner ) THEN 
+
+          WRITE(*,*) 'Computational domain problem'
+          WRITE(*,*) 'y0 < yllcorner',y0,yllcorner
+          STOP
+
+       END IF
+
+       IF ( y0+comp_cells_y*cell_size .GT. yllcorner+nrows*cellsize ) THEN 
+
+          WRITE(*,*) 'Computational domain problem'
+          WRITE(*,*) 'top edge > yllcorner+nrows*cellsize',                     &
+               y0+comp_cells_y*cell_size , yllcorner+nrows*cellsize
+          STOP
+
+       END IF
+
+
        WRITE(*,*) 'Reading DEM file' 
        WRITE(*,*) 'ncols',ncols
        WRITE(*,*) 'nrows',nrows
