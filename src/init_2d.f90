@@ -10,6 +10,8 @@ MODULE init_2d
   IMPLICIT none
 
   REAL*8, ALLOCATABLE :: q_init(:,:,:)
+
+  REAL*8, ALLOCATABLE :: thickness_init(:,:)
   
   !> Riemann problem interface relative position. It is a value
   !> between 0 and 1

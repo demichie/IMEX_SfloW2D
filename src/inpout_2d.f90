@@ -362,13 +362,14 @@ CONTAINS
     READ(input_unit, run_parameters )
 
 
+    ! ------- READ newrun_parameters NAMELIST --------------------------------
+    READ(input_unit,newrun_parameters)
+
     IF ( restart ) THEN
 
        READ(input_unit,restart_parameters)
 
     ELSE
-
-       READ(input_unit,newrun_parameters)
 
        IF ( riemann_flag ) THEN
 
@@ -621,8 +622,6 @@ CONTAINS
 
     ENDIF
 
-
-
     CLOSE( input_unit )
 
     bak_name = TRIM(run_name)//'.bak'
@@ -702,59 +701,173 @@ CONTAINS
 
   SUBROUTINE read_solution
 
-    USE geometry_2d, ONLY : init_grid
     USE solver_2d, ONLY : allocate_solver_variables
 
-    USE geometry_2d, ONLY : comp_cells_x , x0 , dx, comp_cells_y , y0 , dy
+    USE geometry_2d, ONLY : comp_cells_x , x0 , comp_cells_y , y0 , dx , dy
+    USE geometry_2d, ONLY : B_cent
+    USE init_2d, ONLY : thickness_init
     USE parameters_2d, ONLY : n_vars
-    USE parameters_2d, ONLY : t_start
     USE solver_2d, ONLY : q
 
     IMPLICIT none
 
+    CHARACTER(LEN=15) :: chara
+
     INTEGER :: j,k
-    INTEGER :: i
+
+    INTEGER :: dot_idx
+
+    LOGICAL :: lexist
 
     CHARACTER(LEN=30) :: string
 
-    OPEN(restart_unit,FILE=restart_file,STATUS='old')
+    CHARACTER(LEN=3) :: check_file
 
-    READ(restart_unit,1001) x0,dx,comp_cells_x,y0,dy,comp_cells_y,t_start
-1001 FORMAT(e18.8,'    x0', /, e18.8,'    dx', /, i18,'    cells_x', /,         &
-          e18.8,'    y0', /, e18.8,'    dy', /, i18,'    cells_y', /, e18.8,    &
-          '    t', /)
+    INTEGER :: ncols , nrows , nodata_value
 
+    REAL*8 :: xllcorner , yllcorner , cellsize
 
-    CALL init_grid
+    REAL*8 :: xj , yk
 
-    CALL allocate_solver_variables
+    INQUIRE (FILE=restart_file,exist=lexist)
 
+    IF (lexist .EQV. .FALSE.) THEN
 
-    DO i = 1,n_vars
+       WRITE(*,*) 'Restart: ',TRIM(restart_file),' not found'
+       STOP
 
-       DO j = 1,comp_cells_x
+    ELSE
 
-          DO k = 1,comp_cells_y
+       OPEN(restart_unit,FILE=restart_file,STATUS='old')
+       
+       WRITE(*,*) 'Restart: ',TRIM(restart_file), ' found'
 
-             ! Exponents with more than 2 digits cause problems reading
-             ! into matlab... reset tiny values to zero:
-             IF ( dabs(q(i,j,k)) .LT. 1d-99) q(i,j,k) = 0.d0
+    END IF
 
+    dot_idx = SCAN(restart_file, ".", .TRUE.)
+
+    check_file = restart_file(dot_idx+1:dot_idx+3)
+
+    IF ( check_file .EQ. 'asc' ) THEN
+       
+       READ(restart_unit,*) chara, ncols
+       READ(restart_unit,*) chara, nrows
+       READ(restart_unit,*) chara, xllcorner
+       READ(restart_unit,*) chara, yllcorner
+       READ(restart_unit,*) chara, cellsize
+       READ(restart_unit,*) chara, nodata_value
+       
+       ALLOCATE( thickness_init(ncols,nrows) )
+
+       IF ( ncols .NE. comp_cells_x ) THEN
+          
+          WRITE(*,*) 'ncols not equal to comp_cells_x',ncols,comp_cells_x
+          STOP
+          
+       END IF
+       
+       IF ( nrows .NE. comp_cells_y ) THEN
+          
+          WRITE(*,*) 'nrows not equal to comp_cells_y',nrows,comp_cells_y
+          STOP
+          
+       END IF
+       
+       IF ( xllcorner .NE. x0 + 0.5D0 * cellsize ) THEN
+          
+          WRITE(*,*) 'xllcorner not equal to x0+0.5*cellsize', xllcorner ,      &
+               x0+0.5*cellsize
+          STOP
+          
+       END IF
+       
+       IF ( yllcorner .NE. y0 + 0.5D0 * cellsize ) THEN
+          
+          WRITE(*,*) 'yllcorner not equal to y0+0.5*cellsize', yllcorner ,      &
+               y0+0.5*cellsize
+          STOP
+          
+       END IF
+       
+       IF ( cellsize .NE. cell_size ) THEN
+          
+          WRITE(*,*) 'cellsize not equal to cell_size', cellsize , cell_size
+          STOP
+          
+       END IF
+       
+       DO k=1,nrows
+          
+          WRITE(*,FMT="(A1,A,t21,F6.2,A)",ADVANCE="NO") ACHAR(13),              &
+               & " Percent Complete: ",( REAL(k) / REAL(comp_cells_y))*100.0, "%"
+          
+          READ(restart_unit,*) thickness_init(1:ncols,nrows-k+1)
+          
+       ENDDO
+
+       WHERE ( thickness_init .EQ. nodata_value )
+
+          thickness_init = 0.D0
+          
+       END WHERE
+       
+       WRITE(*,*)
+       WRITE(*,*) 'Total volume =', cellsize**2 * SUM(thickness_init)
+
+       q(1,:,:) = B_cent(:,:) + thickness_init(:,:)
+       q(2,:,:) = 0.D0
+       q(3,:,:) = 0.D0
+
+       output_idx = 0
+
+    ELSEIF ( check_file .EQ. 'q_2' ) THEN
+    
+       DO k=1,comp_cells_y
+          
+          DO j=1,comp_cells_x
+             
+             READ(restart_unit,1003) xj , yk , q(:,j,k)
+
+             IF ( q(1,j,k) .LE. B_cent(j,k) ) THEN
+
+                IF ( verbose_level .GE. 2 ) THEN
+
+                   WRITE(*,*) 'q(1,j,k),B_cent(j,k)',j,k,q(1,j,k),B_cent(j,k)
+                   READ(*,*)
+
+                END IF
+
+                q(1,j,k) = B_cent(j,k)
+
+             END IF
+             
           ENDDO
+          
+          WRITE(*,*) 'xj,yk',k,j,xj,yk
 
+          READ(restart_unit,*)  
+          
        END DO
 
-       READ(restart_unit,1003) q(:,j,k)
-1003   FORMAT(3e20.12)
+       WRITE(*,*) 'Total volume =',dx*dy* SUM( q(1,:,:)-B_cent(:,:) )
+          
+1003   FORMAT(5e20.12)
 
-    END DO
+       j = SCAN(restart_file, '.' , .TRUE. )
+       
+       string = TRIM(restart_file(j-4:j-1))
+       
+       WRITE(*,*) 
+       WRITE(*,*) 'Starting from output index ',string
 
-    j = SCAN(restart_file, '.' , .TRUE. )
+       READ( string,* ) output_idx
+    
+    ELSE
+   
+       WRITE(*,*) 'boh'
 
-    string = TRIM(restart_file(j+2:j+5))
-
-    READ( string,* ) output_idx
-
+    END IF
+       
   END SUBROUTINE read_solution
 
   !******************************************************************************

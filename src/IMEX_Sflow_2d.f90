@@ -71,20 +71,20 @@ PROGRAM IMEX_SfloW_2d
 
   CALL read_param
 
+  CALL init_grid
+  
+  CALL init_problem_param
+  
+  CALL allocate_solver_variables
+     
   IF ( restart ) THEN
 
      CALL read_solution
 
   ELSE
 
-     CALL init_grid
-
-     CALL init_problem_param
-
-     CALL allocate_solver_variables
-
      ! riemann problem defined in file.inp
-     IF(riemann_flag.EQV..TRUE.)THEN
+     IF( riemann_flag .EQV. .TRUE. )THEN
 
         CALL riemann_problem
 
@@ -98,8 +98,12 @@ PROGRAM IMEX_SfloW_2d
   END IF
 
   t = t_start
-
-  WRITE(*,*) 't_start =',t
+  
+  WRITE(*,*) 
+  WRITE(*,*) '******** START COMPUTATION *********'
+  WRITE(*,*)
+ 
+  WRITE(*,*) 't =',t,' dt =',dt, ' h_tot =',dx*dy*(SUM(q(1,:,:)-B_cent(:,:)))
 
   CALL output_solution(t)
 
