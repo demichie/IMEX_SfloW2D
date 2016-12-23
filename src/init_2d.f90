@@ -151,11 +151,12 @@ CONTAINS
 
     USE constitutive_2d, ONLY : qp_to_qc
 
-    USE geometry_2d, ONLY : x_comp , comp_cells_x, y_comp , comp_cells_y , B_cent
+    USE geometry_2d, ONLY : x_comp , comp_cells_x, y_comp , comp_cells_y ,      &
+         B_cent
 
-    ! USE geometry_2d, ONLY : x0 , xN , y0 , yN
+    USE geometry_2d, ONLY : dx , dy
 
-    USE parameters_2d, ONLY : n_vars , verbose_level
+    USE parameters_2d, ONLY : n_vars , released_volume , verbose_level
 
     USE solver_2d, ONLY : q
 
@@ -178,6 +179,14 @@ CONTAINS
       ENDDO
 
     ENDDO
+
+
+    ! Correction for the released volume
+    qp(1,:,:) = B_cent(:,:) + ( qp(1,:,:)-B_cent(:,:) ) * released_volume       &
+         / ( dx * dy * SUM( qp(1,:,:)-B_cent(:,:) ) )
+
+    WRITE(*,*) 'Initial volume =',dx * dy * SUM( qp(1,:,:)-B_cent(:,:) ) 
+
 
     DO j = 1,comp_cells_x
 
@@ -247,7 +256,7 @@ CONTAINS
 
   END FUNCTION thickness_function
 
-!---------------------------------------------------------------------------
+!--------------------------------------------------------------------------------
 !> Velocity u function
 !
 !> This subroutine defines x component of the velocity
@@ -255,7 +264,7 @@ CONTAINS
 !> \date OCTOBER 2016
 !> \param    x           original grid                (\b input)
 !> \param    y           original grid                (\b input)
-!---------------------------------------------------------------------------
+!--------------------------------------------------------------------------------
   REAL*8 FUNCTION velocity_u_function(x,y,Bj)
   
     USE parameters_2d, ONLY : released_volume , x_release , y_release
@@ -282,7 +291,8 @@ CONTAINS
     
     IF ( DSQRT( (x-x_release)**2 + (y-y_release)**2 ) .LE. R ) THEN
 
-      velocity_u_function = velocity_mod_release*COS(velocity_ang_release*(2*pig/360.d0))
+      velocity_u_function = velocity_mod_release * COS( velocity_ang_release *  &
+           ( 2.D0 * pig / 360.d0 ) )
 
     ELSE
 
@@ -292,7 +302,7 @@ CONTAINS
 
   END FUNCTION velocity_u_function
 
-!---------------------------------------------------------------------------
+!--------------------------------------------------------------------------------
 !> Velocity v function
 !
 !> This subroutine defines y component of the velocity
@@ -300,7 +310,7 @@ CONTAINS
 !> \date OCTOBER 2016
 !> \param    x           original grid                (\b input)
 !> \param    y           original grid                (\b input)
-!---------------------------------------------------------------------------
+!--------------------------------------------------------------------------------
   REAL*8 FUNCTION velocity_v_function(x,y,Bj)
   
     USE parameters_2d, ONLY : released_volume , x_release , y_release
@@ -323,7 +333,8 @@ CONTAINS
     
     IF ( DSQRT( (x-x_release)**2 + (y-y_release)**2 ) .LE. R ) THEN
 
-      velocity_v_function = velocity_mod_release*SIN(velocity_ang_release*(2*pig/360.d0))
+      velocity_v_function = velocity_mod_release * SIN( velocity_ang_release *  &
+           ( 2.D0 * pig / 360.d0 ) )
 
     ELSE
 
