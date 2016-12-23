@@ -3,7 +3,7 @@
 2) the initial_condition should be read only when a flag is set to true in the input file, 
    otherwise the initial condition should be read from a file. DONE (2016/12/23)
 
-3) the initial condition should be read from a file in different formats: *.q, *.p or *.asc
+3) the initial condition should be read from a file in different formats: *.q, *.p or *.asc. DONE (2016/12/23)
 
 4) move the parameters related to the numerical scheme from the run_parameters namelist to a new one. DONE (2016/12/23)
 
