@@ -13,10 +13,8 @@
 MODULE inpout_2d
 
   ! -- Variables for the namelist RUN_PARAMETERS
-  USE parameters_2d, ONLY : solver_scheme, max_dt , t_start , t_end ,           &
-       dt_output , cfl, limiter , theta, reconstr_coeff ,                       &
-       interfaces_relaxation , n_RK, topography_function_flag,                  &
-       topography_demfile, riemann_flag
+  USE parameters_2d, ONLY : t_start , t_end , dt_output ,                       &
+       topography_function_flag, topography_demfile
 
   USE solver_2d, ONLY : verbose_level
 
@@ -25,7 +23,9 @@ MODULE inpout_2d
   USE geometry_2d, ONLY : topography_profile , n_topography_profile_x ,         &
        n_topography_profile_y
   USE init_2d, ONLY : riemann_interface
-  USE parameters_2d, ONLY : rheology_flag, fischer_flag
+  USE parameters_2d, ONLY : riemann_flag , rheology_flag , fischer_flag
+
+  ! -- Variables for the namelist INITIAL_CONDITIONS
   USE parameters_2d, ONLY : released_volume , x_release , y_release
   USE parameters_2d, ONLY : velocity_mod_release , velocity_ang_release
 
@@ -37,6 +37,10 @@ MODULE inpout_2d
 
   ! -- Variables for the namelists LEFT/RIGHT_BOUNDARY_CONDITIONS
   USE parameters_2d, ONLY : bc
+
+  ! -- Variables for the namelist NUMERIC_PARAMETERS
+  USE parameters_2d, ONLY : solver_scheme, max_dt , cfl, limiter , theta,       &
+       reconstr_coeff , interfaces_relaxation , n_RK   
 
   ! -- Variables for the namelist SOURCE_PARAMETERS
   USE constitutive_2d, ONLY : grav, mu, xi
@@ -108,15 +112,16 @@ MODULE inpout_2d
 
 
   NAMELIST / run_parameters / run_name , restart , topography_demfile ,         &
-       riemann_flag , max_dt , t_start , t_end , dt_output , solver_scheme ,    &
-       cfl , limiter , theta , reconstr_coeff , n_RK , output_cons_flag ,       &
-       output_esri_flag , output_phys_flag , verbose_level
+       t_start , t_end , dt_output , output_cons_flag , output_esri_flag ,      &
+       output_phys_flag , verbose_level
 
   NAMELIST / restart_parameters / restart_file
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
-       cell_size , fischer_flag , rheology_flag , released_volume ,             &
-       x_release , y_release , velocity_mod_release , velocity_ang_release
+       cell_size , fischer_flag , rheology_flag , riemann_flag
+
+  NAMELIST / initial_conditions /  released_volume , x_release , y_release ,    &
+       velocity_mod_release , velocity_ang_release
 
   NAMELIST / left_state / hB_L , u_L , v_L
 
@@ -129,6 +134,10 @@ MODULE inpout_2d
   NAMELIST / bottom_boundary_conditions / hB_bcD , u_bcD , v_bcD
 
   NAMELIST / top_boundary_conditions / hB_bcU , u_bcU , v_bcU
+
+  NAMELIST / numeric_parameters / solver_scheme, max_dt , cfl, limiter , theta, &
+       reconstr_coeff , interfaces_relaxation , n_RK   
+
 
   NAMELIST / source_parameters / grav, mu, xi
 
@@ -162,23 +171,13 @@ CONTAINS
     restart = .FALSE.
     topography_function_flag=.FALSE.
     topography_demfile=.FALSE.
-    riemann_flag=.TRUE.
-    max_dt = 1.d-3
     t_start = 0.0
     t_end = 5.0d-4
     dt_output = 1.d-4
-    solver_scheme = 'KT'
-    n_RK = 2
     output_cons_flag = .TRUE.
     output_esri_flag = .TRUE.
     output_phys_flag = .TRUE.
     verbose_level = 0
-
-
-    cfl = 0.5
-    limiter(1:n_vars) = 0
-    theta=1.0
-    reconstr_coeff = 1.0
 
     !-- Inizialization of the Variables for the namelist restart parameters
     restart_file = ''
@@ -191,6 +190,7 @@ CONTAINS
     cell_size = 0.1
     fischer_flag = .FALSE.
     rheology_flag = .FALSE.
+    riemann_flag=.TRUE.
     riemann_interface = 0.5D0
 
     !-- Inizialization of the Variables for the namelist left_state
@@ -236,6 +236,16 @@ CONTAINS
     u_bcU%value = 0.d0 
 
 
+    !-- Inizialization of the Variables for the namelist NUMERIC_PARAMETERS
+    max_dt = 1.d-3
+    solver_scheme = 'KT'
+    n_RK = 2
+    cfl = 0.24
+    limiter(1:n_vars) = 0
+    theta=1.0
+    reconstr_coeff = 1.0
+
+
     !-- Inizialization of the Variables for the namelist source_parameters
     grav = -9.81D0
     mu = 0.225
@@ -256,6 +266,7 @@ CONTAINS
        WRITE(input_unit, right_state )
        WRITE(input_unit, left_boundary_conditions )
        WRITE(input_unit, right_boundary_conditions )
+       WRITE(input_unit, numeric_parameters )
        WRITE(input_unit, source_parameters )
 
        n_topography_profile_x = 2
@@ -350,6 +361,59 @@ CONTAINS
     ! ------- READ run_parameters NAMELIST -----------------------------------
     READ(input_unit, run_parameters )
 
+
+    IF ( restart ) THEN
+
+       READ(input_unit,restart_parameters)
+
+    ELSE
+
+       READ(input_unit,newrun_parameters)
+
+       IF ( riemann_flag ) THEN
+
+          READ(input_unit,left_state)
+          READ(input_unit,right_state)
+
+       ELSE
+
+          READ(input_unit,initial_conditions)
+          
+       END IF
+
+    END IF
+
+
+    ! ------- READ boundary_conditions NAMELISTS --------------------------------
+
+    READ(input_unit,left_boundary_conditions)
+
+    bcL(1) = hB_bcL 
+    bcL(2) = u_bcL 
+    bcL(3) = v_bcL 
+
+    READ(input_unit,right_boundary_conditions)
+
+    bcR(1) = hB_bcR 
+    bcR(2) = u_bcR 
+    bcR(3) = v_bcR 
+
+    READ(input_unit,bottom_boundary_conditions)
+
+    bcD(1) = hB_bcD 
+    bcD(2) = u_bcD 
+    bcD(3) = v_bcD 
+
+    READ(input_unit,top_boundary_conditions)
+
+    bcU(1) = hB_bcU 
+    bcU(2) = u_bcU 
+    bcU(3) = v_bcU 
+
+    ! ------- READ numeric_parameters NAMELIST ---------------------------------
+
+    READ(input_unit,numeric_parameters)
+
     IF ( ( solver_scheme .NE. 'LxF' ) .AND. ( solver_scheme .NE. 'KT' ) .AND. &
          ( solver_scheme .NE. 'GFORCE' ) ) THEN
 
@@ -397,46 +461,7 @@ CONTAINS
 
     END IF
 
-    IF ( restart ) THEN
-
-       READ(input_unit,restart_parameters)
-
-    ELSE
-
-       READ(input_unit,newrun_parameters)
-
-       IF ( riemann_flag ) THEN
-
-          READ(input_unit,left_state)
-          READ(input_unit,right_state)
-          
-       END IF
-
-    END IF
-
-    READ(input_unit,left_boundary_conditions)
-
-    bcL(1) = hB_bcL 
-    bcL(2) = u_bcL 
-    bcL(3) = v_bcL 
-
-    READ(input_unit,right_boundary_conditions)
-
-    bcR(1) = hB_bcR 
-    bcR(2) = u_bcR 
-    bcR(3) = v_bcR 
-
-    READ(input_unit,bottom_boundary_conditions)
-
-    bcD(1) = hB_bcD 
-    bcD(2) = u_bcD 
-    bcD(3) = v_bcD 
-
-    READ(input_unit,top_boundary_conditions)
-
-    bcU(1) = hB_bcU 
-    bcU(2) = u_bcU 
-    bcU(3) = v_bcU 
+    ! ------- READ source_parameters NAMELIST -----------------------------------
 
     READ(input_unit, source_parameters )
 
@@ -584,6 +609,10 @@ CONTAINS
           WRITE(backup_unit,left_state)
           WRITE(backup_unit,right_state)
 
+       ELSE
+
+          WRITE(backup_unit,initial_conditions)
+
        END IF
 
     END IF
@@ -592,6 +621,8 @@ CONTAINS
     WRITE(backup_unit,right_boundary_conditions)
     WRITE(backup_unit,top_boundary_conditions)
     WRITE(backup_unit,bottom_boundary_conditions)
+
+    WRITE(backup_unit, numeric_parameters )
 
     WRITE(backup_unit, source_parameters )
 
