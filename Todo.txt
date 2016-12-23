@@ -1,0 +1,13 @@
+1) Split the namelist newrun parameters in two namelist: newrun and initial_condition
+
+2) the initial_condition should be read only when a flag is set to true in the input file, 
+   otherwise the initial condition should be read from a file.
+
+3) the initial condition should be read from a file in different formats: *.q, *.p or *.asc
+
+4) move the parameters related to the numerical scheme from the run_parameters namelist to a new one
+
+5) add a check for the coverage of the DEM and the size of the computational domain
+
+
+
