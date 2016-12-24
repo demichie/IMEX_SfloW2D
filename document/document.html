@@ -7,7 +7,7 @@
 <meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
 <!-- html --> 
 <meta name="src" content="test1.tex"> 
-<meta name="date" content="2016-12-24 17:20:00"> 
+<meta name="date" content="2016-12-24 17:49:00"> 
 <link rel="stylesheet" type="text/css" href="test1.css"> 
 </head><body 
 >
@@ -154,7 +154,7 @@ src="test10x.png" alt="PIC" class="graphics" width="276.00105pt" height="157.453
 name="test10x.png" src="grid-crop.ps"  
 -->
 <img 
-src="test11x.png" alt="PIC" class="graphics" width="137.9979pt" height="209.35562pt" ><!--tex4ht:graphics  
+src="test11x.png" alt="PIC" class="graphics" width="103.50105pt" height="157.01672pt" ><!--tex4ht:graphics  
 name="test11x.png" src="batimetry_model-crop.ps"  
 -->
 <br /> <div class="caption" 
@@ -786,7 +786,7 @@ class="ecrm-0900">.</span>
 
                                                                   
 <!--l. 165--><p class="noindent" ><img 
-src="test113x.png" alt="PIC" class="graphics" width="137.9979pt" height="150.85214pt" ><!--tex4ht:graphics  
+src="test113x.png" alt="PIC" class="graphics" width="172.5pt" height="188.56923pt" ><!--tex4ht:graphics  
 name="test113x.png" src="ghost_cells-crop.ps"  
 -->
 <br /> <div class="caption" 
@@ -1536,9 +1536,11 @@ class="ecrm-0900">fluid between a realistic 3D representation of mountains and v
 class="ecbx-0900">Acknowledgements: </span><span 
 class="ecrm-0900">This project has been performed within the scope of the contract</span>
 <span 
-class="ecrm-0900">stipulated on 12/09/2016 in the context of INGV-DPC B2, Objective 4, Subtask</span>
+class="ecrm-0900">about "Development and application of Shallow Water numerical model for the propagation</span>
 <span 
-class="ecrm-0900">D1.</span>
+class="ecrm-0900">of gravitational flows on 3D topographies" stipulated on 12/09/2016 in the context of</span>
+<span 
+class="ecrm-0900">INGV-DPC B2, Objective 4, Subtask D1.</span>
 <!--l. 320--><p class="indent" >   <hr class="figure"><div class="figure" 
 >
                                                                   
@@ -1697,24 +1699,6 @@ class="ecrm-0800">,</span><span
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
  id="x1-15005r5"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">RIEMANN_FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">F</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15006r6"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">MAX_DT</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1.0000000000000000</span><span 
-class="ecrm-0800">E</span><span 
-class="cmsy-8">-</span><span 
-class="ecrm-0800">000,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15007r7"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">T_START</span><span 
 class="ecrm-0800">=</span><span 
 class="ecrm-0800">&#x00A0;</span><span 
@@ -1727,18 +1711,18 @@ class="ecrm-0800">&#x00A0;</span><span
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">,</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15008r8"></a></span><span 
+ id="x1-15006r6"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">T_END</span><span 
 class="ecrm-0800">=</span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">500.0000000000000001</span><span 
+class="ecrm-0800">200.0000000000000001</span><span 
 class="ecrm-0800">E</span><span 
 class="cmsy-8">-</span><span 
 class="ecrm-0800">000,</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15009r9"></a></span><span 
+ id="x1-15007r7"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">DT_OUTPUT</span><span 
 class="ecrm-0800">=</span><span 
@@ -1749,14 +1733,689 @@ class="ecrm-0800">E</span><span
 class="cmsy-8">-</span><span 
 class="ecrm-0800">000,</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15008r8"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">OUTPUT_ESRI_FLAG</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">.</span><span 
+class="ecrm-0800">FALSE</span><span 
+class="ecrm-0800">.</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15009r9"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">OUTPUT_CONS_FLAG</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">.</span><span 
+class="ecrm-0800">FALSE</span><span 
+class="ecrm-0800">.</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
  id="x1-15010r10"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">OUTPUT_PHYS_FLAG</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">.</span><span 
+class="ecrm-0800">TRUE</span><span 
+class="ecrm-0800">.</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15011r11"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">VERBOSE_LEVEL</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15012r12"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">/</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15013r13"></a></span><span 
+class="ecrm-0800">&amp;</span><span 
+class="ecrm-0800">NEWRUN_PARAMETERS</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15014r14"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">X0</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">500000.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15015r15"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">Y0</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">4176000.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15016r16"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">COMP_CELLS_X</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">400,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15017r17"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">COMP_CELLS_Y</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">300,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15018r18"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">CELL_SIZE</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">10.0</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15019r19"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">FISCHER_FLAG</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">T</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15020r20"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">RHEOLOGY_FLAG</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">T</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15021r21"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">RIEMANN_FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">F</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15022r22"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">/</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15023r23"></a></span><span 
+class="ecrm-0800">&amp;</span><span 
+class="ecrm-0800">INITIAL_CONDITIONS</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15024r24"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">RELEASED_VOLUME</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">5.0</span><span 
+class="ecrm-0800">D</span><span 
+class="ecrm-0800">+5</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15025r25"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">X_RELEASE</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">500800.0</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15026r26"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">Y_RELEASE</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">4177850.0</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15027r27"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">VELOCITY_MOD_RELEASE</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15028r28"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">VELOCITY_ANG_RELEASE</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15029r29"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">/</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15030r30"></a></span><span 
+class="ecrm-0800">&amp;</span><span 
+class="ecrm-0800">LEFT_BOUNDARY_CONDITIONS</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15031r31"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">HB_BCL</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15032r32"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">HB_BCL</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15033r33"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">U_BCL</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15034r34"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">U_BCL</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15035r35"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">V_BCL</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15036r36"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">V_BCL</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15037r37"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">/</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15038r38"></a></span><span 
+class="ecrm-0800">&amp;</span><span 
+class="ecrm-0800">RIGHT_BOUNDARY_CONDITIONS</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15039r39"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">HB_BCR</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15040r40"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">HB_BCR</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15041r41"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">U_BCR</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15042r42"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">U_BCR</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15043r43"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">V_BCR</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15044r44"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">V_BCR</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15045r45"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">/</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15046r46"></a></span><span 
+class="ecrm-0800">&amp;</span><span 
+class="ecrm-0800">BOTTOM_BOUNDARY_CONDITIONS</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15047r47"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">HB_BCD</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15048r48"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">HB_BCD</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15049r49"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">U_BCD</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15050r50"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">U_BCD</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15051r51"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">V_BCD</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15052r52"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">V_BCD</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15053r53"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">/</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15054r54"></a></span><span 
+class="ecrm-0800">&amp;</span><span 
+class="ecrm-0800">TOP_BOUNDARY_CONDITIONS</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15055r55"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">HB_BCU</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15056r56"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">HB_BCU</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15057r57"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">U_BCU</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15058r58"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">U_BCU</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15059r59"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">V_BCU</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">FLAG</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15060r60"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">V_BCU</span><span 
+class="ecrm-0800">%</span><span 
+class="ecrm-0800">VALUE</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">0.0000000000000000</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15061r61"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">/</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15062r62"></a></span><span 
+class="ecrm-0800">&amp;</span><span 
+class="ecrm-0800">NUMERIC_PARAMETERS</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15063r63"></a></span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">MAX_DT</span><span 
+class="ecrm-0800">=</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">&#x00A0;</span><span 
+class="ecrm-0800">1.0000000000000000</span><span 
+class="ecrm-0800">E</span><span 
+class="cmsy-8">-</span><span 
+class="ecrm-0800">000,</span><span 
+class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15064r64"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">SOLVER_SCHEME</span><span 
 class="ecrm-0800">="</span><span 
 class="ecrm-0800">KT</span><span 
 class="ecrm-0800">",</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15011r11"></a></span><span 
+ id="x1-15065r65"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">CFL</span><span 
 class="ecrm-0800">=</span><span 
@@ -1769,7 +2428,7 @@ class="ecrm-0800">&#x00A0;</span><span
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">,</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15012r12"></a></span><span 
+ id="x1-15066r66"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">LIMITER</span><span 
 class="ecrm-0800">=</span><span 
@@ -1789,7 +2448,7 @@ class="ecrm-0800">&#x00A0;</span><span
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">,</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15013r13"></a></span><span 
+ id="x1-15067r67"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">THETA</span><span 
 class="ecrm-0800">=</span><span 
@@ -1803,7 +2462,7 @@ class="ecrm-0800">&#x00A0;</span><span
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">,</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15014r14"></a></span><span 
+ id="x1-15068r68"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">RECONSTR_COEFF</span><span 
 class="ecrm-0800">=</span><span 
@@ -1817,7 +2476,7 @@ class="ecrm-0800">&#x00A0;</span><span
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">,</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15015r15"></a></span><span 
+ id="x1-15069r69"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">N_RK</span><span 
 class="ecrm-0800">=</span><span 
@@ -1833,656 +2492,15 @@ class="ecrm-0800">&#x00A0;</span><span
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">2,</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15016r16"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">OUTPUT_ESRI_FLAG</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">.</span><span 
-class="ecrm-0800">FALSE</span><span 
-class="ecrm-0800">.</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15017r17"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">OUTPUT_CONS_FLAG</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">.</span><span 
-class="ecrm-0800">FALSE</span><span 
-class="ecrm-0800">.</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15018r18"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">OUTPUT_PHYS_FLAG</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">.</span><span 
-class="ecrm-0800">TRUE</span><span 
-class="ecrm-0800">.</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15019r19"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">VERBOSE_LEVEL</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15020r20"></a></span><span 
+ id="x1-15070r70"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">/</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15021r21"></a></span><span 
-class="ecrm-0800">&amp;</span><span 
-class="ecrm-0800">NEWRUN_PARAMETERS</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15022r22"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">X0</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">500000.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15023r23"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">Y0</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">4176000.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15024r24"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">COMP_CELLS_X</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">200,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15025r25"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">COMP_CELLS_Y</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">150,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15026r26"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">CELL_SIZE</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">20.0</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15027r27"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">FISCHER_FLAG</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">T</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15028r28"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">RHEOLOGY_FLAG</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">T</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15029r29"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">RELEASED_VOLUME</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">5.0</span><span 
-class="ecrm-0800">D</span><span 
-class="ecrm-0800">+5</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15030r30"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">X_RELEASE</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">500800.0</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15031r31"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">Y_RELEASE</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">4177850.0</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15032r32"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">VELOCITY_MOD_RELEASE</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15033r33"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">VELOCITY_ANG_RELEASE</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15034r34"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">/</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15035r35"></a></span><span 
-class="ecrm-0800">&amp;</span><span 
-class="ecrm-0800">LEFT_BOUNDARY_CONDITIONS</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15036r36"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">HB_BCL</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15037r37"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">HB_BCL</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15038r38"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">U_BCL</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15039r39"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">U_BCL</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15040r40"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">V_BCL</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15041r41"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">V_BCL</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15042r42"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">/</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15043r43"></a></span><span 
-class="ecrm-0800">&amp;</span><span 
-class="ecrm-0800">RIGHT_BOUNDARY_CONDITIONS</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15044r44"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">HB_BCR</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15045r45"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">HB_BCR</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15046r46"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">U_BCR</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15047r47"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">U_BCR</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15048r48"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">V_BCR</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15049r49"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">V_BCR</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15050r50"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">/</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15051r51"></a></span><span 
-class="ecrm-0800">&amp;</span><span 
-class="ecrm-0800">BOTTOM_BOUNDARY_CONDITIONS</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15052r52"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">HB_BCD</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15053r53"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">HB_BCD</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15054r54"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">U_BCD</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15055r55"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">U_BCD</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15056r56"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">V_BCD</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15057r57"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">V_BCD</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15058r58"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">/</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15059r59"></a></span><span 
-class="ecrm-0800">&amp;</span><span 
-class="ecrm-0800">TOP_BOUNDARY_CONDITIONS</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15060r60"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">HB_BCU</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15061r61"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">HB_BCU</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15062r62"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">U_BCU</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15063r63"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">U_BCU</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15064r64"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">V_BCU</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">FLAG</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">1,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15065r65"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">V_BCU</span><span 
-class="ecrm-0800">%</span><span 
-class="ecrm-0800">VALUE</span><span 
-class="ecrm-0800">=</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">0.0000000000000000</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">,</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15066r66"></a></span><span 
-class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">/</span><span 
-class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15067r67"></a></span><span 
+ id="x1-15071r71"></a></span><span 
 class="ecrm-0800">&amp;</span><span 
 class="ecrm-0800">SOURCE_PARAMETERS</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15068r68"></a></span><span 
+ id="x1-15072r72"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">GRAV</span><span 
 class="ecrm-0800">=</span><span 
@@ -2495,7 +2513,7 @@ class="ecrm-0800">&#x00A0;</span><span
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">,</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15069r69"></a></span><span 
+ id="x1-15073r73"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">MU</span><span 
 class="ecrm-0800">=</span><span 
@@ -2507,12 +2525,12 @@ class="ecrm-0800">&#x00A0;</span><span
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">,</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15070r70"></a></span><span 
+ id="x1-15074r74"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">XI</span><span 
 class="ecrm-0800">=</span><span 
 class="ecrm-0800">&#x00A0;</span><span 
-class="ecrm-0800">300.0</span><span 
+class="ecrm-0800">500.0</span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">&#x00A0;</span><span 
@@ -2520,19 +2538,19 @@ class="ecrm-0800">&#x00A0;</span><span
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">,</span><span 
 class="ecrm-0800">&#x00A0;</span><br /><span class="label"><a 
- id="x1-15071r71"></a></span><span 
+ id="x1-15075r75"></a></span><span 
 class="ecrm-0800">&#x00A0;</span><span 
 class="ecrm-0800">/</span>
    
    </div>
-<!--l. 443--><p class="indent" >
+<!--l. 446--><p class="indent" >
                                                                   
 
                                                                   
    <h3 class="likesectionHead"><a 
  id="x1-16000B"></a><span 
 class="ecrm-0900">References</span></h3>
-<!--l. 445--><p class="noindent" >
+<!--l. 448--><p class="noindent" >
     <div class="thebibliography">
     <p class="bibitem" ><span class="biblabel">
   <span 
