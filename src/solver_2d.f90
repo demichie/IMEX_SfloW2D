@@ -98,8 +98,13 @@ MODULE solver_2d
   !> Local Intermediate explicit terms of the Runge-Kutta scheme
   REAL*8, ALLOCATABLE :: expl_terms_j(:,:)
 
+  !> Flag for the normalization of the array q in the implicit solution scheme
   LOGICAL :: normalize_q
+
+  !> Flag for the normalization of the array f in the implicit solution scheme
   LOGICAL :: normalize_f
+
+  !> Flag for the search of optimal step size in the implicit solution scheme
   LOGICAL :: opt_search_NL
 
   REAL*8, ALLOCATABLE :: residual_term(:,:,:)
@@ -153,16 +158,21 @@ CONTAINS
     ALLOCATE( omega_tilde(n_RK) )
     ALLOCATE( omega(n_RK) )
 
+
+    ! Allocate the logical arrays defining the implicit parts of the system
     ALLOCATE( mask22(n_eqns,n_eqns) )
     ALLOCATE( mask21(n_eqns,n_eqns) )
     ALLOCATE( mask11(n_eqns,n_eqns) )
     ALLOCATE( mask12(n_eqns,n_eqns) )
 
+    ! Initialize the logical arrays with all false (everythin is implicit)
     mask11(1:n_eqns,1:n_eqns) = .FALSE.
     mask12(1:n_eqns,1:n_eqns) = .FALSE.
     mask22(1:n_eqns,1:n_eqns) = .FALSE.
     mask21(1:n_eqns,1:n_eqns) = .FALSE.
 
+    ! Set to .TRUE. the elements not corresponding to equations and variables to 
+    ! be solved implicitly
     DO i = 1,n_eqns
 
        DO j = 1,n_eqns
@@ -180,10 +190,21 @@ CONTAINS
 
     END DO
 
+    ! Initialize the coefficients for the IMEX Runge-Kutta scheme
+    ! Please note that with respect to the schemes described in Pareschi & Russo 
+    ! (2000) we do not have the coefficient vectors c_tilde and c, because the 
+    ! explicit and implicit terms do not depend explicitly on time.
 
+    ! Explicit part coefficients (a_tilde_ij=0 for j>=i)
     a_tilde_ij = 0.D0
-    a_dirk_ij = 0.D0
+
+    ! Weight coefficients of the explicit part in the final assemblage
     omega_tilde = 0.D0
+
+    ! Implicit part coefficients (a_dirk_ij=0 for j>i)
+    a_dirk_ij = 0.D0
+
+    ! Weight coefficients of the explicit part in the final assemblage
     omega = 0.D0
 
     gamma = 1.D0 - 1.D0 / SQRT(2.D0)
@@ -212,6 +233,9 @@ CONTAINS
 
     ELSEIF ( n_RK .EQ. 3 ) THEN
 
+       ! Tableau for the IMEX-SSP(3,3,2) Stiffly Accurate Scheme
+       ! from Pareschi & Russo (2005), Table IV
+
        a_tilde_ij(2,1) = 0.5D0
        a_tilde_ij(3,1) = 0.5D0
        a_tilde_ij(3,2) = 0.5D0
@@ -232,7 +256,7 @@ CONTAINS
 
     ELSEIF ( n_RK .EQ. 4 ) THEN
 
-       ! LRR(3,2,2)
+       ! LRR(3,2,2) from Table 3 in Pareschi & Russo (2000)
 
        a_tilde_ij(2,1) = 0.5D0
        a_tilde_ij(3,1) = 1.D0 / 3.D0
@@ -503,6 +527,7 @@ CONTAINS
 
     REAL*8 :: h_new
 
+    ! Initialization of the solution guess
     q0( 1:n_vars , 1:comp_cells_x , 1:comp_cells_y ) =                          &
          q( 1:n_vars , 1:comp_cells_x , 1:comp_cells_y )
 
@@ -525,6 +550,7 @@ CONTAINS
        a_tilde = 0.d0
        a_dirk = 0.d0
 
+       ! in the first step of the RK scheme all the coefficients remain to 0
        a_tilde(1:i_RK-1) = a_tilde_ij(i_RK,1:i_RK-1)
        a_dirk(1:i_RK-1) = a_dirk_ij(i_RK,1:i_RK-1)
 
@@ -567,6 +593,7 @@ CONTAINS
 
              IF ( a_diag .NE. 0.D0 ) THEN
 
+                ! solve the implicit system
                 CALL solve_rk_step( B_cent(j,k) , B_prime_x(j,k) ,              &
                      B_prime_y(j,k), grav_surf(3,j,k) , curv_x(j,k) ,           &
                      curv_y(j,k) , q_guess , q0(1:n_vars,j,k ) , a_tilde ,      &
