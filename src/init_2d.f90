@@ -1,9 +1,9 @@
-!*********************************************************************
+!********************************************************************************
 !> \brief Initial solution
 !
 !> This module contains the variables and the subroutine for the
 !> initialization of the solution for a Riemann problem.
-!*********************************************************************
+!********************************************************************************
 
 MODULE init_2d
 
@@ -31,14 +31,14 @@ MODULE init_2d
 CONTAINS
 
 
-  !*********************************************************************
+  !******************************************************************************
   !> \brief Riemann problem initialization
   !
   !> This subroutine initialize the solution for a Riemann problem. The 
   !> values for the left and right states and the interface location 
   !> are read from the input file.\
   !> \date 26/08/2011
-  !*********************************************************************
+  !******************************************************************************
 
   SUBROUTINE riemann_problem
 
@@ -139,13 +139,13 @@ CONTAINS
 
   END SUBROUTINE riemann_problem
 
-  !*********************************************************************
+  !******************************************************************************
   !> \brief Problem initialization
   !
   !> This subroutine initialize the solution for a a generic problem. The 
   !> values are read from thickness and velocity functions
   !> \date OCTOBER 2016
-  !*********************************************************************
+  !******************************************************************************
 
   SUBROUTINE initial_conditions
 
