@@ -12,6 +12,8 @@
 
 6) change the name of the input file to IMEX_SfloW2D.inp
 
+7) Add transport equation for temperature with a flag to solver for it
+
 
 
 
