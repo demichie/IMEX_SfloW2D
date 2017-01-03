@@ -26,7 +26,8 @@ This will create the executable and copy it in the bin folder. You can test the 
 ### Documentation
 
 A wiki page describing the model is available at:
-https://github.com/demichie/IMEX_SfloW2D/wiki
+
+[https://github.com/demichie/IMEX_SfloW2D/wiki](https://github.com/demichie/IMEX_SfloW2D/wiki) 
 
 Doxygen generated documentation of the code can be found at:
 http://demichie.github.io/IMEX_SfloW2D/html/
