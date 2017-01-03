@@ -107,6 +107,7 @@ MODULE solver_2d
   !> Flag for the search of optimal step size in the implicit solution scheme
   LOGICAL :: opt_search_NL
 
+  !> Sum of all the terms of the equations except the transient term
   REAL*8, ALLOCATABLE :: residual_term(:,:,:)
 
 
@@ -1041,8 +1042,9 @@ CONTAINS
   !
   !> This subroutine search for the lenght of the descent step in order to have
   !> a decrease in the nonlinear function.
-  !> \param[in]     Bj             topography at the cell center
-  !> \param[in]     Bprimej        topography slope at the cell center
+  !> \param[in]     Bj               topography at the cell center
+  !> \param[in]     Bprimej_x        topography x-slope at the cell center
+  !> \param[in]     Bprimej_y        topography y-slope at the cell center
   !> \param[in]     qj_rel_NR_old  
   !> \param[in]     qj_org
   !> \param[in]     qj_old
@@ -1336,12 +1338,16 @@ CONTAINS
   !> This subroutine evaluate the jacobian of the non-linear system
   !> with respect to the conservative variables.
   !
-  !> \param[in]    Bj          topography at the cell center
-  !> \param[in]    Bprimej     topography slope at the cell center
-  !> \param[in]    qj_rel      relative variation (qj=qj_rel*qj_org)
-  !> \param[in]    qj_org      conservative variables at the old time step
-  !> \param[in]    coeff_f     coefficient to rescale the nonlinear functions
-  !> \param[out]   left_matrix matrix from the linearization of the system
+  !> \param[in]    Bj            topography at the cell center
+  !> \param[in]    Bprimej_x     topography x-slope at the cell center
+  !> \param[in]    Bprimej_y     topography y-slope at the cell center
+  !> \param[in]    grav3_surf
+  !> \param[in]    curvj_x
+  !> \param[in]    curvj_y
+  !> \param[in]    qj_rel        relative variation (qj=qj_rel*qj_org)
+  !> \param[in]    qj_org        conservative variables at the old time step
+  !> \param[in]    coeff_f       coefficient to rescale the nonlinear functions
+  !> \param[out]   left_matrix   matrix from the linearization of the system
   !
   !> \date 07/10/2016
   !> @author 
@@ -1415,8 +1421,10 @@ CONTAINS
   !
   !> This subroutine evaluate the explicit terms (non-fluxes) of the non-linear 
   !> system with respect to the conservative variables.
+  !
   !> \param[in]    q_expl          conservative variables 
   !> \param[out]   expl_terms      explicit terms
+  !
   !> \date 07/10/2016
   !> @author 
   !> Mattia de' Michieli Vitturi
@@ -1457,10 +1465,14 @@ CONTAINS
   !******************************************************************************
   !> \brief Semidiscrete finite volume central scheme
   !
-  !> This subroutine solve the hyperbolic part of the system of the eqns,
-  !> with a modified finite volume scheme from Kurganov et al. 2001, 
-  !> coupled with a MUSCL-Hancock scheme (Van Leer, 1984) applied to a
+  !> This subroutine compute the divergence part of the system of the eqns,
+  !> with a modified version of the finite volume scheme from Kurganov et al.  
+  !> 2001, where the reconstruction at the cells interfaces is applied to a
   !> set of physical variables derived from the conservative vriables.
+  !
+  !> \param[in]     q_expl        conservative variables
+  !> \param[out]    F_x           divergence term
+  !
   !> \date 07/10/2016
   !> @author 
   !> Mattia de' Michieli Vitturi
@@ -1680,6 +1692,21 @@ CONTAINS
 
   END SUBROUTINE eval_flux_KT
 
+  !******************************************************************************
+  !> \brief averaged KT flux
+  !
+  !> This subroutine compute n averaged flux from the fluxes at the two sides of
+  !> a cell interface and the max an min speed at the two sides.
+  !> \param[in]     aL            speed at one side of the interface
+  !> \param[in]     aR            speed at the other side of the interface
+  !> \param[in]     wL            fluxes at one side of the interface
+  !> \param[in]     wR            fluxes at the other side of the interface
+  !> \param[out]    w_avg         array of averaged fluxes
+  !> \date 07/10/2016
+  !> @author 
+  !> Mattia de' Michieli Vitturi
+  !******************************************************************************
+
 
   SUBROUTINE average_KT( aL , aR , wL , wR , w_avg )
 
@@ -1696,7 +1723,6 @@ CONTAINS
 
     DO i=1,n
 
-       !IF ( ABS(aL(i) - aR(i)).LT.1.d-6 ) THEN
        IF ( aL(i) .EQ. aR(i) ) THEN
 
           w_avg(i) = 0.5D0 * ( wL(i) + wR(i) )
@@ -2202,7 +2228,6 @@ CONTAINS
   END SUBROUTINE eval_speeds
 
 
-
   !******************************************************************************
   !> \brief Slope limiter
   !
@@ -2215,6 +2240,7 @@ CONTAINS
   !> .
   !> \param[in]     v             3-point stencil value array 
   !> \param[in]     z             3-point stencil location array 
+  !> \param[in]     limiter       integer defining the limiter choice
   !> \param[out]    slope_lim     limited slope         
   !> \date 07/10/2016
   !> @author 
