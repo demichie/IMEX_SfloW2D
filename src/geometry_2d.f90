@@ -492,8 +492,7 @@ CONTAINS
     n1x = SIZE(x1,1)
     n2x = SIZE(x1,2)
 
-    n=1
-
+    n=2
 
     DO WHILE (x2.GT.x1(n,1))
 
@@ -501,7 +500,7 @@ CONTAINS
 
     ENDDO
 
-    m=1
+    m=2
 
     DO WHILE (y2.GT.y1(1,m))
 

@@ -820,6 +820,24 @@ CONTAINS
 
        output_idx = 0
 
+       IF ( verbose_level .GE. 1 ) THEN
+
+          WRITE(*,*) 'Min q(1,:,:)=',MINVAL(q(1,:,:))
+          WRITE(*,*) 'Max q(1,:,:)=',MAXVAL(q(1,:,:))
+          WRITE(*,*) 'SUM(q(1,:,:)=',SUM(q(1,:,:))
+
+          DO k=1,nrows
+
+             WRITE(*,*) k,B_cent(:,k)
+             READ(*,*)
+
+          END DO
+
+          WRITE(*,*) 'SUM(B_cent(:,:)=',SUM(B_cent(:,:))
+          READ(*,*)
+
+       END IF
+
     ELSEIF ( check_file .EQ. 'q_2' ) THEN
     
        DO k=1,comp_cells_y

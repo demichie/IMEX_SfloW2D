@@ -57,6 +57,7 @@ PROGRAM IMEX_SfloW_2d
   USE parameters_2d, ONLY : t_end
   USE parameters_2d, ONLY : t_output
   USE parameters_2d, ONLY : riemann_flag
+  USE parameters_2d, ONLY : verbose_level
 
   USE solver_2d, ONLY : q , dt
 
@@ -102,7 +103,23 @@ PROGRAM IMEX_SfloW_2d
   WRITE(*,*) 
   WRITE(*,*) '******** START COMPUTATION *********'
   WRITE(*,*)
- 
+
+  IF ( verbose_level .GE. 1 ) THEN
+     
+     WRITE(*,*) 'Min q(1,:,:)=',MINVAL(q(1,:,:))
+     WRITE(*,*) 'Max q(1,:,:)=',MAXVAL(q(1,:,:))
+
+     WRITE(*,*) 'Min B(:,:)=',MINVAL(B_cent(:,:))
+     WRITE(*,*) 'Max B(:,:)=',MAXVAL(B_cent(:,:))
+
+     WRITE(*,*) 'size B_cent',size(B_cent,1),size(B_cent,2)
+
+     WRITE(*,*) 'SUM(q(1,:,:)=',SUM(q(1,:,:))
+     WRITE(*,*) 'SUM(B_cent(:,:)=',SUM(B_cent(:,:))
+     
+  END IF
+  
+
   WRITE(*,*) 't =',t,' dt =',dt, ' h_tot =',dx*dy*(SUM(q(1,:,:)-B_cent(:,:)))
 
   CALL output_solution(t)
