@@ -25,7 +25,9 @@ This will create the executable in the bin folder. You can test the executable c
 
 ### Documentation
 
-Doxygen generated documentation can be found at http://demichie.github.io/IMEX_SfloW2D/html/
+A wiki page describing the model is available at https://github.com/demichie/IMEX_SfloW2D/wiki
+
+Doxygen generated documentation of the code can be found at http://demichie.github.io/IMEX_SfloW2D/html/
 
 ### References
 
