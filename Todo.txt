@@ -1,3 +1,23 @@
+2017/01/03
+
+1) Complete the Doxygen documentation
+
+2) Add tutorials in the examples folder for the examples from K&P. Each tutorial should have a separate folder with: readme.txt, topography file as a .asc, initial condition as a .asc, shallow_water.inp file
+
+3) Add multiple folders for the same example with different number of cells
+
+4) Add scripts to create DEMs and initial conditions for tutorials
+
+5) Work on the wiki
+
+6) change the name of the input file to IMEX_SfloW2D.inp
+
+
+
+
+
+2016/12/23
+
 1) Split the namelist newrun parameters in two namelist: newrun and initial_condition. DONE (2016/12/23)
 
 2) the initial_condition should be read only when a flag is set to true in the input file, 
