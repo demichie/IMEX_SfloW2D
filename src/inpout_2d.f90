@@ -117,7 +117,7 @@ MODULE inpout_2d
        t_start , t_end , dt_output , output_cons_flag , output_esri_flag ,      &
        output_phys_flag , verbose_level
 
-  NAMELIST / restart_parameters / restart_file
+  NAMELIST / restart_parameters / restart_file , T_init , T_ambient
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
        cell_size , temperature_flag , fischer_flag , rheology_flag , riemann_flag
@@ -183,6 +183,8 @@ CONTAINS
 
     !-- Inizialization of the Variables for the namelist restart parameters
     restart_file = ''
+    T_init = 0.D0
+    T_ambient = 0.D0
 
     !-- Inizialization of the Variables for the namelist newrun_parameters
     x0 = 0.D0
@@ -266,7 +268,6 @@ CONTAINS
        OPEN(input_unit,FILE=input_file,STATUS='NEW')
 
        WRITE(input_unit, run_parameters )
-       WRITE(input_unit, restart_parameters )
        WRITE(input_unit, newrun_parameters )
        WRITE(input_unit, left_state )
        WRITE(input_unit, right_state )
@@ -370,10 +371,11 @@ CONTAINS
 
     ! ------- READ run_parameters NAMELIST -----------------------------------
     READ(input_unit, run_parameters )
-
+    REWIND(input_unit)
 
     ! ------- READ newrun_parameters NAMELIST --------------------------------
     READ(input_unit,newrun_parameters)
+    REWIND(input_unit)
 
     IF ( temperature_flag ) THEN
 
@@ -393,18 +395,41 @@ CONTAINS
     IF ( restart ) THEN
 
        READ(input_unit,restart_parameters)
+       REWIND(input_unit)
+
+       IF ( T_init*T_ambient .EQ. 0.D0 ) THEN
+
+          WRITE(*,*) 'T_init=',T_init
+          WRITE(*,*) 'T_ambient=',T_ambient
+          WRITE(*,*) 'Please add the two variables to the namelist REASERT_PARAMETERS'
+          STOP
+
+       END IF
 
     ELSE
 
        IF ( riemann_flag ) THEN
 
           READ(input_unit,left_state)
+          REWIND(input_unit)
           READ(input_unit,right_state)
+          REWIND(input_unit)
 
        ELSE
 
           READ(input_unit,initial_conditions)
-          
+          REWIND(input_unit)
+     
+       IF ( T_init*T_ambient .EQ. 0.D0 ) THEN
+
+          WRITE(*,*) 'T_init=',T_init
+          WRITE(*,*) 'T_ambient=',T_ambient
+          WRITE(*,*) 'Please add the two variables to the namelist INITIAL_CONDITIONS'
+          STOP
+
+       END IF
+
+     
        END IF
 
     END IF
@@ -413,23 +438,27 @@ CONTAINS
     ! ------- READ boundary_conditions NAMELISTS --------------------------------
 
     READ(input_unit,west_boundary_conditions)
+    REWIND(input_unit)
 
     bcW(1) = hB_bcW 
     bcW(2) = u_bcW 
     bcW(3) = v_bcW 
 
     READ(input_unit,east_boundary_conditions)
+    REWIND(input_unit)
 
     bcE(1) = hB_bcE 
     bcE(2) = u_bcE 
     bcE(3) = v_bcE 
 
     READ(input_unit,south_boundary_conditions)
+    REWIND(input_unit)
 
     bcS(1) = hB_bcS 
     bcS(2) = u_bcS 
     bcS(3) = v_bcS 
 
+    REWIND(input_unit)
     READ(input_unit,north_boundary_conditions)
 
     bcN(1) = hB_bcN 
@@ -448,6 +477,7 @@ CONTAINS
     ! ------- READ numeric_parameters NAMELIST ---------------------------------
 
     READ(input_unit,numeric_parameters)
+    REWIND(input_unit)
 
     IF ( ( solver_scheme .NE. 'LxF' ) .AND. ( solver_scheme .NE. 'KT' ) .AND. &
          ( solver_scheme .NE. 'GFORCE' ) ) THEN
@@ -499,6 +529,7 @@ CONTAINS
     ! ------- READ source_parameters NAMELIST -----------------------------------
 
     READ(input_unit, source_parameters )
+    REWIND(input_unit)
 
     ! read topography from .inp (recommended for simple batimetries) 
     IF ( .NOT.topography_demfile ) THEN
@@ -852,6 +883,18 @@ CONTAINS
        q(2,:,:) = 0.D0
        q(3,:,:) = 0.D0
 
+       IF ( temperature_flag ) THEN
+
+          q(4,:,:) = thickness_init(:,:) * T_init
+
+          WHERE ( thickness_init .GT. 0.D0 )
+          
+             q(4,:,:) = thickness_init(:,:) * T_ambient
+          
+          END WHERE
+    
+       END IF
+
        output_idx = 0
 
        IF ( verbose_level .GE. 1 ) THEN
@@ -1065,7 +1108,7 @@ CONTAINS
 1007 FORMAT(6e20.12)
 1008 FORMAT(5e20.12)
 1009 FORMAT(7e20.12)
-1010 FORMAT(7e20.12)
+1010 FORMAT(8e20.12)
 
     t_output = time + dt_output
 

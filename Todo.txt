@@ -14,7 +14,7 @@
 
 7) Add transport equation for temperature with a flag to solver for it. DONE (2017/01/04)
 
-8) Change the notation for the boundaries. It would be better to have W,E,N,S.
+8) Change the notation for the boundaries. It would be better to have W,E,N,S. DONE (2017/01/04)
 
 
 
