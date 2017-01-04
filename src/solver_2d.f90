@@ -25,7 +25,7 @@ MODULE solver_2d
   USE parameters_2d, ONLY : n_RK
   USE parameters_2d, ONLY : verbose_level
 
-  USE parameters_2d, ONLY : bcL , bcR , bcD , bcU
+  USE parameters_2d, ONLY : bcW , bcE , bcS , bcN
 
   IMPLICIT none
 
@@ -1792,10 +1792,10 @@ CONTAINS
     IMPLICIT NONE
 
     REAL*8 :: qc(n_vars)      !< conservative variables
-    REAL*8 :: qpL(n_vars)     !< physical variables at the left edge of the cells
-    REAL*8 :: qpR(n_vars)     !< physical variables at the rightedge of the cells
-    REAL*8 :: qpD(n_vars)     !< physical variables at the left edge of the cells
-    REAL*8 :: qpU(n_vars)     !< physical variables at the rightedge of the cells
+    REAL*8 :: qpW(n_vars)     !< physical variables at the west edge of the cells
+    REAL*8 :: qpE(n_vars)     !< physical variables at the east edge of the cells
+    REAL*8 :: qpS(n_vars)     !< physical variables at the south edge of the cells
+    REAL*8 :: qpN(n_vars)     !< physical variables at the north edge of the cells
     REAL*8 :: qp_bdry(n_vars) !< physical variables outside the domain
 
     REAL*8 :: qp_stencil(3)   !< physical variables stencil for the limiter
@@ -1831,35 +1831,35 @@ CONTAINS
 
              ! x direction
 
-             ! left column
+             ! west boundary
              IF (j.EQ.1) THEN
 
-                IF ( bcL(i)%flag .EQ. 0 ) THEN
+                IF ( bcW(i)%flag .EQ. 0 ) THEN
 
                    x_stencil(1) = x_stag(1)
                    x_stencil(2:3) = x_comp(1:2)
 
-                   qp_stencil(1) = bcL(i)%value
+                   qp_stencil(1) = bcW(i)%value
                    qp_stencil(2:3) = qp(i,1:2,k)
 
                    CALL limit( qp_stencil , x_stencil , limiter(i) , qp_prime_x ) 
 
-                ELSEIF ( bcL(i)%flag .EQ. 1 ) THEN
+                ELSEIF ( bcW(i)%flag .EQ. 1 ) THEN
 
-                   qp_prime_x = bcL(i)%value
+                   qp_prime_x = bcW(i)%value
 
-                ELSEIF ( bcL(i)%flag .EQ. 2 ) THEN
+                ELSEIF ( bcW(i)%flag .EQ. 2 ) THEN
 
                    qp_prime_x = ( qp(i,2,k) - qp(i,1,k) ) / dx
 
                 END IF
 
-                !right column
+                !east boundary
              ELSEIF (j.EQ.comp_cells_x) THEN
 
-                IF ( bcR(i)%flag .EQ. 0 ) THEN
+                IF ( bcE(i)%flag .EQ. 0 ) THEN
 
-                   qp_stencil(3) = bcR(i)%value
+                   qp_stencil(3) = bcE(i)%value
                    qp_stencil(1:2) = qp(i,comp_cells_x-1:comp_cells_x,k)
 
                    x_stencil(3) = x_stag(comp_interfaces_x)
@@ -1867,11 +1867,11 @@ CONTAINS
 
                    CALL limit( qp_stencil , x_stencil , limiter(i) , qp_prime_x ) 
 
-                ELSEIF ( bcR(i)%flag .EQ. 1 ) THEN
+                ELSEIF ( bcE(i)%flag .EQ. 1 ) THEN
 
-                   qp_prime_x = bcR(i)%value
+                   qp_prime_x = bcE(i)%value
 
-                ELSEIF ( bcR(i)%flag .EQ. 2 ) THEN
+                ELSEIF ( bcE(i)%flag .EQ. 2 ) THEN
 
                    qp_prime_x = ( qp(i,comp_cells_x,k) - qp(i,comp_cells_x-1,k) ) &
                         / dx
@@ -1890,12 +1890,12 @@ CONTAINS
 
              ! y direction
 
-             ! bottom row
+             ! south boundary
              IF (k.EQ.1) THEN
 
-                IF ( bcD(i)%flag .EQ. 0 ) THEN
+                IF ( bcS(i)%flag .EQ. 0 ) THEN
 
-                   qp_stencil(1) = bcD(i)%value
+                   qp_stencil(1) = bcS(i)%value
                    qp_stencil(2:3) = qp(i,j,1:2)
 
                    y_stencil(1) = y_stag(1)
@@ -1903,22 +1903,22 @@ CONTAINS
 
                    CALL limit( qp_stencil , y_stencil , limiter(i) , qp_prime_y ) 
 
-                ELSEIF ( bcD(i)%flag .EQ. 1 ) THEN
+                ELSEIF ( bcS(i)%flag .EQ. 1 ) THEN
 
-                   qp_prime_y = bcD(i)%value
+                   qp_prime_y = bcS(i)%value
 
-                ELSEIF ( bcD(i)%flag .EQ. 2 ) THEN
+                ELSEIF ( bcS(i)%flag .EQ. 2 ) THEN
 
                    qp_prime_y = ( qp(i,j,2) - qp(i,j,1) ) / dy 
 
                 END IF
 
-                ! top row
+                ! north boundary
              ELSEIF (k.EQ.comp_cells_y) THEN
 
-                IF ( bcU(i)%flag .EQ. 0 ) THEN
+                IF ( bcN(i)%flag .EQ. 0 ) THEN
 
-                   qp_stencil(3) = bcU(i)%value
+                   qp_stencil(3) = bcN(i)%value
                    qp_stencil(1:2) = qp(i,j,comp_cells_y-1:comp_cells_y)
 
                    y_stencil(3) = y_stag(comp_interfaces_y)
@@ -1926,11 +1926,11 @@ CONTAINS
 
                    CALL limit( qp_stencil , y_stencil , limiter(i) , qp_prime_y ) 
 
-                ELSEIF ( bcU(i)%flag .EQ. 1 ) THEN
+                ELSEIF ( bcN(i)%flag .EQ. 1 ) THEN
 
-                   qp_prime_y = bcU(i)%value
+                   qp_prime_y = bcN(i)%value
 
-                ELSEIF ( bcU(i)%flag .EQ. 2 ) THEN
+                ELSEIF ( bcN(i)%flag .EQ. 2 ) THEN
 
                    qp_prime_y = ( qp(i,j,comp_cells_y)-qp(i,j,comp_cells_y-1) ) &
                         / dy 
@@ -1947,61 +1947,61 @@ CONTAINS
 
              ENDIF
 
-             qpL(i) = qp(i,j,k) - reconstr_coeff * dx2 * qp_prime_x
-             qpR(i) = qp(i,j,k) + reconstr_coeff * dx2 * qp_prime_x
-             qpD(i) = qp(i,j,k) - reconstr_coeff * dy2 * qp_prime_y
-             qpU(i) = qp(i,j,k) + reconstr_coeff * dy2 * qp_prime_y
+             qpW(i) = qp(i,j,k) - reconstr_coeff * dx2 * qp_prime_x
+             qpE(i) = qp(i,j,k) + reconstr_coeff * dx2 * qp_prime_x
+             qpS(i) = qp(i,j,k) - reconstr_coeff * dy2 * qp_prime_y
+             qpN(i) = qp(i,j,k) + reconstr_coeff * dy2 * qp_prime_y
 
              ! positivity preserving reconstruction for h
-             IF(i.eq.1)THEN
+             IF ( i .EQ. 1 ) THEN
 
-                IF(qpR(i).LT.B_stag_x(j+1,k))THEN
+                IF ( qpE(i) .LT. B_stag_x(j+1,k) ) THEN
 
                    qp_prime_x=(B_stag_x(j+1,k)-qp(i,j,k))/dx2
 
-                   qpL(i) = qp(i,j,k) - reconstr_coeff * dx2 * qp_prime_x
+                   qpW(i) = qp(i,j,k) - reconstr_coeff * dx2 * qp_prime_x
 
-                   qpR(i) = qp(i,j,k) + reconstr_coeff * dx2 * qp_prime_x
+                   qpE(i) = qp(i,j,k) + reconstr_coeff * dx2 * qp_prime_x
 
                 ENDIF
 
-                IF(qpL(i).LT.B_stag_x(j,k))THEN
+                IF(qpW(i).LT.B_stag_x(j,k))THEN
 
                    qp_prime_x=(qp(i,j,k)-B_stag_x(j,k))/dx2
 
-                   qpL(i) = qp(i,j,k) - reconstr_coeff * dx2 * qp_prime_x
+                   qpW(i) = qp(i,j,k) - reconstr_coeff * dx2 * qp_prime_x
 
-                   qpR(i) = qp(i,j,k) + reconstr_coeff * dx2 * qp_prime_x
+                   qpE(i) = qp(i,j,k) + reconstr_coeff * dx2 * qp_prime_x
 
                 ENDIF
 
-                IF(qpU(i).LT.B_stag_y(j,k+1))THEN
+                IF(qpN(i).LT.B_stag_y(j,k+1))THEN
 
                    qp_prime_y=(B_stag_y(j,k+1)-qp(i,j,k))/dy2
 
-                   qpD(i) = qp(i,j,k) - reconstr_coeff * dy2 * qp_prime_y
+                   qpS(i) = qp(i,j,k) - reconstr_coeff * dy2 * qp_prime_y
 
-                   qpU(i) = qp(i,j,k) + reconstr_coeff * dy2 * qp_prime_y
+                   qpN(i) = qp(i,j,k) + reconstr_coeff * dy2 * qp_prime_y
 
                 ENDIF
 
-                IF(qpD(i).LT.B_stag_y(j,k))THEN
+                IF(qpS(i).LT.B_stag_y(j,k))THEN
 
                    qp_prime_y=(qp(i,j,k)-B_stag_y(j,k))/dy2
 
-                   qpD(i) = qp(i,j,k) - reconstr_coeff * dy2 * qp_prime_y
+                   qpS(i) = qp(i,j,k) - reconstr_coeff * dy2 * qp_prime_y
 
-                   qpU(i) = qp(i,j,k) + reconstr_coeff * dy2 * qp_prime_y
+                   qpN(i) = qp(i,j,k) + reconstr_coeff * dy2 * qp_prime_y
 
                 ENDIF
 
              ENDIF
 
              ! Convert back from physical to conservative variables
-             CALL qp_to_qc( qpL , B_stag_x(j,k) , q_interfaceW(:,j,k) )
-             CALL qp_to_qc( qpR , B_stag_x(j+1,k) , q_interfaceE(:,j,k) )
-             CALL qp_to_qc( qpD , B_stag_y(j,k) , q_interfaceS(:,j,k) )
-             CALL qp_to_qc( qpU , B_stag_y(j,k+1) , q_interfaceN(:,j,k) )
+             CALL qp_to_qc( qpW , B_stag_x(j,k) , q_interfaceW(:,j,k) )
+             CALL qp_to_qc( qpE , B_stag_x(j+1,k) , q_interfaceE(:,j,k) )
+             CALL qp_to_qc( qpS , B_stag_y(j,k) , q_interfaceS(:,j,k) )
+             CALL qp_to_qc( qpN , B_stag_y(j,k+1) , q_interfaceN(:,j,k) )
 
           ENDDO
 
@@ -2012,19 +2012,19 @@ CONTAINS
 
              DO i=1,n_vars
 
-                IF ( bcD(i)%flag .EQ. 0 ) THEN
+                IF ( bcS(i)%flag .EQ. 0 ) THEN
 
-                   qp_bdry(i) = bcD(i)%value 
+                   qp_bdry(i) = bcS(i)%value 
 
                 ELSE
 
-                   qp_bdry(i) = qpD(i)
+                   qp_bdry(i) = qpS(i)
 
                    ! fixed wall
                    !IF(i.eq.3)THEN
-                   !   qp_bdry(i) = -qpD(i)
+                   !   qp_bdry(i) = -qpS(i)
                    !ELSE
-                   !   qp_bdry(i) = qpD(i)
+                   !   qp_bdry(i) = qpS(i)
                    !ENDIF
 
                 END IF
@@ -2040,19 +2040,19 @@ CONTAINS
 
              DO i=1,n_vars
 
-                IF ( bcU(i)%flag .EQ. 0 ) THEN
+                IF ( bcN(i)%flag .EQ. 0 ) THEN
 
-                   qp_bdry(i) = bcU(i)%value 
+                   qp_bdry(i) = bcN(i)%value 
 
                 ELSE
 
-                   qp_bdry(i) = qpU(i)
+                   qp_bdry(i) = qpN(i)
 
                    ! fixed wall
                    !IF(i.eq.3)THEN
-                   !   qp_bdry(i) = -qpU(i)
+                   !   qp_bdry(i) = -qpN(i)
                    !ELSE
-                   !   qp_bdry(i) = qpU(i)
+                   !   qp_bdry(i) = qpN(i)
                    !ENDIF
 
                 END IF
@@ -2069,19 +2069,19 @@ CONTAINS
 
              DO i=1,n_vars
 
-                IF ( bcL(i)%flag .EQ. 0 ) THEN
+                IF ( bcW(i)%flag .EQ. 0 ) THEN
 
-                   qp_bdry(i) = bcL(i)%value 
+                   qp_bdry(i) = bcW(i)%value 
 
                 ELSE
 
-                   qp_bdry(i) = qpL(i)
+                   qp_bdry(i) = qpW(i)
 
                    ! fixed wall
                    !IF(i.eq.2)THEN
-                   !   qp_bdry(i) = -qpL(i)
+                   !   qp_bdry(i) = -qpW(i)
                    !ELSE
-                   !   qp_bdry(i) = qpL(i)
+                   !   qp_bdry(i) = qpW(i)
                    !ENDIF
 
                 END IF
@@ -2097,19 +2097,19 @@ CONTAINS
 
              DO i=1,n_vars
 
-                IF ( bcR(i)%flag .EQ. 0 ) THEN
+                IF ( bcE(i)%flag .EQ. 0 ) THEN
 
-                   qp_bdry(i) = bcR(i)%value 
+                   qp_bdry(i) = bcE(i)%value 
 
                 ELSE
 
-                   qp_bdry(i) = qpR(i)
+                   qp_bdry(i) = qpE(i)
 
                    ! fixed wall
                    !IF(i.eq.2)THEN
-                   !   qp_bdry(i) = -qpR(i)
+                   !   qp_bdry(i) = -qpE(i)
                    !ELSE
-                   !   qp_bdry(i) = qpR(i)
+                   !   qp_bdry(i) = qpE(i)
                    !ENDIF
 
                 END IF

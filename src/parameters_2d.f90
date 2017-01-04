@@ -74,6 +74,12 @@ MODULE parameters_2d
   !> Initial velocity direction (angle in degree, departing from positive x-axis)
   REAL*8 :: velocity_ang_release
 
+  !> Initial temperature of the pile of material
+  REAL*8 :: T_init
+
+  !> Ambient temperature
+  REAL*8 :: T_ambient
+
   INTEGER :: n_vars        !< Number of conservative variables
   INTEGER :: n_eqns   !< Number of equations
 
@@ -116,44 +122,44 @@ MODULE parameters_2d
 
   ! -------boundary conditions variables
 
-  !> blL&flag defines the left boundary condition:\n
-  !> - bcL%flag = 0     => Dirichlet boundary condition;
-  !> - bcL%flag = 1     => Neumann boundary condition.
+  !> bcW&flag defines the west boundary condition:\n
+  !> - bcW%flag = 0     => Dirichlet boundary condition;
+  !> - bcW%flag = 1     => Neumann boundary condition.
   !> .
-  !> bcL%value is the value of the left boundary condition:\n
-  !> - value of the variable for Dirichlet boundary condition (bcL%flag=0);
-  !> - gradient of the variable for Neumann boundary condition (bcL%flag=1).
+  !> bcLWvalue is the value of the left boundary condition:\n
+  !> - value of the variable for Dirichlet boundary condition (bcW%flag=0);
+  !> - gradient of the variable for Neumann boundary condition (bcW%flag=1).
   !> .
-  TYPE(bc), ALLOCATABLE :: bcL(:)
+  TYPE(bc), ALLOCATABLE :: bcW(:)
 
-  !> blR&flag defines the right boundary condition:\n
-  !> - bcR%flag = 0     => Dirichlet boundary condition;
-  !> - bcR%flag = 1     => Neumann boundary condition.
+  !> bcE&flag defines the east boundary condition:\n
+  !> - bcE%flag = 0     => Dirichlet boundary condition;
+  !> - bcE%flag = 1     => Neumann boundary condition.
   !> .
-  !> bcR%value is the value of the right boundary condition:\n
-  !> - value of the variable for Dirichlet boundary condition (bcR%flag=0);
-  !> - gradient of the variable for Neumann boundary condition (bcR%flag=1).
+  !> bcE%value is the value of the right boundary condition:\n
+  !> - value of the variable for Dirichlet boundary condition (bcE%flag=0);
+  !> - gradient of the variable for Neumann boundary condition (bcE%flag=1).
   !> .
-  TYPE(bc), ALLOCATABLE :: bcR(:)
+  TYPE(bc), ALLOCATABLE :: bcE(:)
 
-  !> blD&flag defines the bottom (down) boundary condition:\n
-  !> - bcD%flag = 0     => Dirichlet boundary condition;
-  !> - bcD%flag = 1     => Neumann boundary condition.
+  !> bcS&flag defines the south boundary condition:\n
+  !> - bcS%flag = 0     => Dirichlet boundary condition;
+  !> - bcS%flag = 1     => Neumann boundary condition.
   !> .
-  !> bcD%value is the value of the bottom boundary condition:\n
-  !> - value of the variable for Dirichlet boundary condition (bcD%flag=0);
-  !> - gradient of the variable for Neumann boundary condition (bcD%flag=1).
+  !> bcS%value is the value of the bottom boundary condition:\n
+  !> - value of the variable for Dirichlet boundary condition (bcS%flag=0);
+  !> - gradient of the variable for Neumann boundary condition (bcS%flag=1).
   !> .
-  TYPE(bc), ALLOCATABLE :: bcD(:)
+  TYPE(bc), ALLOCATABLE :: bcS(:)
 
-  !> blU&flag defines the top (up) boundary condition:\n
-  !> - bcU%flag = 0     => Dirichlet boundary condition;
-  !> - bcU%flag = 1     => Neumann boundary condition.
+  !> bcN&flag defines the north boundary condition:\n
+  !> - bcN%flag = 0     => Dirichlet boundary condition;
+  !> - bcN%flag = 1     => Neumann boundary condition.
   !> .
-  !> bcU%value is the value of the top boundary condition:\n
-  !> - value of the variable for Dirichlet boundary condition (bcU%flag=0);
-  !> - gradient of the variable for Neumann boundary condition (bcU%flag=1).
+  !> bcN%value is the value of the top boundary condition:\n
+  !> - value of the variable for Dirichlet boundary condition (bcN%flag=0);
+  !> - gradient of the variable for Neumann boundary condition (bcN%flag=1).
   !> .
-  TYPE(bc), ALLOCATABLE :: bcU(:)
+  TYPE(bc), ALLOCATABLE :: bcN(:)
 
 END MODULE parameters_2d

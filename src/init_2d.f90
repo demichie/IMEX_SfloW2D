@@ -7,6 +7,8 @@
 
 MODULE init_2d
 
+  USE parameters_2d, ONLY : temperature_flag
+
   IMPLICIT none
 
   REAL*8, ALLOCATABLE :: q_init(:,:,:)
@@ -18,14 +20,15 @@ MODULE init_2d
   REAL*8 :: riemann_interface  
 
 
-  REAL*8 :: hB_L         !< Left height
-  REAL*8 :: u_L          !< Left velocity x
-  REAL*8 :: v_L          !< Left velocity y
-  
-  REAL*8 :: hB_R         !< Right height
-  REAL*8 :: u_R          !< Right velocity x
-  REAL*8 :: v_R          !< Right velocity y
+  REAL*8 :: hB_W         !< Left height
+  REAL*8 :: u_W          !< Left velocity x
+  REAL*8 :: v_W          !< Left velocity y
+  REAL*8 :: T_W          !< Left temperature
 
+  REAL*8 :: hB_E         !< Right height
+  REAL*8 :: u_E          !< Right velocity x
+  REAL*8 :: v_E          !< Right velocity y
+  REAL*8 :: T_E          !< Right temperature
 
 
 CONTAINS
@@ -82,15 +85,11 @@ CONTAINS
     eps = 1.D-10
 
     ! Left initial state
-    !qp(1) = hB_L
-    !qp(2) = u_L
-    !qp(3) = v_L
+    qp(1,1:i1,:) = hB_W
+    qp(2,1:i1,:) = u_W
+    qp(3,1:i1,:) = v_W
+    IF ( temperature_flag ) qp(4,1:i1,:) = T_W
 
-    qp(1,1:i1,:) = hB_L
-
-    qp(2,1:i1,:) = u_L
-
-    qp(3,1:i1,:) = v_L
 
     DO j = 1,i1
 
@@ -108,15 +107,10 @@ CONTAINS
     END DO
 
     ! Right initial state
-    !qp(1) = hB_R
-    !qp(2) = u_R
-    !qp(3) = v_R
-
-    qp(1,i1+1:comp_cells_x,:) = hB_R
-
-    qp(2,i1+1:comp_cells_x,:) = u_R
-
-    qp(3,i1+1:comp_cells_x,:) = v_R
+    qp(1,i1+1:comp_cells_x,:) = hB_E
+    qp(2,i1+1:comp_cells_x,:) = u_E
+    qp(3,i1+1:comp_cells_x,:) = v_E
+    IF ( temperature_flag ) qp(4,i1+1:comp_cells_x,:) = T_E
 
     DO j = i1+1,comp_cells_x
 
@@ -175,6 +169,12 @@ CONTAINS
          qp(2,j,k) = velocity_u_function(x_comp(j),y_comp(k),B_cent(j,k))
 
          qp(3,j,k) = velocity_v_function(x_comp(j),y_comp(k),B_cent(j,k))
+
+         IF ( temperature_flag ) THEN
+
+            qp(4,j,k) = temperature_function(x_comp(j),y_comp(k))
+
+         END IF
 
       ENDDO
 
@@ -345,4 +345,39 @@ CONTAINS
   END FUNCTION velocity_v_function
   
 
+!--------------------------------------------------------------------------------
+!> Temperature function
+!
+!> This subroutine defines the temperature in the pile and outside as a function 
+!> of the input (x,y) grid point
+!> \date OCTOBER 2016
+!> \param    x           original grid                (\b input)
+!> \param    y           original grid                (\b input)
+!--------------------------------------------------------------------------------
+  REAL*8 FUNCTION temperature_function(x,y)
+  
+    USE parameters_2d, ONLY : released_volume , x_release , y_release
+    USE parameters_2d, ONLY : T_init , T_ambient
+  
+    IMPLICIT NONE
+    
+    REAL*8, INTENT(IN) :: x,y
+   
+    REAL*8, PARAMETER :: pig = 4.0*ATAN(1.0)
+    REAL*8 :: R
+   
+    R = ( released_volume / pig )**(1.0/3.0)
+    
+    IF ( DSQRT( (x-x_release)**2 + (y-y_release)**2 ) .LE. R ) THEN
+
+       temperature_function = T_init
+
+    ELSE
+
+       temperature_function = T_ambient
+
+    ENDIF
+
+  END FUNCTION temperature_function
+  
 END MODULE init_2d

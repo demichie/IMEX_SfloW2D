@@ -29,12 +29,13 @@ MODULE inpout_2d
   ! -- Variables for the namelist INITIAL_CONDITIONS
   USE parameters_2d, ONLY : released_volume , x_release , y_release
   USE parameters_2d, ONLY : velocity_mod_release , velocity_ang_release
+  USE parameters_2d, ONLY : T_init , T_ambient
 
   ! -- Variables for the namelist LEFT_STATE
-  USE init_2d, ONLY : hB_L , u_L , v_L
+  USE init_2d, ONLY : hB_W , u_W , v_W
 
   ! -- Variables for the namelist RIGHT_STATE
-  USE init_2d, ONLY : hB_R , u_R , v_R
+  USE init_2d, ONLY : hB_E , u_E , v_E
 
   ! -- Variables for the namelists LEFT/RIGHT_BOUNDARY_CONDITIONS
   USE parameters_2d, ONLY : bc
@@ -93,17 +94,17 @@ MODULE inpout_2d
   !> .
   LOGICAL :: output_cons_flag
 
-  ! -- Variables for the namelists LEFT_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcL , u_bcL , v_bcL , T_bcL
+  ! -- Variables for the namelists WEST_BOUNDARY_CONDITIONS
+  TYPE(bc) :: hB_bcW , u_bcW , v_bcW , T_bcW
 
-  ! -- Variables for the namelists RIGHT_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcR , u_bcR , v_bcR , T_bcR
+  ! -- Variables for the namelists EAST_BOUNDARY_CONDITIONS
+  TYPE(bc) :: hB_bcE , u_bcE , v_bcE , T_bcE
 
-  ! -- Variables for the namelists BOTTOM_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcD , u_bcD , v_bcD , T_bcD
+  ! -- Variables for the namelists SOUTH_BOUNDARY_CONDITIONS
+  TYPE(bc) :: hB_bcS , u_bcS , v_bcS , T_bcS
 
-  ! -- Variables for the namelists TOP_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcU , u_bcU , v_bcU , T_bcU
+  ! -- Variables for the namelists NORTH_BOUNDARY_CONDITIONS
+  TYPE(bc) :: hB_bcN , u_bcN , v_bcN , T_bcN
 
 
   ! parameters to read a dem file
@@ -122,19 +123,19 @@ MODULE inpout_2d
        cell_size , temperature_flag , fischer_flag , rheology_flag , riemann_flag
 
   NAMELIST / initial_conditions /  released_volume , x_release , y_release ,    &
-       velocity_mod_release , velocity_ang_release
+       velocity_mod_release , velocity_ang_release , T_init , T_ambient
 
-  NAMELIST / left_state / hB_L , u_L , v_L
+  NAMELIST / left_state / hB_E , u_E , v_E
 
-  NAMELIST / right_state / hB_R , u_R , v_R
+  NAMELIST / right_state / hB_W , u_W , v_W
 
-  NAMELIST / left_boundary_conditions / hB_bcL , u_bcL , v_bcL , T_bcL
+  NAMELIST / west_boundary_conditions / hB_bcW , u_bcW , v_bcW , T_bcW
 
-  NAMELIST / right_boundary_conditions / hB_bcR , u_bcR , v_bcR , T_bcR
+  NAMELIST / east_boundary_conditions / hB_bcE , u_bcE , v_bcE , T_bcE
 
-  NAMELIST / bottom_boundary_conditions / hB_bcD , u_bcD , v_bcD , T_bcD
+  NAMELIST / south_boundary_conditions / hB_bcS , u_bcS , v_bcS , T_bcS
 
-  NAMELIST / top_boundary_conditions / hB_bcU , u_bcU , v_bcU , T_bcU
+  NAMELIST / north_boundary_conditions / hB_bcN , u_bcN , v_bcN , T_bcN
 
   NAMELIST / numeric_parameters / solver_scheme, max_dt , cfl, limiter , theta, &
        reconstr_coeff , interfaces_relaxation , n_RK   
@@ -196,50 +197,50 @@ CONTAINS
     riemann_interface = 0.5D0
 
     !-- Inizialization of the Variables for the namelist left_state
-    hB_L = 1.D0
-    u_L = 0.D0
-    v_L = 0.D0
+    hB_W = 1.D0
+    u_W = 0.D0
+    v_W = 0.D0
 
     !-- Inizialization of the Variables for the namelist right_state
-    hB_R = 0.5D0
-    u_R = 0.D0
-    u_R = 0.D0
+    hB_E = 0.5D0
+    u_E = 0.D0
+    u_E = 0.D0
 
-    !-- Inizialization of the Variables for the namelist left boundary conditions
-    hB_bcL%flag = 1 
-    hB_bcL%value = 0.d0 
+    !-- Inizialization of the Variables for the namelist west boundary conditions
+    hB_bcW%flag = 1 
+    hB_bcW%value = 0.d0 
 
-    u_bcL%flag = 1 
-    u_bcL%value = 0.d0 
-    v_bcL%flag = 1 
-    v_bcL%value = 0.d0 
+    u_bcW%flag = 1 
+    u_bcW%value = 0.d0 
+    v_bcW%flag = 1 
+    v_bcW%value = 0.d0 
 
-    !-- Inizialization of the Variables for the namelist right boundary conditions
-    hB_bcR%flag = 1 
-    hB_bcR%value = 0.d0 
+    !-- Inizialization of the Variables for the namelist east boundary conditions
+    hB_bcE%flag = 1 
+    hB_bcE%value = 0.d0 
 
-    u_bcR%flag = 1 
-    u_bcR%value = 0.d0 
-    v_bcR%flag = 1 
-    v_bcR%value = 0.d0 
+    u_bcE%flag = 1 
+    u_bcE%value = 0.d0 
+    v_bcE%flag = 1 
+    v_bcE%value = 0.d0 
 
-    !-- Inizialization of the Variables for the namelist bottom boundary conditions
-    hB_bcD%flag = 1 
-    hB_bcD%value = 0.d0 
+    !-- Inizialization of the Variables for the namelist south boundary conditions
+    hB_bcS%flag = 1 
+    hB_bcS%value = 0.d0 
 
-    u_bcD%flag = 1 
-    u_bcD%value = 0.d0 
-    v_bcD%flag = 1 
-    v_bcD%value = 0.d0 
+    u_bcS%flag = 1 
+    u_bcS%value = 0.d0 
+    v_bcS%flag = 1 
+    v_bcS%value = 0.d0 
 
-    !-- Inizialization of the Variables for the namelist top boundary conditions
-    hB_bcU%flag = 1 
-    hB_bcU%value = 0.d0 
+    !-- Inizialization of the Variables for the namelist north boundary conditions
+    hB_bcN%flag = 1 
+    hB_bcN%value = 0.d0 
 
-    u_bcU%flag = 1 
-    u_bcU%value = 0.d0 
-    v_bcU%flag = 1 
-    v_bcU%value = 0.d0 
+    u_bcN%flag = 1 
+    u_bcN%value = 0.d0 
+    v_bcN%flag = 1 
+    v_bcN%value = 0.d0 
 
     !-- Inizialization of the Variables for the namelist NUMERIC_PARAMETERS
     max_dt = 1.d-3
@@ -269,8 +270,10 @@ CONTAINS
        WRITE(input_unit, newrun_parameters )
        WRITE(input_unit, left_state )
        WRITE(input_unit, right_state )
-       WRITE(input_unit, left_boundary_conditions )
-       WRITE(input_unit, right_boundary_conditions )
+       WRITE(input_unit, west_boundary_conditions )
+       WRITE(input_unit, east_boundary_conditions )
+       WRITE(input_unit, south_boundary_conditions )
+       WRITE(input_unit, north_boundary_conditions )
        WRITE(input_unit, numeric_parameters )
        WRITE(input_unit, source_parameters )
 
@@ -347,7 +350,7 @@ CONTAINS
 
     USE parameters_2d, ONLY : n_vars , n_eqns
     USE parameters_2d, ONLY : limiter
-    USE parameters_2d, ONLY : bcL , bcR , bcD , bcU
+    USE parameters_2d, ONLY : bcW , bcE , bcS , bcN
 
     IMPLICIT none
 
@@ -385,7 +388,7 @@ CONTAINS
     END IF
    
     ALLOCATE( limiter(n_vars) )
-    ALLOCATE( bcL(n_vars) , bcR(n_vars) , bcD(n_vars) , bcU(n_vars) , )
+    ALLOCATE( bcW(n_vars) , bcE(n_vars) , bcS(n_vars) , bcN(n_vars) , )
 
     IF ( restart ) THEN
 
@@ -409,36 +412,36 @@ CONTAINS
 
     ! ------- READ boundary_conditions NAMELISTS --------------------------------
 
-    READ(input_unit,left_boundary_conditions)
+    READ(input_unit,west_boundary_conditions)
 
-    bcL(1) = hB_bcL 
-    bcL(2) = u_bcL 
-    bcL(3) = v_bcL 
+    bcW(1) = hB_bcW 
+    bcW(2) = u_bcW 
+    bcW(3) = v_bcW 
 
-    READ(input_unit,right_boundary_conditions)
+    READ(input_unit,east_boundary_conditions)
 
-    bcR(1) = hB_bcR 
-    bcR(2) = u_bcR 
-    bcR(3) = v_bcR 
+    bcE(1) = hB_bcE 
+    bcE(2) = u_bcE 
+    bcE(3) = v_bcE 
 
-    READ(input_unit,bottom_boundary_conditions)
+    READ(input_unit,south_boundary_conditions)
 
-    bcD(1) = hB_bcD 
-    bcD(2) = u_bcD 
-    bcD(3) = v_bcD 
+    bcS(1) = hB_bcS 
+    bcS(2) = u_bcS 
+    bcS(3) = v_bcS 
 
-    READ(input_unit,top_boundary_conditions)
+    READ(input_unit,north_boundary_conditions)
 
-    bcU(1) = hB_bcU 
-    bcU(2) = u_bcU 
-    bcU(3) = v_bcU 
+    bcN(1) = hB_bcN 
+    bcN(2) = u_bcN 
+    bcN(3) = v_bcN 
 
     IF ( temperature_flag ) THEN
 
-       bcL(4) = T_bcL
-       bcR(4) = T_bcR
-       bcD(4) = T_bcD
-       bcU(4) = T_bcU
+       bcW(4) = T_bcW
+       bcE(4) = T_bcE
+       bcS(4) = T_bcS
+       bcN(4) = T_bcN
 
     END IF
 
@@ -682,10 +685,10 @@ CONTAINS
 
     END IF
 
-    WRITE(backup_unit,left_boundary_conditions)
-    WRITE(backup_unit,right_boundary_conditions)
-    WRITE(backup_unit,top_boundary_conditions)
-    WRITE(backup_unit,bottom_boundary_conditions)
+    WRITE(backup_unit,west_boundary_conditions)
+    WRITE(backup_unit,east_boundary_conditions)
+    WRITE(backup_unit,north_boundary_conditions)
+    WRITE(backup_unit,south_boundary_conditions)
 
     WRITE(backup_unit, numeric_parameters )
 
