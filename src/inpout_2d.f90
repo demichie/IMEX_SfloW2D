@@ -401,7 +401,7 @@ CONTAINS
 
           WRITE(*,*) 'T_init=',T_init
           WRITE(*,*) 'T_ambient=',T_ambient
-          WRITE(*,*) 'Please add the two variables to the namelist REASERT_PARAMETERS'
+          WRITE(*,*) 'Please add the two variables to the namelist RESTART_PARAMETERS'
           STOP
 
        END IF
