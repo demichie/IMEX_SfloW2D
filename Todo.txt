@@ -12,8 +12,9 @@
 
 6) change the name of the input file to IMEX_SfloW2D.inp
 
-7) Add transport equation for temperature with a flag to solver for it
+7) Add transport equation for temperature with a flag to solver for it. DONE (2017/01/04)
 
+8) Change the notation for the boundaries. It would be better to have W,E,N,S.
 
 
 
