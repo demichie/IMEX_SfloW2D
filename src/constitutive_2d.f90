@@ -5,6 +5,7 @@ MODULE constitutive_2d
 
   USE parameters_2d, ONLY : n_eqns , n_vars
   USE parameters_2d, ONLY : fischer_flag , rheology_flag
+  USE parameters_2d, ONLY : temperature_flag
 
   IMPLICIT none
 
@@ -13,12 +14,11 @@ MODULE constitutive_2d
   CHARACTER(LEN=20) :: phase1_name
   CHARACTER(LEN=20) :: phase2_name
 
-  !--------- Constants for the equations of state -----------------------------
-
 
   COMPLEX*16 :: h      !< height
   COMPLEX*16 :: u      !< velocity (x direction)
   COMPLEX*16 :: v      !< velocity (y direction)
+  COMPLEX*16 :: T      !< temperature
 
   !> gravitational acceleration
   REAL*8 :: grav
@@ -26,8 +26,6 @@ MODULE constitutive_2d
   !> drag coefficients
   REAL*8 :: mu
   REAL*8 :: xi
-
-
 
 CONTAINS
 
@@ -49,6 +47,9 @@ CONTAINS
     implicit_flag(2) = .TRUE.
     implicit_flag(3) = .TRUE.
 
+    IF ( temperature_flag ) implicit_flag(4) = .TRUE.
+
+
     n_nh = COUNT( implicit_flag )
 
   END SUBROUTINE init_problem_param
@@ -57,8 +58,7 @@ CONTAINS
   !> \brief Physical variables
   !
   !> This subroutine evaluates from the conservative local variables qj
-  !> the local physical variables  (\f$\alpha_i, u_i, \rho_i, x_i, \f$)
-  !> for the two phases and the mixture denisity \f$ \rho \f$.
+  !> the local physical variables  (\f$h+B, u, v, T \f$).
   !> \param[in]    r_qj     real conservative variables 
   !> \param[in]    c_qj     complex conservative variables 
   !> \date 15/08/2011
@@ -94,11 +94,19 @@ CONTAINS
 
        v = qj(3) / h
 
+       IF ( temperature_flag ) T = qj(4) / h
+
     ELSE
 
        u = DSQRT(2.D0) * h * qj(2) / CDSQRT( h**4 + eps_sing )
 
        v = DSQRT(2.D0) * h * qj(3) / CDSQRT( h**4 + eps_sing )
+
+       IF ( temperature_flag ) THEN
+
+          T =  DSQRT(2.D0) * h * qj(4) / CDSQRT( h**4 + eps_sing )
+
+       END IF
 
     END IF
 
@@ -270,6 +278,8 @@ CONTAINS
   !> array of physical variables qp:\n
   !> - qp(1) = \f$ h+B \f$
   !> - qp(2) = \f$ u \f$
+  !> - qp(3) = \f$ v \f$
+  !> - qp(4) = \f$ T \f$
   !> .
   !> The physical variables are those used for the linear reconstruction at the
   !> cell interfaces. Limiters are applied to the reconstructed slopes.
@@ -292,6 +302,8 @@ CONTAINS
     qp(2) = REAL(u)
     qp(3) = REAL(v)
 
+    IF ( temperature_flag ) qp(4) = REAL(T)
+
     
   END SUBROUTINE qc_to_qp
 
@@ -301,8 +313,11 @@ CONTAINS
   !> This subroutine evaluates the conservative variables qc from the 
   !> array of physical variables qp:\n
   !> - qp(1) = \f$ h + B \f$
-  !> - qp(2) = \f$ hu \f$
+  !> - qp(2) = \f$ u \f$
+  !> - qp(3) = \f$ v \f$
+  !> - qp(4) = \f$ T \f$
   !> .
+
   !> \param[in]    qp      physical variables  
   !> \param[out]   qc      conservative variables 
   !> \date 15/08/2011
@@ -320,14 +335,17 @@ CONTAINS
     REAL*8 :: r_hB      !> topography + height 
     REAL*8 :: r_u       !> velocity
     REAL*8 :: r_v       !> velocity
-    
+    REAL*8 :: r_T       !> temperature
+
     r_hB = qp(1)
     r_u = qp(2)
     r_v = qp(3)
-    
+    r_T = qp(4)
+
     qc(1) = r_hB
     qc(2) = ( r_hB - B ) * r_u
     qc(3) = ( r_hB - B ) * r_v
+    IF ( temperature_flag ) qc(4) = ( r_hB - B ) * r_T 
 
   END SUBROUTINE qp_to_qc
 
@@ -339,6 +357,7 @@ CONTAINS
   !> - qp(1) = \f$ h \f$
   !> - qp(2) = \f$ u \f$
   !> - qp(3) = \f$ v \f$
+  !> - qp(4) = \f$ T \f$
   !> .
   !> The physical variables are those used for the linear reconstruction at the
   !> cell interfaces. Limiters are applied to the reconstructed slopes.
@@ -360,6 +379,8 @@ CONTAINS
     qp(1) = REAL(h)
     qp(2) = REAL(u)
     qp(3) = REAL(v)
+
+    IF ( temperature_flag ) qp(4) = REAL(T)
 
     
   END SUBROUTINE qc_to_qp2
@@ -390,6 +411,7 @@ CONTAINS
     REAL*8 :: r_h      !> topography + height 
     REAL*8 :: r_u      !> velocity x direction
     REAL*8 :: r_v      !> velocity y direction
+    REAL*8 :: r_T      !> temperature
     
     r_h = qp(1)
     r_u = qp(2)
@@ -398,6 +420,8 @@ CONTAINS
     qc(1) = r_h + B
     qc(2) = r_h * r_u
     qc(3) = r_h * r_v
+
+    IF ( temperature_flag ) qc(4) = r_h * r_T 
 
   END SUBROUTINE qp2_to_qc
 
@@ -415,7 +439,6 @@ CONTAINS
   !> \param[out]    r_flux   real analytical fluxes    
   !******************************************************************************
   
-  !SUBROUTINE eval_fluxes(Bj,c_qj,r_qj,c_flux,r_flux,dir)
   SUBROUTINE eval_fluxes(Bj,grav3_surf,c_qj,r_qj,c_flux,r_flux,dir)
     
     USE COMPLEXIFY
@@ -459,7 +482,7 @@ CONTAINS
 
     ! flux F (derivated wrt x in the equations)
 
-       flux(1)=qj(2)
+       flux(1) = qj(2)
 
        h_temp = qj(1) - Bj
 
@@ -479,11 +502,16 @@ CONTAINS
 
           flux(3) = u_temp * qj(3)
 
+          ! Temperature flux in x-direction: U*T*h
+          IF ( temperature_flag ) flux(4) = u_temp * qj(4)
+
        ELSE
 
           flux(2) = 0.D0
 
           flux(3) = 0.D0
+
+          IF ( temperature_flag ) flux(4) = 0.D0
 
        ENDIF
 
@@ -511,11 +539,16 @@ CONTAINS
 
           ENDIF
 
+          ! Temperature flux in x-direction: V*T*h
+          IF ( temperature_flag ) flux(4) = v_temp * qj(4)
+
        ELSE
 
           flux(2) = 0.0
 
           flux(3) = 0.0
+
+          IF ( temperature_flag ) flux(4) = 0.D0
 
        ENDIF
 
@@ -612,20 +645,29 @@ CONTAINS
        CALL phys_var(Bj,c_qj = qj)
     
        mod_vel = CDSQRT( u**2 + v**2 )
-    
+       
        IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
-     
-          forces_term(2) = forces_term(2) - (u/mod_vel) *                          &
-             ( mu*h * ( - grav * grav3_surf + curvj_x * mod_vel**2 )               &
-             + ( grav / xi ) * mod_vel ** 2 )
-     
-          forces_term(3) = forces_term(3) - (v/mod_vel) *                          &
-             ( mu*h * ( - grav * grav3_surf + curvj_y * mod_vel**2 )               &
-             + ( grav / xi ) * mod_vel ** 2 )
-     
+          
+          forces_term(2) = forces_term(2) - (u/mod_vel) *                    &
+               ( mu*h * ( - grav * grav3_surf + curvj_x * mod_vel**2 )       &
+               + ( grav / xi ) * mod_vel ** 2 )
+          
+          forces_term(3) = forces_term(3) - (v/mod_vel) *                    &
+               ( mu*h * ( - grav * grav3_surf + curvj_y * mod_vel**2 )       &
+               + ( grav / xi ) * mod_vel ** 2 )
+          
        ENDIF
        
     ENDIF
+
+    IF ( temperature_flag ) THEN
+
+       CALL phys_var(Bj,c_qj = qj)
+       
+       forces_term(4) = DCMPLX(0.D0)
+
+
+    END IF
 
     nh_term = relaxation_term + forces_term
 

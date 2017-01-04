@@ -23,7 +23,8 @@ MODULE inpout_2d
   USE geometry_2d, ONLY : topography_profile , n_topography_profile_x ,         &
        n_topography_profile_y
   USE init_2d, ONLY : riemann_interface
-  USE parameters_2d, ONLY : riemann_flag , rheology_flag , fischer_flag
+  USE parameters_2d, ONLY : temperature_flag , riemann_flag , rheology_flag ,   &
+       fischer_flag
 
   ! -- Variables for the namelist INITIAL_CONDITIONS
   USE parameters_2d, ONLY : released_volume , x_release , y_release
@@ -93,16 +94,16 @@ MODULE inpout_2d
   LOGICAL :: output_cons_flag
 
   ! -- Variables for the namelists LEFT_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcL , u_bcL , v_bcL
+  TYPE(bc) :: hB_bcL , u_bcL , v_bcL , T_bcL
 
   ! -- Variables for the namelists RIGHT_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcR , u_bcR , v_bcR
+  TYPE(bc) :: hB_bcR , u_bcR , v_bcR , T_bcR
 
   ! -- Variables for the namelists BOTTOM_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcD , u_bcD , v_bcD
+  TYPE(bc) :: hB_bcD , u_bcD , v_bcD , T_bcD
 
   ! -- Variables for the namelists TOP_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcU , u_bcU , v_bcU
+  TYPE(bc) :: hB_bcU , u_bcU , v_bcU , T_bcU
 
 
   ! parameters to read a dem file
@@ -118,7 +119,7 @@ MODULE inpout_2d
   NAMELIST / restart_parameters / restart_file
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
-       cell_size , fischer_flag , rheology_flag , riemann_flag
+       cell_size , temperature_flag , fischer_flag , rheology_flag , riemann_flag
 
   NAMELIST / initial_conditions /  released_volume , x_release , y_release ,    &
        velocity_mod_release , velocity_ang_release
@@ -127,13 +128,13 @@ MODULE inpout_2d
 
   NAMELIST / right_state / hB_R , u_R , v_R
 
-  NAMELIST / left_boundary_conditions / hB_bcL , u_bcL , v_bcL
+  NAMELIST / left_boundary_conditions / hB_bcL , u_bcL , v_bcL , T_bcL
 
-  NAMELIST / right_boundary_conditions / hB_bcR , u_bcR , v_bcR
+  NAMELIST / right_boundary_conditions / hB_bcR , u_bcR , v_bcR , T_bcR
 
-  NAMELIST / bottom_boundary_conditions / hB_bcD , u_bcD , v_bcD
+  NAMELIST / bottom_boundary_conditions / hB_bcD , u_bcD , v_bcD , T_bcD
 
-  NAMELIST / top_boundary_conditions / hB_bcU , u_bcU , v_bcU
+  NAMELIST / top_boundary_conditions / hB_bcU , u_bcU , v_bcU , T_bcU
 
   NAMELIST / numeric_parameters / solver_scheme, max_dt , cfl, limiter , theta, &
        reconstr_coeff , interfaces_relaxation , n_RK   
@@ -188,6 +189,7 @@ CONTAINS
     y0 = 0.D0
     comp_cells_y = 500
     cell_size = 0.1
+    temperature_flag = .FALSE.
     fischer_flag = .FALSE.
     rheology_flag = .FALSE.
     riemann_flag=.TRUE.
@@ -204,37 +206,40 @@ CONTAINS
     u_R = 0.D0
 
     !-- Inizialization of the Variables for the namelist left boundary conditions
-
     hB_bcL%flag = 1 
     hB_bcL%value = 0.d0 
 
     u_bcL%flag = 1 
     u_bcL%value = 0.d0 
+    v_bcL%flag = 1 
+    v_bcL%value = 0.d0 
 
     !-- Inizialization of the Variables for the namelist right boundary conditions
-
     hB_bcR%flag = 1 
     hB_bcR%value = 0.d0 
 
     u_bcR%flag = 1 
     u_bcR%value = 0.d0 
+    v_bcR%flag = 1 
+    v_bcR%value = 0.d0 
 
     !-- Inizialization of the Variables for the namelist bottom boundary conditions
-
     hB_bcD%flag = 1 
     hB_bcD%value = 0.d0 
 
     u_bcD%flag = 1 
     u_bcD%value = 0.d0 
+    v_bcD%flag = 1 
+    v_bcD%value = 0.d0 
 
     !-- Inizialization of the Variables for the namelist top boundary conditions
-
     hB_bcU%flag = 1 
     hB_bcU%value = 0.d0 
 
     u_bcU%flag = 1 
     u_bcU%value = 0.d0 
-
+    v_bcU%flag = 1 
+    v_bcU%value = 0.d0 
 
     !-- Inizialization of the Variables for the namelist NUMERIC_PARAMETERS
     max_dt = 1.d-3
@@ -340,6 +345,8 @@ CONTAINS
 
   SUBROUTINE read_param
 
+    USE parameters_2d, ONLY : n_vars , n_eqns
+    USE parameters_2d, ONLY : limiter
     USE parameters_2d, ONLY : bcL , bcR , bcD , bcU
 
     IMPLICIT none
@@ -364,6 +371,21 @@ CONTAINS
 
     ! ------- READ newrun_parameters NAMELIST --------------------------------
     READ(input_unit,newrun_parameters)
+
+    IF ( temperature_flag ) THEN
+
+       n_vars = 4
+       n_eqns = 4
+
+       ELSE
+
+       n_vars = 3
+       n_eqns = 3
+
+    END IF
+   
+    ALLOCATE( limiter(n_vars) )
+    ALLOCATE( bcL(n_vars) , bcR(n_vars) , bcD(n_vars) , bcU(n_vars) , )
 
     IF ( restart ) THEN
 
@@ -410,6 +432,15 @@ CONTAINS
     bcU(1) = hB_bcU 
     bcU(2) = u_bcU 
     bcU(3) = v_bcU 
+
+    IF ( temperature_flag ) THEN
+
+       bcL(4) = T_bcL
+       bcR(4) = T_bcR
+       bcD(4) = T_bcD
+       bcU(4) = T_bcU
+
+    END IF
 
     ! ------- READ numeric_parameters NAMELIST ---------------------------------
 
@@ -706,7 +737,7 @@ CONTAINS
     USE geometry_2d, ONLY : comp_cells_x , x0 , comp_cells_y , y0 , dx , dy
     USE geometry_2d, ONLY : B_cent
     USE init_2d, ONLY : thickness_init
-    USE parameters_2d, ONLY : n_vars
+    ! USE parameters_2d, ONLY : n_vars
     USE solver_2d, ONLY : q
 
     IMPLICIT none
@@ -904,13 +935,13 @@ CONTAINS
   !
   !******************************************************************************
 
-  SUBROUTINE output_solution(t)
+  SUBROUTINE output_solution(time)
 
     ! external procedures
     USE constitutive_2d, ONLY : qc_to_qp
 
     ! external variables
-    USE constitutive_2d, ONLY : h , u , v
+    USE constitutive_2d, ONLY : h , u , v , T
 
     USE geometry_2d, ONLY : comp_cells_x , B_cent , comp_cells_y , x_comp, y_comp
     ! USE geometry_2d, ONLY : x0 , dx , B_ver , y0 , dy
@@ -922,7 +953,7 @@ CONTAINS
 
     IMPLICIT none
 
-    REAL*8, INTENT(IN) :: t
+    REAL*8, INTENT(IN) :: time
 
     CHARACTER(LEN=4) :: idx_string
 
@@ -956,9 +987,17 @@ CONTAINS
                 IF ( dabs(q(i,j,k)) .LT. 1d-99) q(i,j,k) = 0.d0
                 
              ENDDO
+
+             IF ( temperature_flag ) THEN
              
-             WRITE(output_unit_2d,1008) x_comp(j), y_comp(k), q(:,j,k)
-             
+                WRITE(output_unit_2d,1007) x_comp(j), y_comp(k), q(:,j,k)
+                
+             ELSE
+                
+                WRITE(output_unit_2d,1008) x_comp(j), y_comp(k), q(:,j,k)
+                
+             END IF
+
           ENDDO
           
           WRITE(output_unit_2d,*) ' ' 
@@ -994,9 +1033,19 @@ CONTAINS
              
              CALL qc_to_qp(q(:,j,k),B_cent(j,k),qp(:))
              
-             WRITE(output_unit_2d,1009) x_comp(j), y_comp(k), REAL(h), REAL(u), &
-                  REAL(v) , B_cent(j,k) , REAL(h) + B_cent(j,k)
-             
+             IF ( temperature_flag ) THEN
+
+                WRITE(output_unit_2d,1010) x_comp(j), y_comp(k), REAL(h),       &
+                     REAL(u), REAL(v) , B_cent(j,k) , REAL(h) + B_cent(j,k) ,   &
+                     REAL(T)
+                
+             ELSE
+
+                WRITE(output_unit_2d,1009) x_comp(j), y_comp(k), REAL(h),       &
+                     REAL(u), REAL(v) , B_cent(j,k) , REAL(h) + B_cent(j,k)
+
+             END IF
+
           END DO
           
           WRITE(output_unit_2d,*) ' ' 
@@ -1010,10 +1059,12 @@ CONTAINS
 
     END IF
 
+1007 FORMAT(6e20.12)
 1008 FORMAT(5e20.12)
 1009 FORMAT(7e20.12)
+1010 FORMAT(7e20.12)
 
-    t_output = t + dt_output
+    t_output = time + dt_output
 
     IF ( output_esri_flag ) CALL output_esri(output_idx)
 

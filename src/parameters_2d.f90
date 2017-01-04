@@ -53,6 +53,11 @@ MODULE parameters_2d
   !> .
   LOGICAL :: rheology_flag
 
+  !> Flag to choose if we model temperature transport
+  !> - T      => Solve for transport equation for the temperature
+  !> - F      => Do no solve for transport equation for the temperature 
+  !> .
+  LOGICAL :: temperature_flag
 
   !> Initial volume of the flow
   REAL*8 :: released_volume
@@ -69,8 +74,8 @@ MODULE parameters_2d
   !> Initial velocity direction (angle in degree, departing from positive x-axis)
   REAL*8 :: velocity_ang_release
 
-  INTEGER, PARAMETER :: n_vars = 3        !< Number of conservative variables
-  INTEGER, PARAMETER :: n_eqns = n_vars   !< Number of equations
+  INTEGER :: n_vars        !< Number of conservative variables
+  INTEGER :: n_eqns   !< Number of equations
 
   INTEGER :: n_nh     !< Number of non-hyperbolic terms
 
@@ -87,7 +92,7 @@ MODULE parameters_2d
   !> - 'superbee' => superbee limiter (Roe, 1985);
   !> - 'van_leer' => monotonized central-difference limiter (van Leer, 1977)
   !> .
-  INTEGER :: limiter(n_vars)
+  INTEGER, ALLOCATABLE :: limiter(:)
 
   !> Finite volume method:\n
   !> - 'LxF'       => lax-friedrichs scheme;
@@ -119,7 +124,7 @@ MODULE parameters_2d
   !> - value of the variable for Dirichlet boundary condition (bcL%flag=0);
   !> - gradient of the variable for Neumann boundary condition (bcL%flag=1).
   !> .
-  TYPE(bc) :: bcL(n_vars)
+  TYPE(bc), ALLOCATABLE :: bcL(:)
 
   !> blR&flag defines the right boundary condition:\n
   !> - bcR%flag = 0     => Dirichlet boundary condition;
@@ -129,7 +134,7 @@ MODULE parameters_2d
   !> - value of the variable for Dirichlet boundary condition (bcR%flag=0);
   !> - gradient of the variable for Neumann boundary condition (bcR%flag=1).
   !> .
-  TYPE(bc) :: bcR(n_vars)
+  TYPE(bc), ALLOCATABLE :: bcR(:)
 
   !> blD&flag defines the bottom (down) boundary condition:\n
   !> - bcD%flag = 0     => Dirichlet boundary condition;
@@ -139,7 +144,7 @@ MODULE parameters_2d
   !> - value of the variable for Dirichlet boundary condition (bcD%flag=0);
   !> - gradient of the variable for Neumann boundary condition (bcD%flag=1).
   !> .
-  TYPE(bc) :: bcD(n_vars)
+  TYPE(bc), ALLOCATABLE :: bcD(:)
 
   !> blU&flag defines the top (up) boundary condition:\n
   !> - bcU%flag = 0     => Dirichlet boundary condition;
@@ -149,6 +154,6 @@ MODULE parameters_2d
   !> - value of the variable for Dirichlet boundary condition (bcU%flag=0);
   !> - gradient of the variable for Neumann boundary condition (bcU%flag=1).
   !> .
-  TYPE(bc) :: bcU(n_vars)
+  TYPE(bc), ALLOCATABLE :: bcU(:)
 
 END MODULE parameters_2d
