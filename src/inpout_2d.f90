@@ -71,7 +71,7 @@ MODULE inpout_2d
   INTEGER :: output_idx 
 
   !> Flag to start a run from a previous output:\n
-  !> - T     => Restart from a previous output
+  !> - T     => Restart from a previous output (.asc or .q_2d)
   !> - F     => Restart from initial condition read from two_phases.inp
   !> .
   LOGICAL :: restart
@@ -499,7 +499,7 @@ CONTAINS
 
           WRITE(*,*) 'T_init=',T_init
           WRITE(*,*) 'T_ambient=',T_ambient
-          WRITE(*,*) 'Please add the two variables to the namelist INITIAL_CONDITIONS'
+          WRITE(*,*) 'Add the two variables to the namelist INITIAL_CONDITIONS'
           STOP
 
        END IF
