@@ -1,7 +1,5 @@
 # Welcome to IMEX_SfloW2D
 
-<p align="center"><img src="https://raw.githubusercontent.com/demichie/IMEX_SfloW2D/master/IMEX_SfloW2D.png?invert_in_darkmode" align=middle width=500pt /></p>
-
 
 IMEX_SfloW is a FORTRAN90 code designed to solve the shallow water equations, written as a hyperbolic system of partial differential equations with relaxation and source terms. The model is discretized in time with an explicit-implicit Runge-Kutta method where the hyperbolic part is solved explicetely and the other terms are treated implicitely. The finite volume solver for the hyperbolic part of the system is based on a semidiscrete central scheme and it is not tied on the specific eigenstructure of the model. The implicit part is solved with a Newton-Raphson method where the elements of the Jacobian of the nonlinear system are evaluated numerically with a complex step derivative technique.
 
