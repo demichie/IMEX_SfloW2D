@@ -1285,7 +1285,8 @@ CONTAINS
 
   SUBROUTINE output_esri(output_idx)
 
-    USE geometry_2d, ONLY : dx , dy , B_cent , grid_output
+    USE geometry_2d, ONLY : dx , dy , B_cent , B_ver , grid_output
+    USE geometry_2d, ONLY : comp_interfaces_x , comp_interfaces_y
     USE solver_2d, ONLY : q
 
     IMPLICIT NONE
@@ -1313,6 +1314,24 @@ CONTAINS
        ENDDO
        
        CLOSE(dem_esri_unit)
+
+       OPEN(dem_esri_unit,FILE='dem_interfaces_esri.asc',status='unknown',form='formatted')
+       
+       WRITE(dem_esri_unit,'(A,I5)') 'ncols ', comp_interfaces_x
+       WRITE(dem_esri_unit,'(A,I5)') 'nrows ', comp_interfaces_y
+       WRITE(dem_esri_unit,'(A,F15.3)') 'xllcorner ', x0 
+       WRITE(dem_esri_unit,'(A,F15.3)') 'yllcorner ', y0 
+       WRITE(dem_esri_unit,'(A,F15.3)') 'cellsize ', cell_size
+       WRITE(dem_esri_unit,'(A,I5)') 'NODATA_value ', -9999
+        
+       DO j = comp_interfaces_y,1,-1
+          
+          WRITE(dem_esri_unit,*) B_ver(1:comp_interfaces_x,j)
+          
+       ENDDO
+       
+       CLOSE(dem_esri_unit)
+
        
     END IF
     
