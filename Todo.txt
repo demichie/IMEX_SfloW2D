@@ -2,15 +2,15 @@
 
 1) Complete the Doxygen documentation
 
-2) Add tutorials in the examples folder for the examples from K&P. Each tutorial should have a separate folder with: readme.txt, topography file as a .asc, initial condition as a .asc, shallow_water.inp file
+2) Add tutorials in the examples folder for the examples from K&P. Each tutorial should have a separate folder with: readme.txt, topography file as a .asc, initial condition as a .asc or .q_2d, shallow_water.inp file
 
 3) Add multiple folders for the same example with different number of cells
 
-4) Add scripts to create DEMs and initial conditions for tutorials
+4) Add scripts to create DEMs and initial conditions for tutorials. MAYBE NOT SO IMPORTANT
 
 5) Work on the wiki
 
-6) change the name of the input file to IMEX_SfloW2D.inp
+6) change the name of the input file to IMEX_SfloW2D.inp. DONE (2017/01/04)
 
 7) Add transport equation for temperature with a flag to solver for it. DONE (2017/01/04)
 
