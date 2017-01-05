@@ -259,7 +259,7 @@ CONTAINS
     mu = 0.225
     xi = 130
 
-    input_file = 'shallow_water_2d.inp'
+    input_file = 'IMEX_SfloW2D.inp'
 
     INQUIRE (FILE=input_file,exist=lexist)
 
@@ -320,7 +320,7 @@ CONTAINS
 
        CLOSE(input_unit)
 
-       WRITE(*,*) 'Input file shallow_water_2d.inp not found'
+       WRITE(*,*) 'Input file IMEX_SfloW2D.inp not found'
        WRITE(*,*) 'A new one with default values has been created'
        STOP
 
@@ -366,16 +366,42 @@ CONTAINS
 
     CHARACTER(LEN=15) :: chara
 
+    INTEGER :: ios
+
     OPEN(input_unit,FILE=input_file,STATUS='old')
 
 
     ! ------- READ run_parameters NAMELIST -----------------------------------
-    READ(input_unit, run_parameters )
-    REWIND(input_unit)
+    READ(input_unit, run_parameters,IOSTAT=ios )
+
+    IF ( ios .NE. 0 ) THEN
+
+       WRITE(*,*) 'IOSTAT=',ios
+       WRITE(*,*) 'ERROR: problem with namelist RUN_PARAMETERS'
+       WRITE(*,*) 'Please check the input file'
+       STOP
+
+    ELSE
+
+       REWIND(input_unit)
+
+    END IF
 
     ! ------- READ newrun_parameters NAMELIST --------------------------------
-    READ(input_unit,newrun_parameters)
-    REWIND(input_unit)
+    READ(input_unit,newrun_parameters,IOSTAT=ios)
+
+    IF ( ios .NE. 0 ) THEN
+
+       WRITE(*,*) 'IOSTAT=',ios
+       WRITE(*,*) 'ERROR: problem with namelist NEWRUN_PARAMETERS'
+       WRITE(*,*) 'Please check the input file'
+       STOP
+
+    ELSE
+
+       REWIND(input_unit)
+
+    END IF
 
     IF ( temperature_flag ) THEN
 
@@ -394,14 +420,26 @@ CONTAINS
 
     IF ( restart ) THEN
 
-       READ(input_unit,restart_parameters)
-       REWIND(input_unit)
+       READ(input_unit,restart_parameters,IOSTAT=ios)
 
-       IF ( T_init*T_ambient .EQ. 0.D0 ) THEN
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist RESTART_PARAMETERS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+
+       IF ( ( temperature_flag ) .AND. ( T_init*T_ambient .EQ. 0.D0 ) ) THEN
 
           WRITE(*,*) 'T_init=',T_init
           WRITE(*,*) 'T_ambient=',T_ambient
-          WRITE(*,*) 'Please add the two variables to the namelist RESTART_PARAMETERS'
+          WRITE(*,*) 'Add the two variables to the namelist RESTART_PARAMETERS'
           STOP
 
        END IF
@@ -410,16 +448,53 @@ CONTAINS
 
        IF ( riemann_flag ) THEN
 
-          READ(input_unit,left_state)
-          REWIND(input_unit)
-          READ(input_unit,right_state)
-          REWIND(input_unit)
+          READ(input_unit,left_state,IOSTAT=ios)
 
+          IF ( ios .NE. 0 ) THEN
+             
+             WRITE(*,*) 'IOSTAT=',ios
+             WRITE(*,*) 'ERROR: problem with namelist LEFT_PARAMETERS'
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          ELSE
+             
+             REWIND(input_unit)
+             
+          END IF
+          
+          READ(input_unit,right_state,IOSTAT=ios)
+
+          IF ( ios .NE. 0 ) THEN
+             
+             WRITE(*,*) 'IOSTAT=',ios
+             WRITE(*,*) 'ERROR: problem with namelist RIGHT_PARAMETERS'
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          ELSE
+             
+             REWIND(input_unit)
+ 
+          END IF
+            
        ELSE
 
-          READ(input_unit,initial_conditions)
-          REWIND(input_unit)
-     
+          READ(input_unit,initial_conditions,IOSTAT=ios)
+
+          IF ( ios .NE. 0 ) THEN
+             
+             WRITE(*,*) 'IOSTAT=',ios
+             WRITE(*,*) 'ERROR: problem with namelist INITIAL_CONDITIONS'
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          ELSE
+             
+             REWIND(input_unit)
+ 
+          END IF
+            
        IF ( T_init*T_ambient .EQ. 0.D0 ) THEN
 
           WRITE(*,*) 'T_init=',T_init
@@ -437,29 +512,81 @@ CONTAINS
 
     ! ------- READ boundary_conditions NAMELISTS --------------------------------
 
-    READ(input_unit,west_boundary_conditions)
-    REWIND(input_unit)
+    ! West boundary conditions
+    READ(input_unit,west_boundary_conditions,IOSTAT=ios)
 
+    IF ( ios .NE. 0 ) THEN
+       
+       WRITE(*,*) 'IOSTAT=',ios
+       WRITE(*,*) 'ERROR: problem with namelist WEST_BOUNDARY_CONDITIONS'
+       WRITE(*,*) 'Please check the input file'
+       STOP
+       
+    ELSE
+       
+       REWIND(input_unit)
+       
+    END IF
+        
     bcW(1) = hB_bcW 
     bcW(2) = u_bcW 
     bcW(3) = v_bcW 
 
-    READ(input_unit,east_boundary_conditions)
-    REWIND(input_unit)
+    ! East boundary conditions
+    READ(input_unit,east_boundary_conditions,IOSTAT=ios)
+
+    IF ( ios .NE. 0 ) THEN
+       
+       WRITE(*,*) 'IOSTAT=',ios
+       WRITE(*,*) 'ERROR: problem with namelist EAST_BOUNDARY_CONDITIONS'
+       WRITE(*,*) 'Please check the input file'
+       STOP
+       
+    ELSE
+       
+       REWIND(input_unit)
+       
+    END IF
 
     bcE(1) = hB_bcE 
     bcE(2) = u_bcE 
     bcE(3) = v_bcE 
 
-    READ(input_unit,south_boundary_conditions)
-    REWIND(input_unit)
+    ! South boundary conditions
+    READ(input_unit,south_boundary_conditions,IOSTAT=ios)
+
+    IF ( ios .NE. 0 ) THEN
+       
+       WRITE(*,*) 'IOSTAT=',ios
+       WRITE(*,*) 'ERROR: problem with namelist SOUTH_BOUNDARY_CONDITIONS'
+       WRITE(*,*) 'Please check the input file'
+       STOP
+       
+    ELSE
+       
+       REWIND(input_unit)
+       
+    END IF
 
     bcS(1) = hB_bcS 
     bcS(2) = u_bcS 
     bcS(3) = v_bcS 
 
-    REWIND(input_unit)
-    READ(input_unit,north_boundary_conditions)
+    ! North boundary conditions
+    READ(input_unit,north_boundary_conditions,IOSTAT=ios)
+
+    IF ( ios .NE. 0 ) THEN
+       
+       WRITE(*,*) 'IOSTAT=',ios
+       WRITE(*,*) 'ERROR: problem with namelist NORTH_BOUNDARY_CONDITIONS'
+       WRITE(*,*) 'Please check the input file'
+       STOP
+       
+    ELSE
+       
+       REWIND(input_unit)
+       
+    END IF
 
     bcN(1) = hB_bcN 
     bcN(2) = u_bcN 
@@ -477,7 +604,19 @@ CONTAINS
     ! ------- READ numeric_parameters NAMELIST ---------------------------------
 
     READ(input_unit,numeric_parameters)
-    REWIND(input_unit)
+
+    IF ( ios .NE. 0 ) THEN
+       
+       WRITE(*,*) 'IOSTAT=',ios
+       WRITE(*,*) 'ERROR: problem with namelist NUMERIC_PARAMETERS'
+       WRITE(*,*) 'Please check the input file'
+       STOP
+       
+    ELSE
+       
+       REWIND(input_unit)
+       
+    END IF
 
     IF ( ( solver_scheme .NE. 'LxF' ) .AND. ( solver_scheme .NE. 'KT' ) .AND. &
          ( solver_scheme .NE. 'GFORCE' ) ) THEN
@@ -494,7 +633,7 @@ CONTAINS
 
     ELSEIF ( solver_scheme .EQ. 'KT' ) THEN
 
-       max_cfl = 0.5
+       max_cfl = 0.25
 
     END IF
 
@@ -528,8 +667,22 @@ CONTAINS
 
     ! ------- READ source_parameters NAMELIST -----------------------------------
 
-    READ(input_unit, source_parameters )
-    REWIND(input_unit)
+    READ(input_unit, source_parameters,IOSTAT=ios)
+
+    IF ( ios .NE. 0 ) THEN
+       
+       WRITE(*,*) 'IOSTAT=',ios
+       WRITE(*,*) 'ERROR: problem with namelist SOURCE_PARAMETERS'
+       WRITE(*,*) 'Please check the input file'
+       STOP
+       
+    ELSE
+       
+       REWIND(input_unit)
+       
+    END IF
+
+    WRITE(*,*) 'iostat',ios
 
     ! read topography from .inp (recommended for simple batimetries) 
     IF ( .NOT.topography_demfile ) THEN
@@ -1241,7 +1394,7 @@ CONTAINS
 
     IMPLICIT NONE
 
-    dakota_file = 'shallow_water_2d.out'
+    dakota_file = 'IMEX_SfloW2D.out'
 
     OPEN(dakota_unit,FILE=dakota_file,status='unknown',form='formatted')
 

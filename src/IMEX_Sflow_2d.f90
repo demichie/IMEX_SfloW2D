@@ -142,7 +142,7 @@ PROGRAM IMEX_SfloW_2d
 
   END DO
 
-  CALL output_dakota
+  ! CALL output_dakota
 
   CALL deallocate_solver_variables
 
