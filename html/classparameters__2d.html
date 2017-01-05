@@ -136,12 +136,42 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:adf23d50b86602e88d24f2bf70f5fab8d"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#adf23d50b86602e88d24f2bf70f5fab8d">riemann_flag</a></td></tr>
 <tr class="memdesc:adf23d50b86602e88d24f2bf70f5fab8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag to choose the sort of problem to solve.  <a href="#adf23d50b86602e88d24f2bf70f5fab8d">More...</a><br /></td></tr>
 <tr class="separator:adf23d50b86602e88d24f2bf70f5fab8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bdf7570e0e8117a4edbd1c22699733f"><td class="memItemLeft" align="right" valign="top">integer, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a> = 3</td></tr>
-<tr class="memdesc:a7bdf7570e0e8117a4edbd1c22699733f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of conservative variables.  <a href="#a7bdf7570e0e8117a4edbd1c22699733f">More...</a><br /></td></tr>
-<tr class="separator:a7bdf7570e0e8117a4edbd1c22699733f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a465fa308921cc352123749f008a4e53d"><td class="memItemLeft" align="right" valign="top">integer, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a465fa308921cc352123749f008a4e53d">n_eqns</a> = <a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a></td></tr>
-<tr class="memdesc:a465fa308921cc352123749f008a4e53d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of equations.  <a href="#a465fa308921cc352123749f008a4e53d">More...</a><br /></td></tr>
-<tr class="separator:a465fa308921cc352123749f008a4e53d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57b581d0884ab044b52028da9292c11b"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a57b581d0884ab044b52028da9292c11b">fischer_flag</a></td></tr>
+<tr class="memdesc:a57b581d0884ab044b52028da9292c11b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag to choose which version of shallow water equations.  <a href="#a57b581d0884ab044b52028da9292c11b">More...</a><br /></td></tr>
+<tr class="separator:a57b581d0884ab044b52028da9292c11b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af21c3a272270fc5b0178f20ce337b92d"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#af21c3a272270fc5b0178f20ce337b92d">rheology_flag</a></td></tr>
+<tr class="memdesc:af21c3a272270fc5b0178f20ce337b92d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag to choose if we add the rheology.  <a href="#af21c3a272270fc5b0178f20ce337b92d">More...</a><br /></td></tr>
+<tr class="separator:af21c3a272270fc5b0178f20ce337b92d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa87dd0bab4f6e71963131a1e0ffdfa54"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#aa87dd0bab4f6e71963131a1e0ffdfa54">temperature_flag</a></td></tr>
+<tr class="memdesc:aa87dd0bab4f6e71963131a1e0ffdfa54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag to choose if we model temperature transport.  <a href="#aa87dd0bab4f6e71963131a1e0ffdfa54">More...</a><br /></td></tr>
+<tr class="separator:aa87dd0bab4f6e71963131a1e0ffdfa54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c0b10242c47c1d8fd4f37684c4baaf2"><td class="memItemLeft" align="right" valign="top">real *8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a7c0b10242c47c1d8fd4f37684c4baaf2">released_volume</a></td></tr>
+<tr class="memdesc:a7c0b10242c47c1d8fd4f37684c4baaf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial volume of the flow.  <a href="#a7c0b10242c47c1d8fd4f37684c4baaf2">More...</a><br /></td></tr>
+<tr class="separator:a7c0b10242c47c1d8fd4f37684c4baaf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08f9a7340cc2307462aec5db4e308916"><td class="memItemLeft" align="right" valign="top">real *8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a08f9a7340cc2307462aec5db4e308916">x_release</a></td></tr>
+<tr class="memdesc:a08f9a7340cc2307462aec5db4e308916"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial x-coordiante of the pile.  <a href="#a08f9a7340cc2307462aec5db4e308916">More...</a><br /></td></tr>
+<tr class="separator:a08f9a7340cc2307462aec5db4e308916"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addc9b42f5b28cf514551f83f8bce26be"><td class="memItemLeft" align="right" valign="top">real *8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#addc9b42f5b28cf514551f83f8bce26be">y_release</a></td></tr>
+<tr class="memdesc:addc9b42f5b28cf514551f83f8bce26be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial y-coordinate of the pile.  <a href="#addc9b42f5b28cf514551f83f8bce26be">More...</a><br /></td></tr>
+<tr class="separator:addc9b42f5b28cf514551f83f8bce26be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62367a0db6c1b04e6e21209d28b667aa"><td class="memItemLeft" align="right" valign="top">real *8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a62367a0db6c1b04e6e21209d28b667aa">velocity_mod_release</a></td></tr>
+<tr class="memdesc:a62367a0db6c1b04e6e21209d28b667aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial velocity module of the pile.  <a href="#a62367a0db6c1b04e6e21209d28b667aa">More...</a><br /></td></tr>
+<tr class="separator:a62367a0db6c1b04e6e21209d28b667aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc197762b33a635a15d1fe320a2e913b"><td class="memItemLeft" align="right" valign="top">real *8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#acc197762b33a635a15d1fe320a2e913b">velocity_ang_release</a></td></tr>
+<tr class="memdesc:acc197762b33a635a15d1fe320a2e913b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial velocity direction (angle in degree, departing from positive x-axis)  <a href="#acc197762b33a635a15d1fe320a2e913b">More...</a><br /></td></tr>
+<tr class="separator:acc197762b33a635a15d1fe320a2e913b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9a084f828986bf2de149e751531d7ce"><td class="memItemLeft" align="right" valign="top">real *8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#ad9a084f828986bf2de149e751531d7ce">t_init</a></td></tr>
+<tr class="memdesc:ad9a084f828986bf2de149e751531d7ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial temperature of the pile of material.  <a href="#ad9a084f828986bf2de149e751531d7ce">More...</a><br /></td></tr>
+<tr class="separator:ad9a084f828986bf2de149e751531d7ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab47203e24a4735295878d4cde5e4da4f"><td class="memItemLeft" align="right" valign="top">real *8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#ab47203e24a4735295878d4cde5e4da4f">t_ambient</a></td></tr>
+<tr class="memdesc:ab47203e24a4735295878d4cde5e4da4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ambient temperature.  <a href="#ab47203e24a4735295878d4cde5e4da4f">More...</a><br /></td></tr>
+<tr class="separator:ab47203e24a4735295878d4cde5e4da4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4ac1bcb3b2b2d9054234f6acc8b2fd2"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#ac4ac1bcb3b2b2d9054234f6acc8b2fd2">n_vars</a></td></tr>
+<tr class="memdesc:ac4ac1bcb3b2b2d9054234f6acc8b2fd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of conservative variables.  <a href="#ac4ac1bcb3b2b2d9054234f6acc8b2fd2">More...</a><br /></td></tr>
+<tr class="separator:ac4ac1bcb3b2b2d9054234f6acc8b2fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af26394560f6de98a227e85f8463774eb"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#af26394560f6de98a227e85f8463774eb">n_eqns</a></td></tr>
+<tr class="memdesc:af26394560f6de98a227e85f8463774eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of equations.  <a href="#af26394560f6de98a227e85f8463774eb">More...</a><br /></td></tr>
+<tr class="separator:af26394560f6de98a227e85f8463774eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2252fa3d1ab23103d540b37b508f47f"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#af2252fa3d1ab23103d540b37b508f47f">n_nh</a></td></tr>
 <tr class="memdesc:af2252fa3d1ab23103d540b37b508f47f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of non-hyperbolic terms.  <a href="#af2252fa3d1ab23103d540b37b508f47f">More...</a><br /></td></tr>
 <tr class="separator:af2252fa3d1ab23103d540b37b508f47f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -154,10 +184,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ae9d66bf66b6dfa188de81b9f0a38664b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99ced9c57a8def0a1166804391302083"><td class="memItemLeft" align="right" valign="top">real *8, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a99ced9c57a8def0a1166804391302083">tol_rel</a> = 1.D-5</td></tr>
 <tr class="separator:a99ced9c57a8def0a1166804391302083"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a366dfeec18fb4e897c7cf028a7cb6963"><td class="memItemLeft" align="right" valign="top">integer, dimension(<a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a>)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a366dfeec18fb4e897c7cf028a7cb6963">limiter</a></td></tr>
-<tr class="memdesc:a366dfeec18fb4e897c7cf028a7cb6963"><td class="mdescLeft">&#160;</td><td class="mdescRight">Limiter for the slope in the linear reconstruction:<br />
-.  <a href="#a366dfeec18fb4e897c7cf028a7cb6963">More...</a><br /></td></tr>
-<tr class="separator:a366dfeec18fb4e897c7cf028a7cb6963"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e7c8b0bd22212e2e1373c58cc52e070"><td class="memItemLeft" align="right" valign="top">integer, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a3e7c8b0bd22212e2e1373c58cc52e070">limiter</a></td></tr>
+<tr class="memdesc:a3e7c8b0bd22212e2e1373c58cc52e070"><td class="mdescLeft">&#160;</td><td class="mdescRight">Limiter for the slope in the linear reconstruction:<br />
+.  <a href="#a3e7c8b0bd22212e2e1373c58cc52e070">More...</a><br /></td></tr>
+<tr class="separator:a3e7c8b0bd22212e2e1373c58cc52e070"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d037386369ea9a16cd5cb1fb912521b"><td class="memItemLeft" align="right" valign="top">character(len=20)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a4d037386369ea9a16cd5cb1fb912521b">solver_scheme</a></td></tr>
 <tr class="memdesc:a4d037386369ea9a16cd5cb1fb912521b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finite volume method:<br />
 .  <a href="#a4d037386369ea9a16cd5cb1fb912521b">More...</a><br /></td></tr>
@@ -179,22 +209,22 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a7b850784ea35c1fefb0512ccb1bd220a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63d5ea2735213417fb2f517a2bd1cbde"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a63d5ea2735213417fb2f517a2bd1cbde">verbose_level</a></td></tr>
 <tr class="separator:a63d5ea2735213417fb2f517a2bd1cbde"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5a946c82ed0accfa3ff5ccab3ef8aed"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(<a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a>)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#ad5a946c82ed0accfa3ff5ccab3ef8aed">bcl</a></td></tr>
-<tr class="memdesc:ad5a946c82ed0accfa3ff5ccab3ef8aed"><td class="mdescLeft">&#160;</td><td class="mdescRight">blL&amp;flag defines the left boundary condition:<br />
- <a href="#ad5a946c82ed0accfa3ff5ccab3ef8aed">More...</a><br /></td></tr>
-<tr class="separator:ad5a946c82ed0accfa3ff5ccab3ef8aed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aedd00a62d2e9fe274624dbadc263d984"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(<a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a>)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#aedd00a62d2e9fe274624dbadc263d984">bcr</a></td></tr>
-<tr class="memdesc:aedd00a62d2e9fe274624dbadc263d984"><td class="mdescLeft">&#160;</td><td class="mdescRight">blR&amp;flag defines the right boundary condition:<br />
- <a href="#aedd00a62d2e9fe274624dbadc263d984">More...</a><br /></td></tr>
-<tr class="separator:aedd00a62d2e9fe274624dbadc263d984"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab10aa30fee4c7f690d345ef56bc5f459"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(<a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a>)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#ab10aa30fee4c7f690d345ef56bc5f459">bcd</a></td></tr>
-<tr class="memdesc:ab10aa30fee4c7f690d345ef56bc5f459"><td class="mdescLeft">&#160;</td><td class="mdescRight">blD&amp;flag defines the bottom (down) boundary condition:<br />
- <a href="#ab10aa30fee4c7f690d345ef56bc5f459">More...</a><br /></td></tr>
-<tr class="separator:ab10aa30fee4c7f690d345ef56bc5f459"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42c8a78256c7fbaa66c2dbd60cbcb120"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(<a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a>)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a42c8a78256c7fbaa66c2dbd60cbcb120">bcu</a></td></tr>
-<tr class="memdesc:a42c8a78256c7fbaa66c2dbd60cbcb120"><td class="mdescLeft">&#160;</td><td class="mdescRight">blU&amp;flag defines the top (up) boundary condition:<br />
- <a href="#a42c8a78256c7fbaa66c2dbd60cbcb120">More...</a><br /></td></tr>
-<tr class="separator:a42c8a78256c7fbaa66c2dbd60cbcb120"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1444c57edc9f76441464f8d4cbc19d6c"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#a1444c57edc9f76441464f8d4cbc19d6c">bcw</a></td></tr>
+<tr class="memdesc:a1444c57edc9f76441464f8d4cbc19d6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">bcW&amp;flag defines the west boundary condition:<br />
+ <a href="#a1444c57edc9f76441464f8d4cbc19d6c">More...</a><br /></td></tr>
+<tr class="separator:a1444c57edc9f76441464f8d4cbc19d6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee9446026c60aa4937f1da60bda439f5"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#aee9446026c60aa4937f1da60bda439f5">bce</a></td></tr>
+<tr class="memdesc:aee9446026c60aa4937f1da60bda439f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">bcE&amp;flag defines the east boundary condition:<br />
+ <a href="#aee9446026c60aa4937f1da60bda439f5">More...</a><br /></td></tr>
+<tr class="separator:aee9446026c60aa4937f1da60bda439f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac30b304480dc5ffde8a43cf742cfde15"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#ac30b304480dc5ffde8a43cf742cfde15">bcs</a></td></tr>
+<tr class="memdesc:ac30b304480dc5ffde8a43cf742cfde15"><td class="mdescLeft">&#160;</td><td class="mdescRight">bcS&amp;flag defines the south boundary condition:<br />
+ <a href="#ac30b304480dc5ffde8a43cf742cfde15">More...</a><br /></td></tr>
+<tr class="separator:ac30b304480dc5ffde8a43cf742cfde15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afda7adb43bac23a732e32b5a5edff6ad"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparameters__2d.html#afda7adb43bac23a732e32b5a5edff6ad">bcn</a></td></tr>
+<tr class="memdesc:afda7adb43bac23a732e32b5a5edff6ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">bcN&amp;flag defines the north boundary condition:<br />
+ <a href="#afda7adb43bac23a732e32b5a5edff6ad">More...</a><br /></td></tr>
+<tr class="separator:afda7adb43bac23a732e32b5a5edff6ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Parameters. </p>
@@ -202,107 +232,107 @@ Public Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00007">7</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="ab10aa30fee4c7f690d345ef56bc5f459"></a>
+<a class="anchor" id="aee9446026c60aa4937f1da60bda439f5"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(<a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a>) parameters_2d::bcd</td>
+          <td class="memname">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(:), allocatable parameters_2d::bce</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>blD&amp;flag defines the bottom (down) boundary condition:<br />
+<p>bcE&amp;flag defines the east boundary condition:<br />
 </p>
 <ul>
-<li>bcDflag = 0 =&gt; Dirichlet boundary condition;</li>
-<li>bcDflag = 1 =&gt; Neumann boundary condition.</li>
+<li>bcEflag = 0 =&gt; Dirichlet boundary condition;</li>
+<li>bcEflag = 1 =&gt; Neumann boundary condition.</li>
 </ul>
-<p>bcDvalue is the value of the bottom boundary condition:<br />
+<p>bcEvalue is the value of the right boundary condition:<br />
 </p><ul>
-<li>value of the variable for Dirichlet boundary condition (bcDflag=0);</li>
-<li>gradient of the variable for Neumann boundary condition (bcDflag=1).</li>
+<li>value of the variable for Dirichlet boundary condition (bcEflag=0);</li>
+<li>gradient of the variable for Neumann boundary condition (bcEflag=1).</li>
 </ul>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00114">114</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00143">143</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ad5a946c82ed0accfa3ff5ccab3ef8aed"></a>
+<a class="anchor" id="afda7adb43bac23a732e32b5a5edff6ad"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(<a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a>) parameters_2d::bcl</td>
+          <td class="memname">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(:), allocatable parameters_2d::bcn</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>blL&amp;flag defines the left boundary condition:<br />
+<p>bcN&amp;flag defines the north boundary condition:<br />
 </p>
 <ul>
-<li>bcLflag = 0 =&gt; Dirichlet boundary condition;</li>
-<li>bcLflag = 1 =&gt; Neumann boundary condition.</li>
+<li>bcNflag = 0 =&gt; Dirichlet boundary condition;</li>
+<li>bcNflag = 1 =&gt; Neumann boundary condition.</li>
 </ul>
-<p>bcLvalue is the value of the left boundary condition:<br />
+<p>bcNvalue is the value of the top boundary condition:<br />
 </p><ul>
-<li>value of the variable for Dirichlet boundary condition (bcLflag=0);</li>
-<li>gradient of the variable for Neumann boundary condition (bcLflag=1).</li>
+<li>value of the variable for Dirichlet boundary condition (bcNflag=0);</li>
+<li>gradient of the variable for Neumann boundary condition (bcNflag=1).</li>
 </ul>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00094">94</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00163">163</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aedd00a62d2e9fe274624dbadc263d984"></a>
+<a class="anchor" id="ac30b304480dc5ffde8a43cf742cfde15"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(<a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a>) parameters_2d::bcr</td>
+          <td class="memname">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(:), allocatable parameters_2d::bcs</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>blR&amp;flag defines the right boundary condition:<br />
+<p>bcS&amp;flag defines the south boundary condition:<br />
 </p>
 <ul>
-<li>bcRflag = 0 =&gt; Dirichlet boundary condition;</li>
-<li>bcRflag = 1 =&gt; Neumann boundary condition.</li>
+<li>bcSflag = 0 =&gt; Dirichlet boundary condition;</li>
+<li>bcSflag = 1 =&gt; Neumann boundary condition.</li>
 </ul>
-<p>bcRvalue is the value of the right boundary condition:<br />
+<p>bcSvalue is the value of the bottom boundary condition:<br />
 </p><ul>
-<li>value of the variable for Dirichlet boundary condition (bcRflag=0);</li>
-<li>gradient of the variable for Neumann boundary condition (bcRflag=1).</li>
+<li>value of the variable for Dirichlet boundary condition (bcSflag=0);</li>
+<li>gradient of the variable for Neumann boundary condition (bcSflag=1).</li>
 </ul>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00104">104</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00153">153</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a42c8a78256c7fbaa66c2dbd60cbcb120"></a>
+<a class="anchor" id="a1444c57edc9f76441464f8d4cbc19d6c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(<a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a>) parameters_2d::bcu</td>
+          <td class="memname">type(<a class="el" href="structparameters__2d_1_1bc.html">bc</a>), dimension(:), allocatable parameters_2d::bcw</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>blU&amp;flag defines the top (up) boundary condition:<br />
+<p>bcW&amp;flag defines the west boundary condition:<br />
 </p>
 <ul>
-<li>bcUflag = 0 =&gt; Dirichlet boundary condition;</li>
-<li>bcUflag = 1 =&gt; Neumann boundary condition.</li>
+<li>bcWflag = 0 =&gt; Dirichlet boundary condition;</li>
+<li>bcWflag = 1 =&gt; Neumann boundary condition.</li>
 </ul>
-<p>bcUvalue is the value of the top boundary condition:<br />
+<p>bcLWvalue is the value of the left boundary condition:<br />
 </p><ul>
-<li>value of the variable for Dirichlet boundary condition (bcUflag=0);</li>
-<li>gradient of the variable for Neumann boundary condition (bcUflag=1).</li>
+<li>value of the variable for Dirichlet boundary condition (bcWflag=0);</li>
+<li>gradient of the variable for Neumann boundary condition (bcWflag=1).</li>
 </ul>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00124">124</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00133">133</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -334,7 +364,7 @@ Public Attributes</h2></td></tr>
 
 <p>time interval for the output of the solution </p>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00075">75</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00114">114</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -370,6 +400,26 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a57b581d0884ab044b52028da9292c11b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">logical parameters_2d::fischer_flag</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Flag to choose which version of shallow water equations. </p>
+<ul>
+<li>T =&gt; equations with g_x, g_y and g_z (as in Fischer et al. 2012)</li>
+<li>F =&gt; basic equations (as Kurganov and Petrova 2007)</li>
+</ul>
+
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00048">48</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a3b35ba971d413c30be9a18f02b2f2624"></a>
 <div class="memitem">
 <div class="memproto">
@@ -391,12 +441,12 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a366dfeec18fb4e897c7cf028a7cb6963"></a>
+<a class="anchor" id="a3e7c8b0bd22212e2e1373c58cc52e070"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">integer, dimension(<a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a>) parameters_2d::limiter</td>
+          <td class="memname">integer, dimension(:), allocatable parameters_2d::limiter</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -410,7 +460,7 @@ Public Attributes</h2></td></tr>
 <li>'van_leer' =&gt; monotonized central-difference limiter (van Leer, 1977)</li>
 </ul>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00062">62</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00101">101</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -440,23 +490,23 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00051">51</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00090">90</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a465fa308921cc352123749f008a4e53d"></a>
+<a class="anchor" id="af26394560f6de98a227e85f8463774eb"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">integer, parameter parameters_2d::n_eqns = <a class="el" href="classparameters__2d.html#a7bdf7570e0e8117a4edbd1c22699733f">n_vars</a></td>
+          <td class="memname">integer parameters_2d::n_eqns</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Number of equations. </p>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00045">45</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00084">84</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -472,7 +522,7 @@ Public Attributes</h2></td></tr>
 
 <p>Number of non-hyperbolic terms. </p>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00047">47</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00086">86</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -488,23 +538,23 @@ Public Attributes</h2></td></tr>
 
 <p>Runge-Kutta order. </p>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00049">49</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00088">88</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a7bdf7570e0e8117a4edbd1c22699733f"></a>
+<a class="anchor" id="ac4ac1bcb3b2b2d9054234f6acc8b2fd2"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">integer, parameter parameters_2d::n_vars = 3</td>
+          <td class="memname">integer parameters_2d::n_vars</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Number of conservative variables. </p>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00044">44</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00083">83</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -521,6 +571,42 @@ Public Attributes</h2></td></tr>
 <p>Slope coefficient in the linear reconstruction. </p>
 
 <p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00018">18</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7c0b10242c47c1d8fd4f37684c4baaf2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real*8 parameters_2d::released_volume</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initial volume of the flow. </p>
+
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00063">63</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af21c3a272270fc5b0178f20ce337b92d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">logical parameters_2d::rheology_flag</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Flag to choose if we add the rheology. </p>
+<ul>
+<li>T =&gt; Voellmy-Salm rheology</li>
+<li>F =&gt; no rheology</li>
+</ul>
+
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00054">54</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -562,7 +648,23 @@ Public Attributes</h2></td></tr>
 <li>'KT' =&gt; Kurganov and Tadmor semidiscrete scheme;</li>
 </ul>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00069">69</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00108">108</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab47203e24a4735295878d4cde5e4da4f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real*8 parameters_2d::t_ambient</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Ambient temperature. </p>
+
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00081">81</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -578,7 +680,23 @@ Public Attributes</h2></td></tr>
 
 <p>end time for the run </p>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00073">73</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00112">112</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad9a084f828986bf2de149e751531d7ce"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real*8 parameters_2d::t_init</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initial temperature of the pile of material. </p>
+
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00078">78</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -594,7 +712,7 @@ Public Attributes</h2></td></tr>
 
 <p>time of the next output </p>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00074">74</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00113">113</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -610,7 +728,27 @@ Public Attributes</h2></td></tr>
 
 <p>initial time for the run </p>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00072">72</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00111">111</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa87dd0bab4f6e71963131a1e0ffdfa54"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">logical parameters_2d::temperature_flag</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Flag to choose if we model temperature transport. </p>
+<ul>
+<li>T =&gt; Solve for transport equation for the temperature</li>
+<li>F =&gt; Do no solve for transport equation for the temperature</li>
+</ul>
+
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00060">60</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -626,7 +764,7 @@ Public Attributes</h2></td></tr>
 
 <p>Van Leer limiter parameter. </p>
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00071">71</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00110">110</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -640,7 +778,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00053">53</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00092">92</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -654,7 +792,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00054">54</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00093">93</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -698,6 +836,38 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="acc197762b33a635a15d1fe320a2e913b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real*8 parameters_2d::velocity_ang_release</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initial velocity direction (angle in degree, departing from positive x-axis) </p>
+
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00075">75</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a62367a0db6c1b04e6e21209d28b667aa"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real*8 parameters_2d::velocity_mod_release</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initial velocity module of the pile. </p>
+
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00072">72</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a63d5ea2735213417fb2f517a2bd1cbde"></a>
 <div class="memitem">
 <div class="memproto">
@@ -708,7 +878,39 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00077">77</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00116">116</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a08f9a7340cc2307462aec5db4e308916"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real*8 parameters_2d::x_release</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initial x-coordiante of the pile. </p>
+
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00066">66</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="addc9b42f5b28cf514551f83f8bce26be"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real*8 parameters_2d::y_release</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initial y-coordinate of the pile. </p>
+
+<p>Definition at line <a class="el" href="parameters__2d_8f90_source.html#l00069">69</a> of file <a class="el" href="parameters__2d_8f90_source.html">parameters_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -718,7 +920,7 @@ Public Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 16 2016 16:30:50 for IMEX_SfloW2D by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 5 2017 10:13:27 for IMEX_SfloW2D by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.7
 </small></address>

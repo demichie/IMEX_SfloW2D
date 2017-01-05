@@ -1,4 +1,5 @@
 <map id="init_2d::thickness_function" name="init_2d::thickness_function">
 <area shape="rect" id="node2" href="$classinit__2d.html#a342c01831ee7cf4027108b6f46181c6b" title="Problem initialization. " alt="" coords="179,12,343,39"/>
-<area shape="rect" id="node3" href="$IMEX__Sflow__2d_8f90.html#a25dafd83c863a358fdd1aa4541d30366" title="Github project page: http://demichie.github.io/IMEX_SfloW2D/ &#160;. " alt="" coords="392,12,501,39"/>
+<area shape="rect" id="node3" href="$IMEX__Sflow__2d_8f90.html#a25dafd83c863a358fdd1aa4541d30366" title="Github project page: http://demichie.github.io/IMEX_SfloW2D/ &#160;. " alt="" coords="595,12,704,39"/>
+<area shape="rect" id="node4" href="$classinpout__2d.html#a550d7206dc407d4cd272a280a1ebf4c0" title="Read the input file. " alt="" coords="392,37,547,64"/>
 </map>

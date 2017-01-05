@@ -1,4 +1,4 @@
 <map id="solver_2d::eval_flux_kt" name="solver_2d::eval_flux_kt">
 <area shape="rect" id="node2" href="$classconstitutive__2d.html#a5ce4ce4e90ca32778e01475f11bcf9d4" title="Hyperbolic Fluxes. " alt="" coords="215,5,358,46"/>
-<area shape="rect" id="node3" href="$classsolver__2d.html#a7fd20d01bdf5e3cc282401c0c35f13ee" title="solver_2d::average_kt" alt="" coords="211,71,362,97"/>
+<area shape="rect" id="node3" href="$classsolver__2d.html#a7fd20d01bdf5e3cc282401c0c35f13ee" title="averaged KT flux " alt="" coords="211,71,362,97"/>
 </map>

@@ -1,3 +1,4 @@
 <map id="init_2d::initial_conditions" name="init_2d::initial_conditions">
-<area shape="rect" id="node2" href="$IMEX__Sflow__2d_8f90.html#a25dafd83c863a358fdd1aa4541d30366" title="Github project page: http://demichie.github.io/IMEX_SfloW2D/ &#160;. " alt="" coords="219,5,328,32"/>
+<area shape="rect" id="node2" href="$IMEX__Sflow__2d_8f90.html#a25dafd83c863a358fdd1aa4541d30366" title="Github project page: http://demichie.github.io/IMEX_SfloW2D/ &#160;. " alt="" coords="421,5,531,32"/>
+<area shape="rect" id="node3" href="$classinpout__2d.html#a550d7206dc407d4cd272a280a1ebf4c0" title="Read the input file. " alt="" coords="219,31,373,57"/>
 </map>

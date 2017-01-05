@@ -105,9 +105,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ada5156a6f6f7933f11c5da168d78f1f5"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#ada5156a6f6f7933f11c5da168d78f1f5">read_solution</a></td></tr>
 <tr class="memdesc:ada5156a6f6f7933f11c5da168d78f1f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the solution from the restart unit.  <a href="#ada5156a6f6f7933f11c5da168d78f1f5">More...</a><br /></td></tr>
 <tr class="separator:ada5156a6f6f7933f11c5da168d78f1f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae94a620094ddfa94f15172a61b2eda50"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#ae94a620094ddfa94f15172a61b2eda50">output_solution</a> (t)</td></tr>
-<tr class="memdesc:ae94a620094ddfa94f15172a61b2eda50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the solution on the output unit.  <a href="#ae94a620094ddfa94f15172a61b2eda50">More...</a><br /></td></tr>
-<tr class="separator:ae94a620094ddfa94f15172a61b2eda50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78e9782c7d8c6a80753bf069da7bb88f"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a78e9782c7d8c6a80753bf069da7bb88f">output_solution</a> (time)</td></tr>
+<tr class="memdesc:a78e9782c7d8c6a80753bf069da7bb88f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the solution on the output unit.  <a href="#a78e9782c7d8c6a80753bf069da7bb88f">More...</a><br /></td></tr>
+<tr class="separator:a78e9782c7d8c6a80753bf069da7bb88f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba935f2d6d97acd4baef8c22f97b21fa"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#aba935f2d6d97acd4baef8c22f97b21fa">output_esri</a> (<a class="el" href="classinpout__2d.html#a9bd7cec385615b5ffcb2c081e545b3bc">output_idx</a>)</td></tr>
 <tr class="memdesc:aba935f2d6d97acd4baef8c22f97b21fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the thickness in ESRI format.  <a href="#aba935f2d6d97acd4baef8c22f97b21fa">More...</a><br /></td></tr>
 <tr class="separator:aba935f2d6d97acd4baef8c22f97b21fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -185,30 +185,38 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:aa1d436b1474e42b86a2b21a13aac8edc"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#aa1d436b1474e42b86a2b21a13aac8edc">output_cons_flag</a></td></tr>
 <tr class="memdesc:aa1d436b1474e42b86a2b21a13aac8edc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag to save the conservative variables on file *.q_2d.  <a href="#aa1d436b1474e42b86a2b21a13aac8edc">More...</a><br /></td></tr>
 <tr class="separator:aa1d436b1474e42b86a2b21a13aac8edc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4380cf0cd7bb0c196621b2a81797648"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#ae4380cf0cd7bb0c196621b2a81797648">hb_bcl</a></td></tr>
-<tr class="separator:ae4380cf0cd7bb0c196621b2a81797648"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b84e3a6d55a0c3b1ee86c2719577d63"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a7b84e3a6d55a0c3b1ee86c2719577d63">u_bcl</a></td></tr>
-<tr class="separator:a7b84e3a6d55a0c3b1ee86c2719577d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1de5ae567309add5d9e1b9cbbc612fd6"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a1de5ae567309add5d9e1b9cbbc612fd6">v_bcl</a></td></tr>
-<tr class="separator:a1de5ae567309add5d9e1b9cbbc612fd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43a35d81c728017d92510a66dcfd78ac"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a43a35d81c728017d92510a66dcfd78ac">hb_bcr</a></td></tr>
-<tr class="separator:a43a35d81c728017d92510a66dcfd78ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba602e1bb4ea4a66be73eddbb7e1bc6d"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#aba602e1bb4ea4a66be73eddbb7e1bc6d">u_bcr</a></td></tr>
-<tr class="separator:aba602e1bb4ea4a66be73eddbb7e1bc6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4b59e95c0ef2e7c812f1e49c9c3afb5"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#af4b59e95c0ef2e7c812f1e49c9c3afb5">v_bcr</a></td></tr>
-<tr class="separator:af4b59e95c0ef2e7c812f1e49c9c3afb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1b86878397407ae8a000bdab941c9a2"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#ae1b86878397407ae8a000bdab941c9a2">hb_bcd</a></td></tr>
-<tr class="separator:ae1b86878397407ae8a000bdab941c9a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abed060f92c317e33e7a6df3ca0c79c95"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#abed060f92c317e33e7a6df3ca0c79c95">u_bcd</a></td></tr>
-<tr class="separator:abed060f92c317e33e7a6df3ca0c79c95"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af59f44d4b8c5892d7c7d45c2c91af2ba"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#af59f44d4b8c5892d7c7d45c2c91af2ba">v_bcd</a></td></tr>
-<tr class="separator:af59f44d4b8c5892d7c7d45c2c91af2ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a120ab8787b64f02fe58a21eadf3f12fe"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a120ab8787b64f02fe58a21eadf3f12fe">hb_bcu</a></td></tr>
-<tr class="separator:a120ab8787b64f02fe58a21eadf3f12fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4d9720b6ba7745629c4a87acdd26210"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#ae4d9720b6ba7745629c4a87acdd26210">u_bcu</a></td></tr>
-<tr class="separator:ae4d9720b6ba7745629c4a87acdd26210"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae820c39889b30d89c5f7b064d800cada"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#ae820c39889b30d89c5f7b064d800cada">v_bcu</a></td></tr>
-<tr class="separator:ae820c39889b30d89c5f7b064d800cada"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac72093793da8fa48a0fd7861d5d0dd83"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#ac72093793da8fa48a0fd7861d5d0dd83">hb_bcw</a></td></tr>
+<tr class="separator:ac72093793da8fa48a0fd7861d5d0dd83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10ce0d66b28fd18bfe47b476e787fe0d"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a10ce0d66b28fd18bfe47b476e787fe0d">u_bcw</a></td></tr>
+<tr class="separator:a10ce0d66b28fd18bfe47b476e787fe0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7222c2b0b39b9e87ec7c5a8b6e33e8aa"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a7222c2b0b39b9e87ec7c5a8b6e33e8aa">v_bcw</a></td></tr>
+<tr class="separator:a7222c2b0b39b9e87ec7c5a8b6e33e8aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a994582b6c0d6af7d03f7c163c1e61f5e"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a994582b6c0d6af7d03f7c163c1e61f5e">t_bcw</a></td></tr>
+<tr class="separator:a994582b6c0d6af7d03f7c163c1e61f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29af8b31dec25578a412de6d102c846a"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a29af8b31dec25578a412de6d102c846a">hb_bce</a></td></tr>
+<tr class="separator:a29af8b31dec25578a412de6d102c846a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57a43d4a12d76cb294e323645d620287"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a57a43d4a12d76cb294e323645d620287">u_bce</a></td></tr>
+<tr class="separator:a57a43d4a12d76cb294e323645d620287"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4444911bf58d654b7d317ae8a23268d7"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a4444911bf58d654b7d317ae8a23268d7">v_bce</a></td></tr>
+<tr class="separator:a4444911bf58d654b7d317ae8a23268d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affc8831132bd1baa6fb5ab26633c7e4a"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#affc8831132bd1baa6fb5ab26633c7e4a">t_bce</a></td></tr>
+<tr class="separator:affc8831132bd1baa6fb5ab26633c7e4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a278ad013dac09af3cc5a7ef1633b645e"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a278ad013dac09af3cc5a7ef1633b645e">hb_bcs</a></td></tr>
+<tr class="separator:a278ad013dac09af3cc5a7ef1633b645e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4f4e02f5b9e3d1f91f700ad25591012"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#ab4f4e02f5b9e3d1f91f700ad25591012">u_bcs</a></td></tr>
+<tr class="separator:ab4f4e02f5b9e3d1f91f700ad25591012"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19806877b46660dedd0e9d3028de52cd"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a19806877b46660dedd0e9d3028de52cd">v_bcs</a></td></tr>
+<tr class="separator:a19806877b46660dedd0e9d3028de52cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9900e0d875c8e9fba35747bb8d73103e"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a9900e0d875c8e9fba35747bb8d73103e">t_bcs</a></td></tr>
+<tr class="separator:a9900e0d875c8e9fba35747bb8d73103e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2cfc793a8f58918d912c861b587b28b"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#ad2cfc793a8f58918d912c861b587b28b">hb_bcn</a></td></tr>
+<tr class="separator:ad2cfc793a8f58918d912c861b587b28b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac19d347af6fa9bf6cbf77e73de618052"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#ac19d347af6fa9bf6cbf77e73de618052">u_bcn</a></td></tr>
+<tr class="separator:ac19d347af6fa9bf6cbf77e73de618052"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a050ebfde001d18d988779dbb1cbf1688"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a050ebfde001d18d988779dbb1cbf1688">v_bcn</a></td></tr>
+<tr class="separator:a050ebfde001d18d988779dbb1cbf1688"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65c4e6e0ed80f8016ea4bbc732499750"><td class="memItemLeft" align="right" valign="top">type(bc)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a65c4e6e0ed80f8016ea4bbc732499750">t_bcn</a></td></tr>
+<tr class="separator:a65c4e6e0ed80f8016ea4bbc732499750"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf641ccce4038adca0699bfe4b8f6289"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#acf641ccce4038adca0699bfe4b8f6289">ncols</a></td></tr>
 <tr class="separator:acf641ccce4038adca0699bfe4b8f6289"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62705040f57d43e791c1c906ddd4cf9e"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classinpout__2d.html#a62705040f57d43e791c1c906ddd4cf9e">nrows</a></td></tr>
@@ -242,7 +250,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00896">896</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l01371">1371</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -272,7 +280,7 @@ Here is the caller graph for this function:</div>
 <p>This subroutine initialize the input variables with default values that solve for a Riemann problem. If the input file does not exist one is created with the default values. </p><dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00146">146</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00161">161</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -309,14 +317,14 @@ Here is the caller graph for this function:</div>
 <dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00916">916</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l01391">1391</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classinpout__2d_a2419dc0fbfd31936d345cfffd3dcbc0d_icgraph.png" border="0" usemap="#classinpout__2d_a2419dc0fbfd31936d345cfffd3dcbc0d_icgraph" alt=""/></div>
 <map name="classinpout__2d_a2419dc0fbfd31936d345cfffd3dcbc0d_icgraph" id="classinpout__2d_a2419dc0fbfd31936d345cfffd3dcbc0d_icgraph">
-<area shape="rect" id="node2" href="classinpout__2d.html#ae94a620094ddfa94f15172a61b2eda50" title="Write the solution on the output unit. " alt="" coords="377,5,551,32"/><area shape="rect" id="node4" href="classinpout__2d.html#aba935f2d6d97acd4baef8c22f97b21fa" title="Write the thickness in ESRI format. " alt="" coords="177,31,327,57"/><area shape="rect" id="node3" href="IMEX__Sflow__2d_8f90.html#a25dafd83c863a358fdd1aa4541d30366" title="Github project page: http://demichie.github.io/IMEX_SfloW2D/ &#160;. " alt="" coords="600,5,709,32"/></map>
+<area shape="rect" id="node2" href="classinpout__2d.html#a78e9782c7d8c6a80753bf069da7bb88f" title="Write the solution on the output unit. " alt="" coords="377,5,551,32"/><area shape="rect" id="node4" href="classinpout__2d.html#aba935f2d6d97acd4baef8c22f97b21fa" title="Write the thickness in ESRI format. " alt="" coords="177,31,327,57"/><area shape="rect" id="node3" href="IMEX__Sflow__2d_8f90.html#a25dafd83c863a358fdd1aa4541d30366" title="Github project page: http://demichie.github.io/IMEX_SfloW2D/ &#160;. " alt="" coords="600,5,709,32"/></map>
 </div>
 </p>
 
@@ -335,7 +343,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00937">937</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l01412">1412</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -372,7 +380,7 @@ Here is the caller graph for this function:</div>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>15/12/2016 </dd></dl>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00830">830</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l01286">1286</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -388,13 +396,13 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classinpout__2d_aba935f2d6d97acd4baef8c22f97b21fa_icgraph.png" border="0" usemap="#classinpout__2d_aba935f2d6d97acd4baef8c22f97b21fa_icgraph" alt=""/></div>
 <map name="classinpout__2d_aba935f2d6d97acd4baef8c22f97b21fa_icgraph" id="classinpout__2d_aba935f2d6d97acd4baef8c22f97b21fa_icgraph">
-<area shape="rect" id="node2" href="classinpout__2d.html#ae94a620094ddfa94f15172a61b2eda50" title="Write the solution on the output unit. " alt="" coords="206,5,381,32"/><area shape="rect" id="node3" href="IMEX__Sflow__2d_8f90.html#a25dafd83c863a358fdd1aa4541d30366" title="Github project page: http://demichie.github.io/IMEX_SfloW2D/ &#160;. " alt="" coords="429,5,539,32"/></map>
+<area shape="rect" id="node2" href="classinpout__2d.html#a78e9782c7d8c6a80753bf069da7bb88f" title="Write the solution on the output unit. " alt="" coords="206,5,381,32"/><area shape="rect" id="node3" href="IMEX__Sflow__2d_8f90.html#a25dafd83c863a358fdd1aa4541d30366" title="Github project page: http://demichie.github.io/IMEX_SfloW2D/ &#160;. " alt="" coords="429,5,539,32"/></map>
 </div>
 </p>
 
 </div>
 </div>
-<a class="anchor" id="ae94a620094ddfa94f15172a61b2eda50"></a>
+<a class="anchor" id="a78e9782c7d8c6a80753bf069da7bb88f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -402,7 +410,7 @@ Here is the caller graph for this function:</div>
           <td class="memname">subroutine inpout_2d::output_solution </td>
           <td>(</td>
           <td class="paramtype">real*8, intent(in)&#160;</td>
-          <td class="paramname"><em>t</em></td><td>)</td>
+          <td class="paramname"><em>time</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -418,13 +426,13 @@ Here is the caller graph for this function:</div>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00701">701</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l01137">1137</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="classinpout__2d_ae94a620094ddfa94f15172a61b2eda50_cgraph.png" border="0" usemap="#classinpout__2d_ae94a620094ddfa94f15172a61b2eda50_cgraph" alt=""/></div>
-<map name="classinpout__2d_ae94a620094ddfa94f15172a61b2eda50_cgraph" id="classinpout__2d_ae94a620094ddfa94f15172a61b2eda50_cgraph">
+<div class="center"><img src="classinpout__2d_a78e9782c7d8c6a80753bf069da7bb88f_cgraph.png" border="0" usemap="#classinpout__2d_a78e9782c7d8c6a80753bf069da7bb88f_cgraph" alt=""/></div>
+<map name="classinpout__2d_a78e9782c7d8c6a80753bf069da7bb88f_cgraph" id="classinpout__2d_a78e9782c7d8c6a80753bf069da7bb88f_cgraph">
 <area shape="rect" id="node2" href="classconstitutive__2d.html#aa38b7de1baa7a734227a0aa5bf9548bf" title="Conservative to physical variables. " alt="" coords="239,5,371,46"/><area shape="rect" id="node4" href="classinpout__2d.html#a2419dc0fbfd31936d345cfffd3dcbc0d" title="Numeric to String conversion. " alt="" coords="453,96,576,123"/><area shape="rect" id="node5" href="classinpout__2d.html#aba935f2d6d97acd4baef8c22f97b21fa" title="Write the thickness in ESRI format. " alt="" coords="230,121,381,148"/><area shape="rect" id="node3" href="classconstitutive__2d.html#a42f0343ddf616b70de2f9ffdc20dbf8d" title="Physical variables. " alt="" coords="429,12,600,39"/></map>
 </div>
 </p>
@@ -432,8 +440,8 @@ Here is the call graph for this function:</div>
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="classinpout__2d_ae94a620094ddfa94f15172a61b2eda50_icgraph.png" border="0" usemap="#classinpout__2d_ae94a620094ddfa94f15172a61b2eda50_icgraph" alt=""/></div>
-<map name="classinpout__2d_ae94a620094ddfa94f15172a61b2eda50_icgraph" id="classinpout__2d_ae94a620094ddfa94f15172a61b2eda50_icgraph">
+<div class="center"><img src="classinpout__2d_a78e9782c7d8c6a80753bf069da7bb88f_icgraph.png" border="0" usemap="#classinpout__2d_a78e9782c7d8c6a80753bf069da7bb88f_icgraph" alt=""/></div>
+<map name="classinpout__2d_a78e9782c7d8c6a80753bf069da7bb88f_icgraph" id="classinpout__2d_a78e9782c7d8c6a80753bf069da7bb88f_icgraph">
 <area shape="rect" id="node2" href="IMEX__Sflow__2d_8f90.html#a25dafd83c863a358fdd1aa4541d30366" title="Github project page: http://demichie.github.io/IMEX_SfloW2D/ &#160;. " alt="" coords="229,5,339,32"/></map>
 </div>
 </p>
@@ -457,7 +465,16 @@ Here is the caller graph for this function:</div>
 <p>This subroutine read the input parameters from the file "two_phases.inp" and write a backup file of the input parameters with name "run_name.bak", where run_name is read from the input file. </p><dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00323">323</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00350">350</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classinpout__2d_a550d7206dc407d4cd272a280a1ebf4c0_cgraph.png" border="0" usemap="#classinpout__2d_a550d7206dc407d4cd272a280a1ebf4c0_cgraph" alt=""/></div>
+<map name="classinpout__2d_a550d7206dc407d4cd272a280a1ebf4c0_cgraph" id="classinpout__2d_a550d7206dc407d4cd272a280a1ebf4c0_cgraph">
+<area shape="rect" id="node2" href="classinit__2d.html#a342c01831ee7cf4027108b6f46181c6b" title="Problem initialization. " alt="" coords="209,143,373,169"/><area shape="rect" id="node3" href="classconstitutive__2d.html#a3b66666c5794e7c491a3d915e600cbb4" title="Physical to conservative variables. " alt="" coords="425,5,557,46"/><area shape="rect" id="node4" href="classinit__2d.html#ad6af814fb7b1ec8373e9ce50feaf21ec" title="Thickness function. " alt="" coords="429,70,553,111"/><area shape="rect" id="node5" href="classinit__2d.html#ab77321bc11e740a957ff87cd76be9e5b" title="Velocity u function. " alt="" coords="427,135,554,177"/><area shape="rect" id="node6" href="classinit__2d.html#aa000f5c6438f05cad83cd5619b9c7d82" title="Velocity v function. " alt="" coords="427,201,554,242"/><area shape="rect" id="node7" href="classinit__2d.html#a5be914c663c1e32032268fdbe29845ba" title="Temperature function. " alt="" coords="422,266,559,307"/></map>
+</div>
+</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -487,14 +504,14 @@ Here is the caller graph for this function:</div>
 <p>This subroutine is called when the parameter "restart" in the input file is TRUE. Then the initial solution is read from a file. </p><dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00628">628</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00920">920</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classinpout__2d_ada5156a6f6f7933f11c5da168d78f1f5_cgraph.png" border="0" usemap="#classinpout__2d_ada5156a6f6f7933f11c5da168d78f1f5_cgraph" alt=""/></div>
 <map name="classinpout__2d_ada5156a6f6f7933f11c5da168d78f1f5_cgraph" id="classinpout__2d_ada5156a6f6f7933f11c5da168d78f1f5_cgraph">
-<area shape="rect" id="node2" href="classgeometry__2d.html#aac4d5b367bcc8719c1bb55c41a221c1b" title="Finite volume grid initialization. " alt="" coords="217,45,367,72"/><area shape="rect" id="node5" href="classsolver__2d.html#a5f387c3d0986fec817ad63c0f06bd845" title="Memory allocation. " alt="" coords="227,97,357,138"/><area shape="rect" id="node3" href="classgeometry__2d.html#abab6c7ba498d51dc92796575c49f40f9" title="Scalar interpolation. " alt="" coords="417,5,554,46"/><area shape="rect" id="node4" href="classgeometry__2d.html#afcc0e89e2af6e7ba493f19b28b748bd7" title="Scalar interpolation (2D) " alt="" coords="417,70,554,111"/></map>
+<area shape="rect" id="node2" href="classsolver__2d.html#a5f387c3d0986fec817ad63c0f06bd845" title="Memory allocation. " alt="" coords="216,5,347,46"/></map>
 </div>
 </p>
 
@@ -522,7 +539,7 @@ Here is the caller graph for this function:</div>
 
 <p>Backup input data unit. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00053">53</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00062">62</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -538,7 +555,7 @@ Here is the caller graph for this function:</div>
 
 <p>Backup file for the parameters. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00044">44</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00053">53</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -552,7 +569,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00104">104</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00113">113</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -568,7 +585,7 @@ Here is the caller graph for this function:</div>
 
 <p>Name of the dakota file. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00048">48</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00057">57</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -584,7 +601,7 @@ Here is the caller graph for this function:</div>
 
 <p>Dakota data unit. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00056">56</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00065">65</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -600,58 +617,58 @@ Here is the caller graph for this function:</div>
 
 <p>Computational grid Esri fmt unit. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00059">59</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00068">68</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ae1b86878397407ae8a000bdab941c9a2"></a>
+<a class="anchor" id="a29af8b31dec25578a412de6d102c846a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::hb_bcd</td>
+          <td class="memname">type(bc) inpout_2d::hb_bce</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00095">95</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00101">101</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ae4380cf0cd7bb0c196621b2a81797648"></a>
+<a class="anchor" id="ad2cfc793a8f58918d912c861b587b28b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::hb_bcl</td>
+          <td class="memname">type(bc) inpout_2d::hb_bcn</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00089">89</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00107">107</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a43a35d81c728017d92510a66dcfd78ac"></a>
+<a class="anchor" id="a278ad013dac09af3cc5a7ef1633b645e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::hb_bcr</td>
+          <td class="memname">type(bc) inpout_2d::hb_bcs</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00092">92</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00104">104</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a120ab8787b64f02fe58a21eadf3f12fe"></a>
+<a class="anchor" id="ac72093793da8fa48a0fd7861d5d0dd83"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::hb_bcu</td>
+          <td class="memname">type(bc) inpout_2d::hb_bcw</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -672,7 +689,7 @@ Here is the caller graph for this function:</div>
 
 <p>File with the run parameters. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00045">45</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00054">54</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -688,7 +705,7 @@ Here is the caller graph for this function:</div>
 
 <p>Input data unit. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00052">52</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00061">61</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -702,7 +719,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00102">102</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00111">111</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -716,7 +733,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00102">102</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00111">111</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -730,7 +747,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00102">102</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00111">111</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -750,7 +767,7 @@ Here is the caller graph for this function:</div>
 <li>F =&gt; do not write the conservative variables</li>
 </ul>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00086">86</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00095">95</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -766,7 +783,7 @@ Here is the caller graph for this function:</div>
 
 <p>Name of the esri output files. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00050">50</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00059">59</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -786,7 +803,7 @@ Here is the caller graph for this function:</div>
 <li>F =&gt; do not write esri file</li>
 </ul>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00074">74</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00083">83</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -802,7 +819,7 @@ Here is the caller graph for this function:</div>
 
 <p>Esri Output unit. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00058">58</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00067">67</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -818,7 +835,7 @@ Here is the caller graph for this function:</div>
 
 <p>Name of the output files. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00046">46</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00055">55</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -834,7 +851,7 @@ Here is the caller graph for this function:</div>
 
 <p>Name of the output files. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00049">49</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00058">58</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -850,7 +867,7 @@ Here is the caller graph for this function:</div>
 
 <p>Counter for the output files. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00062">62</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00071">71</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -870,7 +887,7 @@ Here is the caller graph for this function:</div>
 <li>F =&gt; do not write the physical variables</li>
 </ul>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00080">80</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00089">89</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -886,7 +903,7 @@ Here is the caller graph for this function:</div>
 
 <p>Output data unit. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00054">54</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00063">63</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -902,7 +919,7 @@ Here is the caller graph for this function:</div>
 
 <p>Output data 2D unit. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00057">57</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00066">66</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -919,11 +936,11 @@ Here is the caller graph for this function:</div>
 <p>Flag to start a run from a previous output:<br />
 . </p>
 <ul>
-<li>T =&gt; Restart from a previous output</li>
+<li>T =&gt; Restart from a previous output (.asc or .q_2d)</li>
 <li>F =&gt; Restart from initial condition read from two_phases.inp</li>
 </ul>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00068">68</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00077">77</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -939,7 +956,7 @@ Here is the caller graph for this function:</div>
 
 <p>Name of the restart file. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00047">47</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00056">56</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -955,7 +972,7 @@ Here is the caller graph for this function:</div>
 
 <p>Restart data unit. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00055">55</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00064">64</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -971,58 +988,58 @@ Here is the caller graph for this function:</div>
 
 <p>Name of the run. </p>
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00043">43</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00052">52</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="abed060f92c317e33e7a6df3ca0c79c95"></a>
+<a class="anchor" id="affc8831132bd1baa6fb5ab26633c7e4a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::u_bcd</td>
+          <td class="memname">type(bc) inpout_2d::t_bce</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00095">95</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00101">101</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a7b84e3a6d55a0c3b1ee86c2719577d63"></a>
+<a class="anchor" id="a65c4e6e0ed80f8016ea4bbc732499750"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::u_bcl</td>
+          <td class="memname">type(bc) inpout_2d::t_bcn</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00089">89</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00107">107</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aba602e1bb4ea4a66be73eddbb7e1bc6d"></a>
+<a class="anchor" id="a9900e0d875c8e9fba35747bb8d73103e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::u_bcr</td>
+          <td class="memname">type(bc) inpout_2d::t_bcs</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00092">92</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00104">104</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ae4d9720b6ba7745629c4a87acdd26210"></a>
+<a class="anchor" id="a994582b6c0d6af7d03f7c163c1e61f5e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::u_bcu</td>
+          <td class="memname">type(bc) inpout_2d::t_bcw</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1031,54 +1048,110 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a class="anchor" id="af59f44d4b8c5892d7c7d45c2c91af2ba"></a>
+<a class="anchor" id="a57a43d4a12d76cb294e323645d620287"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::v_bcd</td>
+          <td class="memname">type(bc) inpout_2d::u_bce</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00095">95</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00101">101</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a1de5ae567309add5d9e1b9cbbc612fd6"></a>
+<a class="anchor" id="ac19d347af6fa9bf6cbf77e73de618052"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::v_bcl</td>
+          <td class="memname">type(bc) inpout_2d::u_bcn</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00089">89</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00107">107</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="af4b59e95c0ef2e7c812f1e49c9c3afb5"></a>
+<a class="anchor" id="ab4f4e02f5b9e3d1f91f700ad25591012"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::v_bcr</td>
+          <td class="memname">type(bc) inpout_2d::u_bcs</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00092">92</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00104">104</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ae820c39889b30d89c5f7b064d800cada"></a>
+<a class="anchor" id="a10ce0d66b28fd18bfe47b476e787fe0d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">type(bc) inpout_2d::v_bcu</td>
+          <td class="memname">type(bc) inpout_2d::u_bcw</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00098">98</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4444911bf58d654b7d317ae8a23268d7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">type(bc) inpout_2d::v_bce</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00101">101</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a050ebfde001d18d988779dbb1cbf1688"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">type(bc) inpout_2d::v_bcn</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00107">107</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a19806877b46660dedd0e9d3028de52cd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">type(bc) inpout_2d::v_bcs</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00104">104</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7222c2b0b39b9e87ec7c5a8b6e33e8aa"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">type(bc) inpout_2d::v_bcw</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1097,7 +1170,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00104">104</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00113">113</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1111,7 +1184,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00104">104</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="inpout__2d_8f90_source.html#l00113">113</a> of file <a class="el" href="inpout__2d_8f90_source.html">inpout_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1121,7 +1194,7 @@ Here is the caller graph for this function:</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 16 2016 16:30:50 for IMEX_SfloW2D by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 5 2017 10:13:27 for IMEX_SfloW2D by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.7
 </small></address>

@@ -1,6 +1,3 @@
 <map id="inpout_2d::read_solution" name="inpout_2d::read_solution">
-<area shape="rect" id="node2" href="$classgeometry__2d.html#aac4d5b367bcc8719c1bb55c41a221c1b" title="Finite volume grid initialization. " alt="" coords="217,45,367,72"/>
-<area shape="rect" id="node5" href="$classsolver__2d.html#a5f387c3d0986fec817ad63c0f06bd845" title="Memory allocation. " alt="" coords="227,97,357,138"/>
-<area shape="rect" id="node3" href="$classgeometry__2d.html#abab6c7ba498d51dc92796575c49f40f9" title="Scalar interpolation. " alt="" coords="417,5,554,46"/>
-<area shape="rect" id="node4" href="$classgeometry__2d.html#afcc0e89e2af6e7ba493f19b28b748bd7" title="Scalar interpolation (2D) " alt="" coords="417,70,554,111"/>
+<area shape="rect" id="node2" href="$classsolver__2d.html#a5f387c3d0986fec817ad63c0f06bd845" title="Memory allocation. " alt="" coords="216,5,347,46"/>
 </map>

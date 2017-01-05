@@ -544,104 +544,103 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;    n1x = <span class="keyword">SIZE</span>(x1,1)</div>
 <div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;    n2x = <span class="keyword">SIZE</span>(x1,2)</div>
 <div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;</div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;    n=1</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;    n=2</div>
 <div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;</div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;    <span class="keywordflow">DO</span> <span class="keywordflow">WHILE</span> (x2.GT.x1(n,1))</div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;       n=n+1</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;</div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;    <span class="keywordflow">ENDDO</span></div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;</div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;    m=1</div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;    <span class="keywordflow">DO</span> <span class="keywordflow">WHILE</span> (y2.GT.y1(1,m))</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;</div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;       m=m+1</div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;    <span class="keywordflow">ENDDO</span></div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;</div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;    p = ( x2-x1(n-1,m) ) / ( x1(n,m) - x1(n-1,m) )</div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;</div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;    q = ( y2-y1(n,m-1) ) / ( y1(n,m) - y1(n,m-1) )</div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;</div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;    f2 = ( 1.d0 - q ) * ( ( 1.d0 - p ) * f1(n-1,m-1) + p * f1(n,m-1) ) +        &amp;</div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;         q * ( ( 1.d0 - p ) * f1(n-1,m) + p * f1(n,m) )</div>
-<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;</div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;<span class="keyword">  END SUBROUTINE </span><a class="code" href="classgeometry__2d.html#afcc0e89e2af6e7ba493f19b28b748bd7">interp_2d_scalar</a></div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;    <span class="keywordflow">DO</span> <span class="keywordflow">WHILE</span> (x2.GT.x1(n,1))</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;       n=n+1</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;    <span class="keywordflow">ENDDO</span></div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;</div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;    m=2</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;    <span class="keywordflow">DO</span> <span class="keywordflow">WHILE</span> (y2.GT.y1(1,m))</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;       m=m+1</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;</div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;    <span class="keywordflow">ENDDO</span></div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;    p = ( x2-x1(n-1,m) ) / ( x1(n,m) - x1(n-1,m) )</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;</div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;    q = ( y2-y1(n,m-1) ) / ( y1(n,m) - y1(n,m-1) )</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;</div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;    f2 = ( 1.d0 - q ) * ( ( 1.d0 - p ) * f1(n-1,m-1) + p * f1(n,m-1) ) +        &amp;</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;         q * ( ( 1.d0 - p ) * f1(n-1,m) + p * f1(n,m) )</div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;<span class="keyword">  END SUBROUTINE </span><a class="code" href="classgeometry__2d.html#afcc0e89e2af6e7ba493f19b28b748bd7">interp_2d_scalar</a></div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;</div>
 <div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;</div>
-<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;</div>
-<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;  <span class="comment">!------------------------------------------------------------------------------</span></div>
-<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;  <span class="comment">!</span></div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;  <span class="comment">!------------------------------------------------------------------------------</span></div>
-<div class="line"><a name="l00531"></a><span class="lineno"><a class="line" href="classgeometry__2d.html#a9bef4e2fe8d5fad7907e8993ced8f3cc">  531</a></span>&#160;<span class="keyword">  REAL*8 </span><span class="keyword">FUNCTION </span><a class="code" href="classgeometry__2d.html#a9bef4e2fe8d5fad7907e8993ced8f3cc">topography_function</a>(x,y)</div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;    <span class="keywordtype">IMPLICIT NONE</span></div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;</div>
-<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;    <span class="keywordtype">REAL*8</span>, <span class="keywordtype">INTENT(IN)</span> :: x,y</div>
-<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;</div>
-<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;    <span class="keywordtype">REAL*8</span>, <span class="keywordtype">PARAMETER</span> :: pig = 4.0*atan(1.0)</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;    <span class="keywordtype">REAL*8</span>, <span class="keywordtype">PARAMETER</span> :: eps_dis = 1.d-8</div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;    <span class="keywordtype">REAL*8</span> :: a</div>
-<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;</div>
-<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;    <span class="comment">! example 1D from Kurganov and Petrova 2007    </span></div>
-<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;    <span class="comment">!IF(y.LT.0.0)THEN</span></div>
-<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;    <span class="comment">!  topography_function = 1.d0</span></div>
-<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;    <span class="comment">!ELSEIF(y.GE.0.0.AND.y.LE.0.4)THEN</span></div>
-<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;    <span class="comment">!  topography_function = COS(pig*y)**2</span></div>
-<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;    <span class="comment">!ELSEIF(y.GT.0.4.AND.y.LE.0.5)THEN </span></div>
-<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;    <span class="comment">!  topography_function = COS(pig*y)**2+0.25*(COS(10.0*pig*(y-0.5))+1)</span></div>
-<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;    <span class="comment">!ELSEIF(y.GT.0.5.AND.y.LE.0.6)THEN</span></div>
-<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;    <span class="comment">!  topography_function = 0.5*COS(pig*y)**4+0.25*(COS(10.0*pig*(y-0.5))+1)</span></div>
-<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;    <span class="comment">!ELSEIF(y.GT.0.6.AND.y.LT.1.0-eps_dis)THEN</span></div>
-<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;    <span class="comment">!  topography_function = 0.5*COS(pig*y)**4</span></div>
-<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;    <span class="comment">!ELSEIF(y.GE.1.0-eps_dis.AND.y.LE.1.0+eps_dis)THEN</span></div>
-<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;    <span class="comment">!  topography_function = 0.25</span></div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;    <span class="comment">!ELSEIF(y.GT.1.0+eps_dis.AND.y.LE.1.5)THEN</span></div>
-<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;    <span class="comment">!  topography_function = 0.25*SIN(2*pig*(y-1))</span></div>
-<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;    <span class="comment">!ELSE</span></div>
-<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;    <span class="comment">!  topography_function = 0.d0</span></div>
-<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;    <span class="comment">!</span></div>
-<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;    <span class="comment">!ENDIF</span></div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;  <span class="comment">!------------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;  <span class="comment">!</span></div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;  <span class="comment">!------------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00530"></a><span class="lineno"><a class="line" href="classgeometry__2d.html#a9bef4e2fe8d5fad7907e8993ced8f3cc">  530</a></span>&#160;<span class="keyword">  REAL*8 </span><span class="keyword">FUNCTION </span><a class="code" href="classgeometry__2d.html#a9bef4e2fe8d5fad7907e8993ced8f3cc">topography_function</a>(x,y)</div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;    <span class="keywordtype">IMPLICIT NONE</span></div>
+<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;</div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;    <span class="keywordtype">REAL*8</span>, <span class="keywordtype">INTENT(IN)</span> :: x,y</div>
+<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;</div>
+<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;    <span class="keywordtype">REAL*8</span>, <span class="keywordtype">PARAMETER</span> :: pig = 4.0*atan(1.0)</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;    <span class="keywordtype">REAL*8</span>, <span class="keywordtype">PARAMETER</span> :: eps_dis = 1.d-8</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;    <span class="keywordtype">REAL*8</span> :: a</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;    <span class="comment">! example 1D from Kurganov and Petrova 2007    </span></div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;    <span class="comment">!IF(y.LT.0.0)THEN</span></div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;    <span class="comment">!  topography_function = 1.d0</span></div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;    <span class="comment">!ELSEIF(y.GE.0.0.AND.y.LE.0.4)THEN</span></div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;    <span class="comment">!  topography_function = COS(pig*y)**2</span></div>
+<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;    <span class="comment">!ELSEIF(y.GT.0.4.AND.y.LE.0.5)THEN </span></div>
+<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;    <span class="comment">!  topography_function = COS(pig*y)**2+0.25*(COS(10.0*pig*(y-0.5))+1)</span></div>
+<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;    <span class="comment">!ELSEIF(y.GT.0.5.AND.y.LE.0.6)THEN</span></div>
+<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;    <span class="comment">!  topography_function = 0.5*COS(pig*y)**4+0.25*(COS(10.0*pig*(y-0.5))+1)</span></div>
+<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;    <span class="comment">!ELSEIF(y.GT.0.6.AND.y.LT.1.0-eps_dis)THEN</span></div>
+<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;    <span class="comment">!  topography_function = 0.5*COS(pig*y)**4</span></div>
+<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;    <span class="comment">!ELSEIF(y.GE.1.0-eps_dis.AND.y.LE.1.0+eps_dis)THEN</span></div>
+<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;    <span class="comment">!  topography_function = 0.25</span></div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;    <span class="comment">!ELSEIF(y.GT.1.0+eps_dis.AND.y.LE.1.5)THEN</span></div>
+<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;    <span class="comment">!  topography_function = 0.25*SIN(2*pig*(y-1))</span></div>
+<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;    <span class="comment">!ELSE</span></div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;    <span class="comment">!  topography_function = 0.d0</span></div>
+<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;    <span class="comment">!</span></div>
+<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;    <span class="comment">!ENDIF</span></div>
+<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;</div>
 <div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;</div>
-<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;</div>
-<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;    <span class="comment">! example 2D from Kurganov and Petrova 2007    </span></div>
-<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;    <span class="keywordflow">IF</span>(abs(y).LE.0.5.AND.x.LE.(y-1.0)/2.0)<span class="keywordflow">THEN</span></div>
-<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;</div>
-<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;       a=y**2</div>
-<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;</div>
-<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;    <span class="keywordflow">ELSEIF</span>(abs(y).GT.0.5.AND.x.LE.(y-1.0)/2.0)<span class="keywordflow">THEN</span></div>
-<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;</div>
-<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;       a=y**2+0.1*sin(pig*x)</div>
-<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;</div>
-<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;    <span class="keywordflow">ELSE</span></div>
-<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160;</div>
-<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;       a=max(0.125,y**2+0.1*sin(pig*x))</div>
-<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;</div>
-<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;    <span class="keywordflow">ENDIF</span></div>
-<div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;</div>
-<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;    <a class="code" href="classgeometry__2d.html#a9bef4e2fe8d5fad7907e8993ced8f3cc">topography_function</a>=7.0/32.0*exp(-8.0*(x-0.3)**2-60.0*(y-0.1)**2)- &amp;</div>
-<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;         &amp; 1.0/8.0*exp(-30.0*(x+0.1)**2-90.0*(y+0.2)**2) + a</div>
-<div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160;</div>
-<div class="line"><a name="l00594"></a><span class="lineno">  594</span>&#160;<span class="keyword">  END FUNCTION </span><a class="code" href="classgeometry__2d.html#a9bef4e2fe8d5fad7907e8993ced8f3cc">topography_function</a></div>
+<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;    <span class="comment">! example 2D from Kurganov and Petrova 2007    </span></div>
+<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;    <span class="keywordflow">IF</span>(abs(y).LE.0.5.AND.x.LE.(y-1.0)/2.0)<span class="keywordflow">THEN</span></div>
+<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;</div>
+<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;       a=y**2</div>
+<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;</div>
+<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;    <span class="keywordflow">ELSEIF</span>(abs(y).GT.0.5.AND.x.LE.(y-1.0)/2.0)<span class="keywordflow">THEN</span></div>
+<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;</div>
+<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;       a=y**2+0.1*sin(pig*x)</div>
+<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;</div>
+<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;    <span class="keywordflow">ELSE</span></div>
+<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;</div>
+<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160;       a=max(0.125,y**2+0.1*sin(pig*x))</div>
+<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;</div>
+<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;    <span class="keywordflow">ENDIF</span></div>
+<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;</div>
+<div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;    <a class="code" href="classgeometry__2d.html#a9bef4e2fe8d5fad7907e8993ced8f3cc">topography_function</a>=7.0/32.0*exp(-8.0*(x-0.3)**2-60.0*(y-0.1)**2)- &amp;</div>
+<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;         &amp; 1.0/8.0*exp(-30.0*(x+0.1)**2-90.0*(y+0.2)**2) + a</div>
+<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;</div>
+<div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160;<span class="keyword">  END FUNCTION </span><a class="code" href="classgeometry__2d.html#a9bef4e2fe8d5fad7907e8993ced8f3cc">topography_function</a></div>
+<div class="line"><a name="l00594"></a><span class="lineno">  594</span>&#160;</div>
 <div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;</div>
-<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;</div>
-<div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160;<span class="keyword">END MODULE </span><a class="code" href="classgeometry__2d.html">geometry_2d</a></div>
-<div class="ttc" id="classgeometry__2d_html_a9bef4e2fe8d5fad7907e8993ced8f3cc"><div class="ttname"><a href="classgeometry__2d.html#a9bef4e2fe8d5fad7907e8993ced8f3cc">geometry_2d::topography_function</a></div><div class="ttdeci">real *8 function topography_function(x, y)</div><div class="ttdoc">Topography function. </div><div class="ttdef"><b>Definition:</b> <a href="geometry__2d_8f90_source.html#l00531">geometry_2d.f90:531</a></div></div>
+<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;<span class="keyword">END MODULE </span><a class="code" href="classgeometry__2d.html">geometry_2d</a></div>
+<div class="ttc" id="classgeometry__2d_html_a9bef4e2fe8d5fad7907e8993ced8f3cc"><div class="ttname"><a href="classgeometry__2d.html#a9bef4e2fe8d5fad7907e8993ced8f3cc">geometry_2d::topography_function</a></div><div class="ttdeci">real *8 function topography_function(x, y)</div><div class="ttdoc">Topography function. </div><div class="ttdef"><b>Definition:</b> <a href="geometry__2d_8f90_source.html#l00530">geometry_2d.f90:530</a></div></div>
 <div class="ttc" id="classgeometry__2d_html_abab6c7ba498d51dc92796575c49f40f9"><div class="ttname"><a href="classgeometry__2d.html#abab6c7ba498d51dc92796575c49f40f9">geometry_2d::interp_1d_scalar</a></div><div class="ttdeci">subroutine interp_1d_scalar(x1, f1, x2, f2)</div><div class="ttdoc">Scalar interpolation. </div><div class="ttdef"><b>Definition:</b> <a href="geometry__2d_8f90_source.html#l00424">geometry_2d.f90:424</a></div></div>
 <div class="ttc" id="classgeometry__2d_html_afcc0e89e2af6e7ba493f19b28b748bd7"><div class="ttname"><a href="classgeometry__2d.html#afcc0e89e2af6e7ba493f19b28b748bd7">geometry_2d::interp_2d_scalar</a></div><div class="ttdeci">subroutine interp_2d_scalar(x1, y1, f1, x2, y2, f2)</div><div class="ttdoc">Scalar interpolation (2D) </div><div class="ttdef"><b>Definition:</b> <a href="geometry__2d_8f90_source.html#l00482">geometry_2d.f90:482</a></div></div>
 <div class="ttc" id="classparameters__2d_html"><div class="ttname"><a href="classparameters__2d.html">parameters_2d</a></div><div class="ttdoc">Parameters. </div><div class="ttdef"><b>Definition:</b> <a href="parameters__2d_8f90_source.html#l00007">parameters_2d.f90:7</a></div></div>
@@ -650,7 +649,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 16 2016 16:30:50 for IMEX_SfloW2D by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 5 2017 10:13:26 for IMEX_SfloW2D by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.7
 </small></address>

@@ -10,8 +10,8 @@ var searchData=
   ['b_5fver',['b_ver',['../classgeometry__2d.html#a4989ace15ccaeb3d9c6f1d22bba250c2',1,'geometry_2d']]],
   ['backup_5funit',['backup_unit',['../classinpout__2d.html#aedce764bf7b500ba6a31562134d92f95',1,'inpout_2d']]],
   ['bak_5fname',['bak_name',['../classinpout__2d.html#af1fccdf10e33ffd8e3967063d403fac7',1,'inpout_2d']]],
-  ['bcd',['bcd',['../classparameters__2d.html#ab10aa30fee4c7f690d345ef56bc5f459',1,'parameters_2d']]],
-  ['bcl',['bcl',['../classparameters__2d.html#ad5a946c82ed0accfa3ff5ccab3ef8aed',1,'parameters_2d']]],
-  ['bcr',['bcr',['../classparameters__2d.html#aedd00a62d2e9fe274624dbadc263d984',1,'parameters_2d']]],
-  ['bcu',['bcu',['../classparameters__2d.html#a42c8a78256c7fbaa66c2dbd60cbcb120',1,'parameters_2d']]]
+  ['bce',['bce',['../classparameters__2d.html#aee9446026c60aa4937f1da60bda439f5',1,'parameters_2d']]],
+  ['bcn',['bcn',['../classparameters__2d.html#afda7adb43bac23a732e32b5a5edff6ad',1,'parameters_2d']]],
+  ['bcs',['bcs',['../classparameters__2d.html#ac30b304480dc5ffde8a43cf742cfde15',1,'parameters_2d']]],
+  ['bcw',['bcw',['../classparameters__2d.html#a1444c57edc9f76441464f8d4cbc19d6c',1,'parameters_2d']]]
 ];
