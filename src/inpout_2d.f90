@@ -991,7 +991,7 @@ CONTAINS
           
        END IF
        
-       IF ( DABS( xllcorner - (x0 + 0.5D0*cellsize) .GT. 1.D-5*cellsize ) THEN
+       IF ( DABS( xllcorner - (x0 + 0.5D0*cellsize) .GT. 1.D-5*cellsize ) ) THEN
           
           WRITE(*,*) 'xllcorner not equal to x0+0.5*cellsize', xllcorner ,      &
                x0+0.5*cellsize
@@ -999,7 +999,7 @@ CONTAINS
           
        END IF
        
-       IF ( DABS( yllcorner - (y0 + 0.5D0*cellsize) .GT. 1.D-5*cellsize ) THEN
+       IF ( DABS( yllcorner - (y0 + 0.5D0*cellsize) .GT. 1.D-5*cellsize ) ) THEN
           
           WRITE(*,*) 'yllcorner not equal to y0+0.5*cellsize', yllcorner ,      &
                y0+0.5*cellsize
