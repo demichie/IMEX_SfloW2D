@@ -4,7 +4,7 @@ var searchData=
   ['imex_5fsflow_5f2d',['imex_sflow_2d',['../IMEX__Sflow__2d_8f90.html#a25dafd83c863a358fdd1aa4541d30366',1,'IMEX_Sflow_2d.f90']]],
   ['imex_5fsflow_5f2d_2ef90',['IMEX_Sflow_2d.f90',['../IMEX__Sflow__2d_8f90.html',1,'']]],
   ['implicit_5fflag',['implicit_flag',['../classconstitutive__2d.html#a18500f572edf3bd02cf19c91294f4a16',1,'constitutive_2d']]],
-  ['imex_5fsflow_20_2d_20shallow_20water_20finite_20volume_20solver',['IMEX_SfloW - Shallow Water Finite volume solver',['../index.html',1,'']]],
+  ['imex_5fsflow2d_20_2d_20shallow_20water_20finite_20volume_20solver',['IMEX_SfloW2D - Shallow Water Finite volume solver',['../index.html',1,'']]],
   ['init_5f2d',['init_2d',['../classinit__2d.html',1,'']]],
   ['init_5f2d_2ef90',['init_2d.f90',['../init__2d_8f90.html',1,'']]],
   ['init_5fgrid',['init_grid',['../classgeometry__2d.html#aac4d5b367bcc8719c1bb55c41a221c1b',1,'geometry_2d']]],
