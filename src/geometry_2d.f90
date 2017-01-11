@@ -492,28 +492,60 @@ CONTAINS
     n1x = SIZE(x1,1)
     n2x = SIZE(x1,2)
 
-    n=2
+    IF ( n1x .EQ. 1 ) THEN 
 
-    DO WHILE (x2.GT.x1(n,1))
+       n = 1
 
-       n=n+1
+    ELSE
 
-    ENDDO
+       n=2
+       
+       DO WHILE (x2.GT.x1(n,1))
+          
+          n=n+1
+          
+       ENDDO
+       
+    END IF
 
-    m=2
+    IF ( n2x .EQ. 1 ) THEN
 
-    DO WHILE (y2.GT.y1(1,m))
+       m = 1
 
-       m=m+1
+    ELSE
 
-    ENDDO
+       m=2
+       
+       DO WHILE (y2.GT.y1(1,m))
+          
+          m=m+1
+          
+       ENDDO
 
-    p = ( x2-x1(n-1,m) ) / ( x1(n,m) - x1(n-1,m) )
+    END IF
+       
+    IF ( n1x .EQ. 1 ) THEN
 
-    q = ( y2-y1(n,m-1) ) / ( y1(n,m) - y1(n,m-1) )
+       q = ( y2-y1(n,m-1) ) / ( y1(n,m) - y1(n,m-1) )
+       
+       f2 = ( 1.d0 - q ) * f1(1,m-1) + q * f1(1,m)
+       
+    ELSEIF ( n2x .EQ. 1 ) THEN
 
-    f2 = ( 1.d0 - q ) * ( ( 1.d0 - p ) * f1(n-1,m-1) + p * f1(n,m-1) ) +        &
-         q * ( ( 1.d0 - p ) * f1(n-1,m) + p * f1(n,m) )
+       p = ( x2-x1(n-1,m) ) / ( x1(n,m) - x1(n-1,m) )
+       
+       f2 = ( 1.d0 - p ) * f1(n-1,1) + p * f1(n,1)
+       
+    ELSE
+      
+       p = ( x2-x1(n-1,m) ) / ( x1(n,m) - x1(n-1,m) )
+       
+       q = ( y2-y1(n,m-1) ) / ( y1(n,m) - y1(n,m-1) )
+       
+       f2 = ( 1.d0 - q ) * ( ( 1.d0 - p ) * f1(n-1,m-1) + p * f1(n,m-1) ) +        &
+            q * ( ( 1.d0 - p ) * f1(n-1,m) + p * f1(n,m) )
+       
+    END IF
 
   END SUBROUTINE interp_2d_scalar
 

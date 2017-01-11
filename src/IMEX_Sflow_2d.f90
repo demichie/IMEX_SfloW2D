@@ -1,8 +1,8 @@
 !********************************************************************************
-!> \mainpage   IMEX_SfloW - Shallow Water Finite volume solver
-!> IMEX_SfloW is a FORTRAN90 code designed to solve an hyperbolic 
+!> \mainpage   IMEX_SfloW2D - Shallow Water Finite volume solver
+!> IMEX_SfloW2D is a FORTRAN90 code designed to solve an hyperbolic 
 !> system of partial differential equations with relaxation and source
-!> terms. 
+!> terms.\n 
 !> The model is discretized in time with an explicit-implicit Runge-Kutta
 !> method where the hyperbolic part is solved explicetely and the other
 !> terms (relaxation and surce) are treated implicitely.\n
@@ -11,20 +11,17 @@
 !> eigenstructure of the model.\n
 !> The implicit part is solved with a Newton-Raphson method where the 
 !> elements of the Jacobian of the nonlinear system are evaluated 
-!> numerically with a complex step derivative technique.
+!> numerically with a complex step derivative technique.\n
 !> Version 1.0:\n
-! 
+!> \n 
 !> Github project page: http://demichie.github.io/IMEX_SfloW2D/
 !> \n
-!> \authors Mattia de' Michieli Vitturi (*,**), Giacomo Lari (***)\n
+!> \authors Mattia de' Michieli Vitturi (*), Giacomo Lari (**)\n
 !> (*) Istituto Nazionale di Geofisica e vulcanologia, sezione di Pisa\n
 !>     Via della Faggiola, 36\n
 !>     I-56126 Pisa, Italy \n
 !>     E-mail: mattia.demichielivitturi@ingv.it \n
-!> (**) School of Earth and Space Exploration, Arizona State University \n
-!>      Tempe, AZ, USA \n
-!>      E-mail: mdemichi@asu.edu \n
-!> (***) Dipartimento di Matematica, Università di Pisa\n
+!> (**) Dipartimento di Matematica, Università di Pisa\n
 !>       E-mail: lari@student.dm.unipi.it
 !********************************************************************************
 

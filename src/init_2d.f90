@@ -68,6 +68,9 @@ CONTAINS
 
     REAL*8 :: eps
 
+    IF ( verbose_level .GE. 1 ) WRITE(*,*) 'Riemann problem initialization'
+
+
     riemann_int_search:DO j = 1,comp_cells_x
 
        IF ( x_comp(j) .LT. riemann_interface ) THEN
@@ -91,6 +94,8 @@ CONTAINS
     IF ( temperature_flag ) qp(4,1:i1,:) = T_W
 
 
+    IF ( verbose_level .GE. 1 ) WRITE(*,*) 'Left state'
+
     DO j = 1,i1
 
        DO k = 1,comp_cells_y
@@ -100,17 +105,28 @@ CONTAINS
 
          q(1:n_vars,j,k) = qj
 
-         IF ( verbose_level .GE. 1 ) WRITE(*,*) j,k,B_cent(j,k),qp(:,j,k)
+         IF ( verbose_level .GE. 1 ) THEN 
+            
+            WRITE(*,*) j,k,B_cent(j,k)
+            WRITE(*,*) qp(:,j,k)
+            WRITE(*,*) q(1:n_vars,j,k)
+
+         END IF
 
        ENDDO
 
     END DO
+
+    IF ( verbose_level .GE. 1 ) READ(*,*)
 
     ! Right initial state
     qp(1,i1+1:comp_cells_x,:) = hB_E
     qp(2,i1+1:comp_cells_x,:) = u_E
     qp(3,i1+1:comp_cells_x,:) = v_E
     IF ( temperature_flag ) qp(4,i1+1:comp_cells_x,:) = T_E
+
+
+    IF ( verbose_level .GE. 1 ) WRITE(*,*) 'Right state'
 
     DO j = i1+1,comp_cells_x
 
@@ -121,7 +137,13 @@ CONTAINS
 
          q(1:n_vars,j,k) = qj
 
-         IF ( verbose_level .GE. 1 ) WRITE(*,*) j,k,B_cent(j,k),qp(:,j,k)
+         IF ( verbose_level .GE. 1 ) THEN 
+            
+            WRITE(*,*) j,k,B_cent(j,k)
+            WRITE(*,*) qp(:,j,k)
+            WRITE(*,*) q(1:n_vars,j,k)
+
+         END IF
     
       END DO
 

@@ -113,6 +113,8 @@ MODULE inpout_2d
   REAL*8 :: xllcorner, yllcorner, cellsize
 
 
+  LOGICAL :: write_first_q
+
   NAMELIST / run_parameters / run_name , restart , topography_demfile ,         &
        t_start , t_end , dt_output , output_cons_flag , output_esri_flag ,      &
        output_phys_flag , verbose_level
@@ -125,9 +127,9 @@ MODULE inpout_2d
   NAMELIST / initial_conditions /  released_volume , x_release , y_release ,    &
        velocity_mod_release , velocity_ang_release , T_init , T_ambient
 
-  NAMELIST / left_state / hB_E , u_E , v_E
+  NAMELIST / left_state / hB_W , u_W , v_W
 
-  NAMELIST / right_state / hB_W , u_W , v_W
+  NAMELIST / right_state / hB_E , u_E , v_E
 
   NAMELIST / west_boundary_conditions / hB_bcW , u_bcW , v_bcW , T_bcW
 
@@ -188,10 +190,10 @@ CONTAINS
 
     !-- Inizialization of the Variables for the namelist newrun_parameters
     x0 = 0.D0
-    comp_cells_x = 500
+    comp_cells_x = 400
     y0 = 0.D0
-    comp_cells_y = 500
-    cell_size = 0.1
+    comp_cells_y = 1
+    cell_size = 2.5D-3
     temperature_flag = .FALSE.
     fischer_flag = .FALSE.
     rheology_flag = .FALSE.
@@ -199,13 +201,13 @@ CONTAINS
     riemann_interface = 0.5D0
 
     !-- Inizialization of the Variables for the namelist left_state
-    hB_W = 1.D0
-    u_W = 0.D0
+    hB_W = 2.222D0
+    u_W = 0.8246D0
     v_W = 0.D0
 
     !-- Inizialization of the Variables for the namelist right_state
-    hB_E = 0.5D0
-    u_E = 0.D0
+    hB_E = -1.0D0
+    u_E = -1.6359D0
     u_E = 0.D0
 
     !-- Inizialization of the Variables for the namelist west boundary conditions
@@ -247,7 +249,7 @@ CONTAINS
     !-- Inizialization of the Variables for the namelist NUMERIC_PARAMETERS
     max_dt = 1.d-3
     solver_scheme = 'KT'
-    n_RK = 2
+    n_RK = 1
     cfl = 0.24
     limiter(1:n_vars) = 0
     theta=1.0
@@ -256,8 +258,8 @@ CONTAINS
 
     !-- Inizialization of the Variables for the namelist source_parameters
     grav = -9.81D0
-    mu = 0.225
-    xi = 130
+    mu = 0.D0
+    xi = 0.D0
 
     input_file = 'IMEX_SfloW2D.inp'
 
@@ -633,7 +635,15 @@ CONTAINS
 
     ELSEIF ( solver_scheme .EQ. 'KT' ) THEN
 
-       max_cfl = 0.25
+       IF ( ( comp_cells_x .EQ. 1 ) .OR. ( comp_cells_y .EQ. 1 ) ) THEN
+
+          max_cfl = 0.50D0
+
+       ELSE
+
+          max_cfl = 0.25D0
+
+       END IF
 
     END IF
 
@@ -645,7 +655,6 @@ CONTAINS
        READ(*,*)
 
     END IF
-
 
     IF ( verbose_level .GE. 1 ) WRITE(*,*) 'Limiters',limiter
 
@@ -682,8 +691,8 @@ CONTAINS
        
     END IF
 
-    WRITE(*,*) 'iostat',ios
-
+    IF ( verbose_level .GE. 1 ) WRITE(*,*) 
+    
     ! read topography from .inp (recommended for simple batimetries) 
     IF ( .NOT.topography_demfile ) THEN
 
@@ -1052,9 +1061,9 @@ CONTAINS
 
        IF ( verbose_level .GE. 1 ) THEN
 
-          WRITE(*,*) 'Min q(1,:,:)=',MINVAL(q(1,:,:))
-          WRITE(*,*) 'Max q(1,:,:)=',MAXVAL(q(1,:,:))
-          WRITE(*,*) 'SUM(q(1,:,:)=',SUM(q(1,:,:))
+          WRITE(*,*) 'Min q(1,:,:) =',MINVAL(q(1,:,:))
+          WRITE(*,*) 'Max q(1,:,:) =',MAXVAL(q(1,:,:))
+          WRITE(*,*) 'SUM(q(1,:,:)) =',SUM(q(1,:,:))
 
           DO k=1,nrows
 
@@ -1063,7 +1072,7 @@ CONTAINS
 
           END DO
 
-          WRITE(*,*) 'SUM(B_cent(:,:)=',SUM(B_cent(:,:))
+          WRITE(*,*) 'SUM(B_cent(:,:)) =',SUM(B_cent(:,:))
           READ(*,*)
 
        END IF
@@ -1104,18 +1113,22 @@ CONTAINS
        j = SCAN(restart_file, '.' , .TRUE. )
        
        string = TRIM(restart_file(j-4:j-1))
+       READ( string,* ) output_idx
        
        WRITE(*,*) 
-       WRITE(*,*) 'Starting from output index ',string
-
-       READ( string,* ) output_idx
+       WRITE(*,*) 'Starting from output index ',output_idx
+       
+       ! Set this flag to 0 to not overwrite the initial condition
     
     ELSE
    
        WRITE(*,*) 'boh'
 
     END IF
-       
+ 
+    CLOSE(restart_unit)
+
+      
   END SUBROUTINE read_solution
 
   !******************************************************************************
