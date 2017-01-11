@@ -32,9 +32,17 @@ The code also need a DEM file in esri ascii format, named topography_dem.asc
 
 https://demichie.github.io/IMEX_SfloW2D/
 
+
 ### Documentation
 
-Doxygen generated documentation can be found at http://demichie.github.io/IMEX_SfloW2D/html/
+A wiki page describing the model is available at:
+
+[https://github.com/demichie/IMEX_SfloW2D/wiki](https://github.com/demichie/IMEX_SfloW2D/wiki) 
+
+Doxygen generated documentation of the code can be found at:
+
+[http://demichie.github.io/IMEX_SfloW2D/html/](http://demichie.github.io/IMEX_SfloW2D/html/) 
+
 
 ### Authors
 
