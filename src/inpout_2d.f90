@@ -257,7 +257,7 @@ CONTAINS
 
 
     !-- Inizialization of the Variables for the namelist source_parameters
-    grav = -9.81D0
+    grav = 9.81D0
     mu = 0.D0
     xi = 0.D0
 
