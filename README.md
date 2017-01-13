@@ -24,7 +24,7 @@ The executable is copied in the bin folder.
 
 To test the code copy the executable from the bin folder to the examples folder and:
 
-./IMEX_SfloW2d
+./IMEX_SfloW2D
 
 The code also need a DEM file in esri ascii format, named topography_dem.asc
 
