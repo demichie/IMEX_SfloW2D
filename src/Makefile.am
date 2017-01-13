@@ -6,11 +6,11 @@ AUTOMAKE_OPTIONS = foreign
 ###############################################################################
 
 # the program to build (the names of the final binaries)
-bin_PROGRAMS = IMEX_SfloW2d
+bin_PROGRAMS = IMEX_SfloW2D
 bindir=@bindir@
 
 # list of sources for the binary
-IMEX_SfloW2d_SOURCES = \
+IMEX_SfloW2D_SOURCES = \
                 complexify.f90 \
                 parameters_2d.f90 \
                 geometry_2d.f90 \
