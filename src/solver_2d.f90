@@ -596,7 +596,7 @@ CONTAINS
 
                 ! solve the implicit system
                 CALL solve_rk_step( B_cent(j,k) , B_prime_x(j,k) ,              &
-                     B_prime_y(j,k), grav_surf(3,j,k) ,                         &
+                     B_prime_y(j,k), grav_surf(j,k) ,                           &
                      q_guess , q0(1:n_vars,j,k ) , a_tilde ,                    &
                      a_dirk , a_diag )
 
@@ -620,7 +620,7 @@ CONTAINS
              IF ( a_diag .EQ. 0.D0 ) THEN
 
                 CALL eval_nonhyperbolic_terms( B_cent(j,k) , B_prime_x(j,k) ,   &
-                     B_prime_y(j,k) , grav_surf(3,j,k) ,                        &
+                     B_prime_y(j,k) , grav_surf(j,k) ,                          &
                      r_qj = q_guess , r_nh_term_impl = NH(1:n_eqns,j,k,i_RK) ) 
 
              ELSE
@@ -738,8 +738,8 @@ CONTAINS
   !
   !******************************************************************************
 
-  SUBROUTINE solve_rk_step( Bj, Bprimej_x, Bprimej_y, grav3_surf, curvj_x,      &
-       curvj_y , qj, qj_old, a_tilde , a_dirk , a_diag )
+  SUBROUTINE solve_rk_step( Bj, Bprimej_x, Bprimej_y, grav3_surf,               &
+       qj, qj_old, a_tilde , a_dirk , a_diag )
 
     USE parameters_2d, ONLY : max_nl_iter , tol_rel , tol_abs
 
@@ -1297,8 +1297,6 @@ CONTAINS
     REAL*8, INTENT(IN) :: Bprimej_x
     REAL*8, INTENT(IN) :: Bprimej_y
     REAL*8, INTENT(IN) :: grav3_surf
-    REAL*8, INTENT(IN) :: curvj_x
-    REAL*8, INTENT(IN) :: curvj_y
     REAL*8, INTENT(IN) :: qj(n_vars)
     REAL*8, INTENT(IN) :: qj_old(n_vars)
     REAL*8, INTENT(IN) :: a_tilde(n_RK)
