@@ -19,7 +19,7 @@ MODULE solver_2d
   USE geometry_2d, ONLY : comp_interfaces_x,comp_interfaces_y
 
   USE geometry_2d, ONLY : B_cent , B_prime_x , B_prime_y , B_stag_x , B_stag_y
-  USE geometry_2d, ONLY : grav_surf , curv_x , curv_y , curv_xy
+  USE geometry_2d, ONLY : grav_surf
 
   USE parameters_2d, ONLY : n_eqns , n_vars , n_nh
   USE parameters_2d, ONLY : n_RK
@@ -400,7 +400,7 @@ CONTAINS
              qj = q( 1:n_vars , j , k )
 
              ! x direction
-             CALL eval_local_speeds_x( qj , B_cent(j,k) , grav_surf(3,j,k) ,    &
+             CALL eval_local_speeds_x( qj , B_cent(j,k) ,                       &
                   vel_min , vel_max )
 
              vel_j = MAX( MAXVAL(ABS(vel_min)) , MAXVAL(ABS(vel_max)) )
@@ -410,7 +410,7 @@ CONTAINS
              dt_x = MIN( dt , dt_cfl )
 
              ! y direction
-             CALL eval_local_speeds_y( qj , B_cent(j,k) , grav_surf(3,j,k) ,    &
+             CALL eval_local_speeds_y( qj , B_cent(j,k) ,                       &
                   vel_min , vel_max )
 
              vel_j = MAX( MAXVAL(ABS(vel_min)) , MAXVAL(ABS(vel_max)) )
@@ -596,8 +596,8 @@ CONTAINS
 
                 ! solve the implicit system
                 CALL solve_rk_step( B_cent(j,k) , B_prime_x(j,k) ,              &
-                     B_prime_y(j,k), grav_surf(3,j,k) , curv_x(j,k) ,           &
-                     curv_y(j,k) , q_guess , q0(1:n_vars,j,k ) , a_tilde ,      &
+                     B_prime_y(j,k), grav_surf(3,j,k) ,                         &
+                     q_guess , q0(1:n_vars,j,k ) , a_tilde ,                    &
                      a_dirk , a_diag )
 
              END IF
@@ -619,8 +619,8 @@ CONTAINS
              ! store the non-hyperbolic term for the explicit computations
              IF ( a_diag .EQ. 0.D0 ) THEN
 
-                CALL eval_nonhyperbolic_terms( B_cent(j,k), B_prime_x(j,k) ,    &
-                     B_prime_y(j,k), grav_surf(3,j,k), curv_x(j,k), curv_y(j,k),&
+                CALL eval_nonhyperbolic_terms( B_cent(j,k) , B_prime_x(j,k) ,   &
+                     B_prime_y(j,k) , grav_surf(3,j,k) ,                        &
                      r_qj = q_guess , r_nh_term_impl = NH(1:n_eqns,j,k,i_RK) ) 
 
              ELSE
@@ -751,8 +751,6 @@ CONTAINS
     REAL*8, INTENT(IN) :: Bprimej_x
     REAL*8, INTENT(IN) :: Bprimej_y
     REAL*8, INTENT(IN) :: grav3_surf
-    REAL*8, INTENT(IN) :: curvj_x
-    REAL*8, INTENT(IN) :: curvj_y
     REAL*8, INTENT(INOUT) :: qj(n_vars)
     REAL*8, INTENT(IN) :: qj_old(n_vars)
     REAL*8, INTENT(IN) :: a_tilde(n_RK)
@@ -815,7 +813,7 @@ CONTAINS
 
        qj = qj_old - dt * ( MATMUL(Fxj,a_tilde) - MATMUL(NHj,a_dirk) )
 
-       CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf , curvj_x, curvj_y ,&
+       CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf ,                   &
             qj , qj_old , a_tilde , a_dirk , a_diag , coeff_f , right_term ,    &
             scal_f )
 
@@ -879,7 +877,7 @@ CONTAINS
 
        IF ( verbose_level .GE. 2 ) WRITE(*,*) 'solve_rk_step: nl_iter',nl_iter
 
-       CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf , curvj_x, curvj_y ,&
+       CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf ,                   &
             qj , qj_old , a_tilde , a_dirk , a_diag , coeff_f , right_term ,    &
             scal_f )
 
@@ -915,7 +913,7 @@ CONTAINS
 
        IF ( COUNT( implicit_flag ) .EQ. n_eqns ) THEN
 
-          CALL eval_jacobian(Bj,Bprimej_x,Bprimej_y,grav3_surf,curvj_x,curvj_y, &
+          CALL eval_jacobian(Bj,Bprimej_x,Bprimej_y,grav3_surf,                 &
                qj_rel,qj_org,coeff_f,left_matrix)
 
           desc_dir_temp = - right_term
@@ -927,7 +925,7 @@ CONTAINS
 
        ELSE
 
-          CALL eval_jacobian(Bj,Bprimej_x,Bprimej_y,grav3_surf,curvj_x,curvj_y, &
+          CALL eval_jacobian(Bj,Bprimej_x,Bprimej_y,grav3_surf,                 &
                qj_rel,qj_org,coeff_f,left_matrix)
 
           left_matrix_small11 = reshape(pack(left_matrix, mask11),              &
@@ -978,8 +976,8 @@ CONTAINS
 
           desc_dir2 = desc_dir
 
-          CALL lnsrch( Bj , Bprimej_x , Bprimej_y , grav3_surf , curvj_x ,      &
-               curvj_y , qj_rel_NR_old , qj_org , qj_old , scal_f_old , grad_f ,&
+          CALL lnsrch( Bj , Bprimej_x , Bprimej_y , grav3_surf ,                &
+               qj_rel_NR_old , qj_org , qj_old , scal_f_old , grad_f ,          &
                desc_dir , coeff_f , qj_rel , scal_f , right_term , stpmax ,     &
                check )
 
@@ -989,8 +987,8 @@ CONTAINS
 
           qj = qj_rel * qj_org
 
-          CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf , curvj_x,       &
-               curvj_y , qj , qj_old , a_tilde , a_dirk , a_diag , coeff_f ,    &
+          CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf ,                &
+               qj , qj_old , a_tilde , a_dirk , a_diag , coeff_f ,              &
                right_term , scal_f )
 
        END IF
@@ -1062,8 +1060,8 @@ CONTAINS
   !> Mattia de' Michieli Vitturi
   !******************************************************************************
 
-  SUBROUTINE lnsrch( Bj , Bprimej_x , Bprimej_y , grav3_surf , curvj_x ,        &
-       curvj_y , qj_rel_NR_old , qj_org , qj_old , scal_f_old , grad_f ,        &
+  SUBROUTINE lnsrch( Bj , Bprimej_x , Bprimej_y , grav3_surf ,                  &
+       qj_rel_NR_old , qj_org , qj_old , scal_f_old , grad_f ,                  &
        desc_dir , coeff_f , qj_rel , scal_f , right_term , stpmax , check )
 
     IMPLICIT NONE
@@ -1075,10 +1073,6 @@ CONTAINS
     REAL*8, INTENT(IN) :: Bprimej_y
 
     REAL*8, INTENT(IN) :: grav3_surf
-
-    REAL*8, INTENT(IN) :: curvj_x
-
-    REAL*8, INTENT(IN) :: curvj_y
 
     !> Initial point
     REAL*8, DIMENSION(:), INTENT(IN) :: qj_rel_NR_old
@@ -1175,8 +1169,8 @@ CONTAINS
 
        qj = qj_rel * qj_org
 
-       CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf , curvj_x ,         &
-            curvj_y , qj , qj_old , a_tilde , a_dirk , a_diag , coeff_f ,       &
+       CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf ,         &
+            qj , qj_old , a_tilde , a_dirk , a_diag , coeff_f ,       &
             right_term , scal_f )
 
        IF ( verbose_level .GE. 4 ) THEN
@@ -1292,9 +1286,8 @@ CONTAINS
   !> Mattia de' Michieli Vitturi
   !******************************************************************************
 
-  SUBROUTINE eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf , curvj_x ,        &
-       curvj_y , qj , qj_old , a_tilde , a_dirk , a_diag , coeff_f , f_nl ,     &
-       scal_f )
+  SUBROUTINE eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf , qj , qj_old ,    &
+       a_tilde , a_dirk , a_diag , coeff_f , f_nl , scal_f )
 
     USE constitutive_2d, ONLY : eval_nonhyperbolic_terms
 
@@ -1320,7 +1313,7 @@ CONTAINS
 
 
     CALL eval_nonhyperbolic_terms( Bj , Bprimej_x , Bprimej_y , grav3_surf ,    &
-         curvj_x , curvj_y , r_qj = qj , r_nh_term_impl = nh_term_impl ) 
+         r_qj = qj , r_nh_term_impl = nh_term_impl ) 
 
     Rj = ( MATMUL(Fxj,a_tilde) - MATMUL(NHj,a_dirk) ) - a_diag * nh_term_impl
 
@@ -1342,8 +1335,6 @@ CONTAINS
   !> \param[in]    Bprimej_x     topography x-slope at the cell center
   !> \param[in]    Bprimej_y     topography y-slope at the cell center
   !> \param[in]    grav3_surf
-  !> \param[in]    curvj_x
-  !> \param[in]    curvj_y
   !> \param[in]    qj_rel        relative variation (qj=qj_rel*qj_org)
   !> \param[in]    qj_org        conservative variables at the old time step
   !> \param[in]    coeff_f       coefficient to rescale the nonlinear functions
@@ -1354,8 +1345,8 @@ CONTAINS
   !> Mattia de' Michieli Vitturi
   !******************************************************************************
 
-  SUBROUTINE eval_jacobian(Bj , Bprimej_x , Bprimej_y , grav3_surf , curvj_x ,  &
-       curvj_y , qj_rel , qj_org , coeff_f, left_matrix)
+  SUBROUTINE eval_jacobian(Bj , Bprimej_x , Bprimej_y , grav3_surf ,            &
+       qj_rel , qj_org , coeff_f, left_matrix)
 
     USE constitutive_2d, ONLY : eval_nonhyperbolic_terms
 
@@ -1365,8 +1356,6 @@ CONTAINS
     REAL*8, INTENT(IN) :: Bprimej_x
     REAL*8, INTENT(IN) :: Bprimej_y
     REAL*8, INTENT(IN) :: grav3_surf
-    REAL*8, INTENT(IN) :: curvj_x
-    REAL*8, INTENT(IN) :: curvj_y
     REAL*8, INTENT(IN) :: qj_rel(n_vars)
     REAL*8, INTENT(IN) :: qj_org(n_vars)
     REAL*8, INTENT(IN) :: coeff_f(n_eqns)
@@ -1401,7 +1390,7 @@ CONTAINS
           qj_cmplx = qj_rel_cmplx * qj_org
 
           CALL eval_nonhyperbolic_terms( Bj , Bprimej_x , Bprimej_y ,           &
-               grav3_surf , curvj_x , curvj_y , c_qj = qj_cmplx ,               &
+               grav3_surf, c_qj = qj_cmplx ,                                    &
                c_nh_term_impl = nh_terms_cmplx_impl ) 
 
           Jacob_relax(1:n_eqns,i) = coeff_f(i) *                                &
@@ -1451,8 +1440,7 @@ CONTAINS
           qc = q_expl(1:n_vars,j,k)
 
           CALL eval_explicit_forces( B_cent(j,k), B_prime_x(j,k),               &
-               B_prime_y(j,k), grav_surf(1:3,j,k), curv_x(j,k), curv_y(j,k),    &
-               qc, expl_forces_term)
+               B_prime_y(j,k), qc, expl_forces_term)
 
           expl_terms(1:n_eqns,j,k) =  expl_forces_term
 
@@ -1590,33 +1578,17 @@ CONTAINS
     INTEGER :: j,k                      !< Loop counter
     INTEGER :: i                      !< Loop counter
 
-    REAL*8 :: grav3_surf
-
     DO j = 0 , comp_cells_x
 
        DO k = 0 , comp_cells_y
 
           IF ( k .NE. 0 ) THEN
 
-             IF ( j.EQ.0 ) THEN
+             CALL eval_fluxes( B_stag_x(j+1,k) ,                                &
+                  r_qj = q_interfaceE(1:n_vars,j,k) , r_flux=fluxL , dir=1 )
 
-                grav3_surf= grav_surf(3,1,k)
-
-             ELSEIF ( j.EQ.comp_cells_x ) THEN
-
-                grav3_surf= grav_surf(3,comp_cells_x,k)
-
-             ELSE
-
-                grav3_surf= 0.5 * ( grav_surf(3,j+1,k)+grav_surf(3,j,k) )
-
-             ENDIF
-
-             CALL eval_fluxes( B_stag_x(j+1,k) , grav3_surf , &
-                  & r_qj = q_interfaceE(1:n_vars,j,k) , r_flux=fluxL , dir=1 )
-
-             CALL eval_fluxes( B_stag_x(j+1,k) , grav3_surf , &
-                  & r_qj = q_interfaceW(1:n_vars,j+1,k) , r_flux=fluxR , dir=1 )
+             CALL eval_fluxes( B_stag_x(j+1,k) ,                                &
+                  r_qj = q_interfaceW(1:n_vars,j+1,k) , r_flux=fluxR , dir=1 )
 
 
              CALL average_KT( a_interfaceL(:,j+1,k) , a_interfaceR(:,j+1,k) ,   &
@@ -1643,25 +1615,11 @@ CONTAINS
 
           IF ( j .NE. 0 ) THEN
 
-             IF ( k.EQ.0 ) THEN
+             CALL eval_fluxes( B_stag_y(j,k+1) ,                                &
+                  r_qj = q_interfaceN(1:n_vars,j,k) , r_flux=fluxD , dir=2 )
 
-                grav3_surf= grav_surf(3,j,1)
-
-             ELSEIF ( k.EQ.comp_cells_y ) THEN
-
-                grav3_surf= grav_surf(3,j,comp_cells_y)
-
-             ELSE
-
-                grav3_surf= 0.5 * ( grav_surf(3,j,k+1)+grav_surf(3,j,k) )
-
-             ENDIF
-
-             CALL eval_fluxes( B_stag_y(j,k+1) , grav3_surf , &
-                  & r_qj = q_interfaceN(1:n_vars,j,k) , r_flux=fluxD , dir=2 )
-
-             CALL eval_fluxes( B_stag_y(j,k+1) , grav3_surf , &
-                  & r_qj = q_interfaceS(1:n_vars,j,k+1) , r_flux=fluxU , dir=2 )
+             CALL eval_fluxes( B_stag_y(j,k+1) ,                                &
+                  r_qj = q_interfaceS(1:n_vars,j,k+1) , r_flux=fluxU , dir=2 )
 
 
              CALL average_KT( b_interfaceD(:,j,k+1) , b_interfaceU(:,j,k+1) ,   &
@@ -2160,25 +2118,11 @@ CONTAINS
 
        DO k = 1 , comp_cells_y
 
-          IF ( j.EQ.0 ) THEN
-
-             grav3_surf= grav_surf(3,1,k)
-
-          ELSEIF ( j.EQ.comp_cells_x ) THEN
-
-             grav3_surf= grav_surf(3,comp_cells_x,k)
-
-          ELSE
-
-             grav3_surf= 0.5 * ( grav_surf(3,j+1,k)+grav_surf(3,j,k) )
-
-          ENDIF
-
           CALL eval_local_speeds2_x( q_interfaceW(:,j+1,k) , B_stag_x(j+1,k) ,  &
-               grav3_surf , abslambdaR_min , abslambdaR_max )
+               abslambdaR_min , abslambdaR_max )
 
           CALL eval_local_speeds2_x( q_interfaceE(:,j,k) , B_stag_x(j+1,k) ,    &
-               grav3_surf , abslambdaL_min , abslambdaL_max )
+               abslambdaL_min , abslambdaL_max )
 
           min_r = MIN(abslambdaL_min , abslambdaR_min , 0.0D0)
           max_r = MAX(abslambdaL_max , abslambdaR_max , 0.0D0)
@@ -2195,25 +2139,11 @@ CONTAINS
 
        DO k = 0 , comp_cells_y
 
-          IF ( k.EQ.0 ) THEN
-
-             grav3_surf= grav_surf(3,j,1)
-
-          ELSEIF ( k.EQ.comp_cells_y ) THEN
-
-             grav3_surf= grav_surf(3,j,comp_cells_y)
-
-          ELSE
-
-             grav3_surf= 0.5D0 * ( grav_surf(3,j,k+1)+grav_surf(3,j,k) )
-
-          ENDIF
-
           CALL eval_local_speeds2_y( q_interfaceS(:,j,k+1) , B_stag_y(j,k+1) ,  &
-               grav3_surf , abslambdaU_min , abslambdaU_max )
+               abslambdaU_min , abslambdaU_max )
 
           CALL eval_local_speeds2_y( q_interfaceN(:,j,k) , B_stag_y(j,k+1) ,    &
-               grav3_surf , abslambdaD_min , abslambdaD_max )
+               abslambdaD_min , abslambdaD_max )
 
           min_r = MIN(abslambdaD_min , abslambdaU_min , 0.0D0)
           max_r = MAX(abslambdaD_max , abslambdaU_max , 0.0D0)
