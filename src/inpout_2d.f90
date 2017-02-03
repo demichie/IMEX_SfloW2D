@@ -23,8 +23,7 @@ MODULE inpout_2d
   USE geometry_2d, ONLY : topography_profile , n_topography_profile_x ,         &
        n_topography_profile_y
   USE init_2d, ONLY : riemann_interface
-  USE parameters_2d, ONLY : temperature_flag , riemann_flag , rheology_flag ,   &
-       fischer_flag
+  USE parameters_2d, ONLY : temperature_flag , riemann_flag , rheology_flag
 
   ! -- Variables for the namelist INITIAL_CONDITIONS
   USE parameters_2d, ONLY : released_volume , x_release , y_release
@@ -122,7 +121,7 @@ MODULE inpout_2d
   NAMELIST / restart_parameters / restart_file , T_init , T_ambient
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
-       cell_size , temperature_flag , fischer_flag , rheology_flag , riemann_flag
+       cell_size , temperature_flag , rheology_flag , riemann_flag
 
   NAMELIST / initial_conditions /  released_volume , x_release , y_release ,    &
        velocity_mod_release , velocity_ang_release , T_init , T_ambient
@@ -195,7 +194,6 @@ CONTAINS
     comp_cells_y = 1
     cell_size = 2.5D-3
     temperature_flag = .FALSE.
-    fischer_flag = .FALSE.
     rheology_flag = .FALSE.
     riemann_flag=.TRUE.
     riemann_interface = 0.5D0
