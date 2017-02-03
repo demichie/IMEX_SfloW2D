@@ -2110,8 +2110,6 @@ CONTAINS
 
     INTEGER :: j,k
 
-    REAL*8 :: grav3_surf
-
     DO j = 0 , comp_cells_x
 
        DO k = 1 , comp_cells_y
