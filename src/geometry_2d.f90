@@ -44,13 +44,7 @@ MODULE geometry_2d
   REAL*8, ALLOCATABLE :: grid_output(:,:)
 
   !> gravity vector wrt surface coordinates for each cell
-  REAL*8, ALLOCATABLE :: grav_surf(:,:,:)
-
-  !> curvature wrt x direction for each cell
-  REAL*8, ALLOCATABLE :: curv_x(:,:)
-
-  !> curvature wrt y direction for each cell
-  REAL*8, ALLOCATABLE :: curv_y(:,:)
+  REAL*8, ALLOCATABLE :: grav_surf(:,:)
 
   !> curvature wrt mixed directions for each cell
   REAL*8, ALLOCATABLE :: curv_xy(:,:)
@@ -107,12 +101,7 @@ CONTAINS
 
     ALLOCATE( grid_output(comp_cells_x,comp_cells_y) )
 
-
-    ALLOCATE( grav_surf(3,comp_cells_x,comp_cells_y) )
-
-    ALLOCATE( curv_x(comp_cells_x,comp_cells_y) )
-    ALLOCATE( curv_y(comp_cells_x,comp_cells_y) )
-    ALLOCATE( curv_xy(comp_cells_x,comp_cells_y) )
+    ALLOCATE( grav_surf(comp_cells_x,comp_cells_y) )
 
     dx = cell_size
     dy = cell_size
@@ -256,7 +245,7 @@ CONTAINS
 
        ENDDO
 
-       ! topography from larger dem
+    ! topography from larger dem
     ELSE
 
        DO j=0,comp_cells_x
@@ -318,90 +307,8 @@ CONTAINS
 
        DO k=1,comp_cells_y
 
-          ! not only B_prime, but also normalization coefficient
-          grav_surf(1,j,k) = ( 1.d0 / DSQRT( 1.d0 + B_prime_x(j,k)**2) ) *      &
-               B_prime_x(j,k)
-
-          grav_surf(2,j,k) = ( 1.d0 / DSQRT( 1.d0 + B_prime_y(j,k)**2) ) *      &
-               B_prime_y(j,k)
-
-          grav_surf(3,j,k) = - ( 1.d0/ DSQRT( 1.d0 + B_prime_x(j,k)**2          & 
+          grav_surf(j,k) = - ( 1.d0/ DSQRT( 1.d0 + B_prime_x(j,k)**2            & 
                + B_prime_y(j,k)**2) )
-
-       ENDDO
-
-    ENDDO
-
-    ! curvature
-    DO j = 1,comp_cells_x
-
-       DO k=1,comp_cells_y
-
-          ! x direction
-          IF (j.EQ.1) THEN
-
-             curv_x(j,k) = ( B_cent(j+1,k) - B_cent(j,k) ) / dx**2
-
-             curv_x(j,k) = curv_x(j,k) / (1.d0+B_prime_x(j,k)**2) ** 1.5
-
-          ELSEIF (j.EQ.comp_cells_x) THEN
-
-             curv_x(j,k) = (  - B_cent(j,k) + B_cent(j-1,k) ) / dx**2
-
-             curv_x(j,k) = curv_x(j,k) / (1.d0+B_prime_x(j,k)**2) ** 1.5
-
-          ELSE
-
-             curv_x(j,k) = ( B_cent(j+1,k) - 2.0*B_cent(j,k) + B_cent(j-1,k) )  &
-                  / dx**2
-
-             curv_x(j,k) = curv_x(j,k) / (1.d0+B_prime_x(j,k)**2) ** 1.5
-
-             ! Fischer et al. 2012
-             !curv_x(j,k) = curv_x(j,k) / ( (1.d0+B_prime_x(j,k)**2) * DSQRT(1.d0+B_prime_x(j,k)**2+B_prime_y(j,k)**2) )
-
-          ENDIF
-
-          ! y direction
-          IF (k.EQ.1) THEN
-
-             curv_y(j,k) = ( B_cent(j,k+1) - B_cent(j,k) ) / dy **2
-
-             curv_y(j,k) = curv_y(j,k) / (1.d0+B_prime_y(j,k)**2) ** 1.5
-
-          ELSEIF (k.EQ.comp_cells_y) THEN
-
-             curv_y(j,k) = (  - B_cent(j,k) + B_cent(j,k-1) ) / dy **2
-
-             curv_y(j,k) = curv_y(j,k) / (1.d0+B_prime_y(j,k)**2) ** 1.5
-
-          ELSE
-
-             curv_y(j,k) = ( B_cent(j,k+1) - 2.0*B_cent(j,k) + B_cent(j,k-1) )  &
-                  / dy **2
-
-             curv_y(j,k) = curv_y(j,k) / (1.d0+B_prime_y(j,k)**2) ** 1.5
-
-             ! Fischer et al. 2012
-             !curv_y(j,k) = curv_y(j,k) / ( (1.d0+B_prime_y(j,k)**2) * DSQRT(1.d0+B_prime_x(j,k)**2+B_prime_y(j,k)**2) )
-
-          ENDIF
-
-          ! mixed direction (Fischer et al. 2012)
-          IF (k.EQ.1.OR.j.EQ.1) THEN
-
-             curv_xy(j,k) = 0.d0
-
-          ELSE
-
-             curv_xy(j,k) = ( B_cent(j+1,k+1) - B_cent(j+1,k-1) -               &
-                  B_cent(j-1,k+1) + B_cent(j-1,k-1) ) / (4.0 * dx * dy)
-
-             ! Fischer et al. 2012
-             !curv_xy(j,k) = curv_xy(j,k) / ( DSQRT(1.d0+B_prime_x(j,k)**2) * &
-             !  & DSQRT(1.d0+B_prime_y(j,k)**2) * DSQRT(1.d0+B_prime_x(j,k)**2+B_prime_y(j,k)**2) )
-
-          ENDIF
 
        ENDDO
 
