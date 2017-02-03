@@ -4,7 +4,7 @@
 MODULE constitutive_2d
 
   USE parameters_2d, ONLY : n_eqns , n_vars
-  USE parameters_2d, ONLY : fischer_flag , rheology_flag
+  USE parameters_2d, ONLY : rheology_flag
   USE parameters_2d, ONLY : temperature_flag
 
   IMPLICIT none
@@ -121,30 +121,19 @@ CONTAINS
   !> \date 10/04/2012
   !******************************************************************************
 
-  !SUBROUTINE eval_local_speeds_x(qj,Bj,vel_min,vel_max)
-  SUBROUTINE eval_local_speeds_x(qj,Bj,grav3_surf,vel_min,vel_max)
-    
+  SUBROUTINE eval_local_speeds_x(qj,Bj,vel_min,vel_max)
+  
     IMPLICIT none
     
     REAL*8, INTENT(IN)  :: qj(n_vars)
     REAL*8, INTENT(IN)  :: Bj
-    REAL*8, INTENT(IN)  :: grav3_surf
     REAL*8, INTENT(OUT) :: vel_min(n_vars) , vel_max(n_vars)
 
     CALL phys_var(Bj,r_qj = qj)
     
-    IF ( fischer_flag ) THEN
-    
-       vel_min(1:n_eqns) = REAL(u) - DSQRT( - grav * grav3_surf * REAL(h) )
-       vel_max(1:n_eqns) = REAL(u) + DSQRT( - grav * grav3_surf * REAL(h) )
-       
-    ELSE
-    
-       vel_min(1:n_eqns) = REAL(u) - DSQRT( grav * REAL(h) )
-       vel_max(1:n_eqns) = REAL(u) + DSQRT( grav * REAL(h) )
-    
-    ENDIF
-    
+    vel_min(1:n_eqns) = REAL(u) - DSQRT( grav * REAL(h) )
+    vel_max(1:n_eqns) = REAL(u) + DSQRT( grav * REAL(h) )
+        
   END SUBROUTINE eval_local_speeds_x
 
   !******************************************************************************
@@ -155,29 +144,19 @@ CONTAINS
   !> \date 10/04/2012
   !******************************************************************************
 
-  SUBROUTINE eval_local_speeds_y(qj,Bj,grav3_surf,vel_min,vel_max)
+  SUBROUTINE eval_local_speeds_y(qj,Bj,vel_min,vel_max)
     
     IMPLICIT none
     
     REAL*8, INTENT(IN)  :: qj(n_vars)
     REAL*8, INTENT(IN)  :: Bj
-    REAL*8, INTENT(IN)  :: grav3_surf
     REAL*8, INTENT(OUT) :: vel_min(n_vars) , vel_max(n_vars)
     
     CALL phys_var(Bj,r_qj = qj)
     
-    IF ( fischer_flag ) THEN
-    
-       vel_min(1:n_eqns) = REAL(v) - DSQRT( - grav * grav3_surf * REAL(h) ) 
-       vel_max(1:n_eqns) = REAL(v) + DSQRT( - grav * grav3_surf * REAL(h) )
-
-    ELSE
-    
-       vel_min(1:n_eqns) = REAL(v) - DSQRT( grav * REAL(h) )
-       vel_max(1:n_eqns) = REAL(v) + DSQRT( grav * REAL(h) )
+    vel_min(1:n_eqns) = REAL(v) - DSQRT( grav * REAL(h) )
+    vel_max(1:n_eqns) = REAL(v) + DSQRT( grav * REAL(h) )
        
-    ENDIF
-
   END SUBROUTINE eval_local_speeds_y
 
   !******************************************************************************
@@ -188,13 +167,12 @@ CONTAINS
   !> \date 10/04/2012
   !******************************************************************************
 
-  SUBROUTINE eval_local_speeds2_x(qj,Bj,grav3_surf,vel_min,vel_max)
+  SUBROUTINE eval_local_speeds2_x(qj,Bj,vel_min,vel_max)
     
     IMPLICIT none
     
     REAL*8, INTENT(IN)  :: qj(n_vars)
     REAL*8, INTENT(IN)  :: Bj
-    REAL*8, INTENT(IN)  :: grav3_surf
     REAL*8, INTENT(OUT) :: vel_min(n_vars) , vel_max(n_vars)
 
     REAL*8 :: h_temp , u_temp
@@ -211,17 +189,8 @@ CONTAINS
 
     END IF
 
-   IF ( fischer_flag ) THEN
-
-        vel_min(1:n_eqns) = REAL(u_temp) - DSQRT( - grav * grav3_surf * REAL(h_temp) ) 
-        vel_max(1:n_eqns) = REAL(u_temp) + DSQRT( - grav * grav3_surf * REAL(h_temp) )
-
-    ELSE
-
-        vel_min(1:n_eqns) = REAL(u_temp) - DSQRT( grav * REAL(h_temp) )
-        vel_max(1:n_eqns) = REAL(u_temp) + DSQRT( grav * REAL(h_temp) )
-
-    ENDIF
+    vel_min(1:n_eqns) = REAL(u_temp) - DSQRT( grav * REAL(h_temp) )
+    vel_max(1:n_eqns) = REAL(u_temp) + DSQRT( grav * REAL(h_temp) )
 
   END SUBROUTINE eval_local_speeds2_x
 
@@ -233,13 +202,12 @@ CONTAINS
   !> \date 10/04/2012
   !******************************************************************************
 
-  SUBROUTINE eval_local_speeds2_y(qj,Bj,grav3_surf,vel_min,vel_max)
+  SUBROUTINE eval_local_speeds2_y(qj,Bj,vel_min,vel_max)
     
     IMPLICIT none
     
     REAL*8, INTENT(IN)  :: qj(n_vars)
     REAL*8, INTENT(IN)  :: Bj
-    REAL*8, INTENT(IN)  :: grav3_surf
     REAL*8, INTENT(OUT) :: vel_min(n_vars) , vel_max(n_vars)
 
     REAL*8 :: h_temp , v_temp
@@ -256,17 +224,8 @@ CONTAINS
 
     END IF
 
-    IF ( fischer_flag ) THEN
-
-        vel_min(1:n_eqns) = REAL(v_temp) - DSQRT( - grav * grav3_surf * REAL(h_temp) ) 
-        vel_max(1:n_eqns) = REAL(v_temp) + DSQRT( - grav * grav3_surf * REAL(h_temp) )
-
-    ELSE
-
-        vel_min(1:n_eqns) = REAL(v_temp) - DSQRT( grav * REAL(h_temp) )
-        vel_max(1:n_eqns) = REAL(v_temp) + DSQRT( grav * REAL(h_temp) )
-
-    ENDIF
+    vel_min(1:n_eqns) = REAL(v_temp) - DSQRT( grav * REAL(h_temp) )
+    vel_max(1:n_eqns) = REAL(v_temp) + DSQRT( grav * REAL(h_temp) )
 
   END SUBROUTINE eval_local_speeds2_y
 
@@ -439,13 +398,12 @@ CONTAINS
   !> \param[out]    r_flux   real analytical fluxes    
   !******************************************************************************
   
-  SUBROUTINE eval_fluxes(Bj,grav3_surf,c_qj,r_qj,c_flux,r_flux,dir)
+  SUBROUTINE eval_fluxes(Bj,c_qj,r_qj,c_flux,r_flux,dir)
     
     USE COMPLEXIFY
     IMPLICIT none
 
     REAL*8, INTENT(IN) :: Bj
-    REAL*8, INTENT(IN) :: grav3_surf
     COMPLEX*16, INTENT(IN), OPTIONAL :: c_qj(n_vars)
     COMPLEX*16, INTENT(OUT), OPTIONAL :: c_flux(n_eqns)
     REAL*8, INTENT(IN), OPTIONAL :: r_qj(n_vars)
@@ -490,15 +448,7 @@ CONTAINS
 
           u_temp = qj(2) / h_temp
           
-          IF ( fischer_flag ) THEN
-
-             flux(2) = h_temp * u_temp**2 - 0.5D0 * grav * grav3_surf * h_temp**2  
-
-          ELSE
-          
-             flux(2) = h_temp * u_temp**2 + 0.5D0 * grav * h_temp**2  
-                     
-          ENDIF
+          flux(2) = h_temp * u_temp**2 + 0.5D0 * grav * h_temp**2  
 
           flux(3) = u_temp * qj(3)
 
@@ -528,16 +478,8 @@ CONTAINS
           v_temp = qj(3) / h_temp
 
           flux(2) = v_temp * qj(2)
-
-          IF ( fischer_flag ) THEN
-
-             flux(3) = h_temp * v_temp**2 - 0.5D0 * grav * grav3_surf * h_temp**2
-             
-          ELSE
           
-             flux(3) = h_temp * v_temp**2 + 0.5D0 * grav * h_temp**2
-
-          ENDIF
+          flux(3) = h_temp * v_temp**2 + 0.5D0 * grav * h_temp**2
 
           ! Temperature flux in x-direction: V*T*h
           IF ( temperature_flag ) flux(4) = v_temp * qj(4)
@@ -587,7 +529,7 @@ CONTAINS
   !******************************************************************************
 
   SUBROUTINE eval_nonhyperbolic_terms( Bj , Bprimej_x , Bprimej_y , grav3_surf ,&
-       curvj_x , curvj_y , c_qj , c_nh_term_impl , r_qj , r_nh_term_impl )
+       c_qj , c_nh_term_impl , r_qj , r_nh_term_impl )
 
     USE COMPLEXIFY 
     IMPLICIT NONE
@@ -595,8 +537,6 @@ CONTAINS
     REAL*8, INTENT(IN) :: Bj
     REAL*8, INTENT(IN) :: Bprimej_x, Bprimej_y
     REAL*8, INTENT(IN) :: grav3_surf
-    REAL*8, INTENT(IN) :: curvj_x
-    REAL*8, INTENT(IN) :: curvj_y
 
     COMPLEX*16, INTENT(IN), OPTIONAL :: c_qj(n_vars)
     COMPLEX*16, INTENT(OUT), OPTIONAL :: c_nh_term_impl(n_eqns)
@@ -649,11 +589,11 @@ CONTAINS
        IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
           
           forces_term(2) = forces_term(2) - (u/mod_vel) *                    &
-               ( mu*h * ( - grav * grav3_surf + curvj_x * mod_vel**2 )       &
+               ( mu*h * ( - grav * grav3_surf )       &
                + ( grav / xi ) * mod_vel ** 2 )
           
           forces_term(3) = forces_term(3) - (v/mod_vel) *                    &
-               ( mu*h * ( - grav * grav3_surf + curvj_y * mod_vel**2 )       &
+               ( mu*h * ( - grav * grav3_surf )       &
                + ( grav / xi ) * mod_vel ** 2 )
           
        ENDIF
@@ -693,18 +633,14 @@ CONTAINS
   !> \param[out]    expl_forces_term   forces term
   !******************************************************************************
 
-  SUBROUTINE eval_explicit_forces( Bj , Bprimej_x , Bprimej_y , gravj_surf ,    &
-       curvj_x , curvj_y , qj , expl_forces_term )
+  SUBROUTINE eval_explicit_forces( Bj , Bprimej_x , Bprimej_y ,                 &
+       qj , expl_forces_term )
     
     IMPLICIT NONE
 
     REAL*8, INTENT(IN) :: Bj
     REAL*8, INTENT(IN) :: Bprimej_x
     REAL*8, INTENT(IN) :: Bprimej_y
-    REAL*8, INTENT(IN) :: gravj_surf(3)
-    REAL*8, INTENT(IN) :: curvj_x
-    REAL*8, INTENT(IN) :: curvj_y
-    !REAL*8, INTENT(IN) :: curvj_xy
 
     REAL*8, INTENT(IN) :: qj(n_eqns)                 !< conservative variables 
     REAL*8, INTENT(OUT) :: expl_forces_term(n_eqns)  !< explicit forces 
@@ -713,20 +649,10 @@ CONTAINS
 
     CALL phys_var(Bj,r_qj = qj)
     
-    IF ( fischer_flag ) THEN
-
-       expl_forces_term(2) = grav * h * gravj_surf(1)
+    expl_forces_term(2) = grav * h * Bprimej_x
    
-       expl_forces_term(3) = grav * h * gravj_surf(2)
-    
-    ELSE
-    
-       expl_forces_term(2) = grav * h * Bprimej_x
-   
-       expl_forces_term(3) = grav * h * Bprimej_y
-       
-    ENDIF
-    
+    expl_forces_term(3) = grav * h * Bprimej_y
+           
   END SUBROUTINE eval_explicit_forces
 
 END MODULE constitutive_2d
