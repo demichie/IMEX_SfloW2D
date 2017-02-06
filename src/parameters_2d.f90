@@ -42,10 +42,16 @@ MODULE parameters_2d
   LOGICAL :: riemann_flag
 
   !> Flag to choose if we add the rheology
-  !> - T      => Voellmy-Salm rheology
+  !> - T      => rheology activated
   !> - F      => no rheology
   !> .
   LOGICAL :: rheology_flag
+  
+  !> choice of the rheology model
+  !> - 1      => Voellmy-Salm rheology
+  !> - 2      => plastic rheology
+  !> .
+  INTEGER :: rheology_model
 
   !> Flag to choose if we model temperature transport
   !> - T      => Solve for transport equation for the temperature
