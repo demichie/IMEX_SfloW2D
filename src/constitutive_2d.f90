@@ -4,7 +4,7 @@
 MODULE constitutive_2d
 
   USE parameters_2d, ONLY : n_eqns , n_vars
-  USE parameters_2d, ONLY : rheology_flag
+  USE parameters_2d, ONLY : rheology_flag , rheology_model
   USE parameters_2d, ONLY : temperature_flag
 
   IMPLICIT none
@@ -23,9 +23,12 @@ MODULE constitutive_2d
   !> gravitational acceleration
   REAL*8 :: grav
 
-  !> drag coefficients
+  !> drag coefficients (Voellmy-Salm model)
   REAL*8 :: mu
   REAL*8 :: xi
+  
+  !> drag coefficients (plastic model)
+  REAL*8 :: tau
 
 CONTAINS
 
@@ -586,17 +589,38 @@ CONTAINS
     
        mod_vel = CDSQRT( u**2 + v**2 )
        
-       IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
+       ! Voellmy Salm rheology
+       IF (rheology_model .EQ. 1) THEN
+       
+          IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
           
-          forces_term(2) = forces_term(2) - (u/mod_vel) *                    &
-               ( mu*h * ( - grav * grav3_surf )       &
-               + ( grav / xi ) * mod_vel ** 2 )
+             forces_term(2) = forces_term(2) - (u/mod_vel) *                 &
+                  ( mu*h * ( - grav * grav3_surf )                           &
+                  + ( grav / xi ) * mod_vel ** 2 )
           
-          forces_term(3) = forces_term(3) - (v/mod_vel) *                    &
-               ( mu*h * ( - grav * grav3_surf )       &
-               + ( grav / xi ) * mod_vel ** 2 )
+             forces_term(3) = forces_term(3) - (v/mod_vel) *                 &
+                  ( mu*h * ( - grav * grav3_surf )                           &
+                  + ( grav / xi ) * mod_vel ** 2 )
+          
+          ENDIF
+        
+       ! plastic rheology
+       ELSEIF (rheology_model .EQ. 2) THEN
+       
+          IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
+          
+             forces_term(2) = forces_term(2) - tau * (u/mod_vel)
+          
+             forces_term(3) = forces_term(3) - tau * (v/mod_vel)
+
+          ENDIF
+
+       ELSE
+
+             WRITE(*,*) 'rheology model unknown'
           
        ENDIF
+       
        
     ENDIF
 
