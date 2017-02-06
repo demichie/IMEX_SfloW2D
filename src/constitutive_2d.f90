@@ -618,6 +618,7 @@ CONTAINS
        ELSE
 
              WRITE(*,*) 'rheology model unknown'
+             STOP
           
        ENDIF
        
