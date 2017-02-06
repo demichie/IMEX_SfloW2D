@@ -24,6 +24,7 @@ MODULE inpout_2d
        n_topography_profile_y
   USE init_2d, ONLY : riemann_interface
   USE parameters_2d, ONLY : temperature_flag , riemann_flag , rheology_flag
+  USE parameters_2d, ONLY : rheology_model
 
   ! -- Variables for the namelist INITIAL_CONDITIONS
   USE parameters_2d, ONLY : released_volume , x_release , y_release
@@ -44,7 +45,7 @@ MODULE inpout_2d
        reconstr_coeff , interfaces_relaxation , n_RK   
 
   ! -- Variables for the namelist SOURCE_PARAMETERS
-  USE constitutive_2d, ONLY : grav, mu, xi
+  USE constitutive_2d, ONLY : grav, mu, xi, tau
 
   IMPLICIT NONE
 
@@ -121,7 +122,8 @@ MODULE inpout_2d
   NAMELIST / restart_parameters / restart_file , T_init , T_ambient
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
-       cell_size , temperature_flag , rheology_flag , riemann_flag
+       cell_size , temperature_flag , rheology_flag , rheology_model ,          &
+       riemann_flag
 
   NAMELIST / initial_conditions /  released_volume , x_release , y_release ,    &
        velocity_mod_release , velocity_ang_release , T_init , T_ambient
@@ -142,7 +144,7 @@ MODULE inpout_2d
        reconstr_coeff , interfaces_relaxation , n_RK   
 
 
-  NAMELIST / source_parameters / grav, mu, xi
+  NAMELIST / source_parameters / grav, mu, xi, tau
 
 CONTAINS
 
@@ -195,6 +197,7 @@ CONTAINS
     cell_size = 2.5D-3
     temperature_flag = .FALSE.
     rheology_flag = .FALSE.
+    rheology_model = 1
     riemann_flag=.TRUE.
     riemann_interface = 0.5D0
 
@@ -258,6 +261,7 @@ CONTAINS
     grav = 9.81D0
     mu = 0.D0
     xi = 0.D0
+    tau = 0.D0
 
     input_file = 'IMEX_SfloW2D.inp'
 
