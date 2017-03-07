@@ -81,14 +81,14 @@ PROGRAM IMEX_SfloW_2d
 
   ELSE
 
-     ! riemann problem defined in file.inp
      IF( riemann_flag .EQV. .TRUE. )THEN
 
+        ! riemann problem defined in file.inp
         CALL riemann_problem
 
-     ! generic problem defined by initial conditions function (in init_2d.f90)
      ELSE
 
+        ! generic problem defined by initial conditions function (in init_2d.f90)
         CALL initial_conditions
 
      ENDIF

@@ -499,7 +499,7 @@ CONTAINS
  
           END IF
             
-       IF ( T_init*T_ambient .EQ. 0.D0 ) THEN
+       IF ( ( temperature_flag ) .AND. ( T_init*T_ambient .EQ. 0.D0 ) ) THEN
 
           WRITE(*,*) 'T_init=',T_init
           WRITE(*,*) 'T_ambient=',T_ambient
