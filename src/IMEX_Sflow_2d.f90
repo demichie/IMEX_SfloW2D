@@ -21,7 +21,7 @@
 !>     Via della Faggiola, 36\n
 !>     I-56126 Pisa, Italy \n
 !>     E-mail: mattia.demichielivitturi@ingv.it \n
-!> (**) Dipartimento di Matematica, Università di Pisa\n
+!> (**) Dipartimento di Matematica, UniversitÃ  di Pisa\n
 !>       E-mail: lari@student.dm.unipi.it
 !********************************************************************************
 
@@ -117,7 +117,7 @@ PROGRAM IMEX_SfloW_2d
   END IF
   
 
-  WRITE(*,*) 't =',t,' dt =',dt, ' h_tot =',dx*dy*(SUM(q(1,:,:)-B_cent(:,:)))
+  WRITE(*,*) 't =',t,' dt =',dt, ' total volume =',dx*dy*(SUM(q(1,:,:)-B_cent(:,:)))
 
   CALL output_solution(t)
 
