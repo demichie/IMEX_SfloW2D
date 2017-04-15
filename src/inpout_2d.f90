@@ -1229,7 +1229,7 @@ CONTAINS
        
        output_file_2d = TRIM(run_name)//'_'//idx_string//'.p_2d'
        
-       WRITE(*,*) 'WRITING ',output_file_2d
+       WRITE(*,*) 'WRITING ',output_file_2d,comp_cells_y,comp_cells_x
        
        OPEN(output_unit_2d,FILE=output_file_2d,status='unknown',form='formatted')
        
@@ -1240,7 +1240,7 @@ CONTAINS
              DO i = 1,n_vars
                 
                 ! Exponents with more than 2 digits cause problems reading
-             ! into matlab... reset tiny values to zero:
+                ! into matlab... reset tiny values to zero:
                 IF ( dabs(q(i,j,k)) .LT. 1d-99) q(i,j,k) = 0.d0
                 
              END DO
