@@ -7,7 +7,7 @@
 
 MODULE init_2d
 
-  USE parameters_2d, ONLY : temperature_flag
+  USE parameters_2d, ONLY : temperature_flag , verbose_level
 
   IMPLICIT none
 
@@ -291,7 +291,10 @@ CONTAINS
   
     USE parameters_2d, ONLY : released_volume , x_release , y_release
     USE parameters_2d, ONLY : velocity_mod_release, velocity_ang_release
-  
+
+    USE geometry_2d, ONLY : x0 , y0 , dx , dy
+    USE geometry_2d, ONLY : x_stag , y_stag , B_ver
+    
     IMPLICIT NONE
     
     REAL*8, INTENT(IN) :: x,y
@@ -299,23 +302,78 @@ CONTAINS
     
     REAL*8, PARAMETER :: pig = 4.0*ATAN(1.0)
     REAL*8 :: R
+
+    INTEGER :: idx1 , idy1
+    REAL*8 :: coeff_x , coeff_y
+
+    REAL*8 :: dBdx1 , dBdx2 , dBdx
+    REAL*8 :: dBdy1 , dBdy2 , dBdy
+
+    REAL*8 :: max_slope_angle_rad
+    REAL*8 :: velocity_ang_release_rad
+
     
-    ! example 2D from Kurganov and Petrova 2007    
-    !IF(ABS(y).LE.0.5)THEN
-    !   velocity_u_function=0.5
-    !ELSE
-    !   velocity_u_function=0.0
-    !ENDIF
+    R = ( released_volume / pig )**(1.d0/3.d0)
 
-    !velocity_u_function=0.0
+    ! indexes of the lower-left vertex of the cell in the computational grid
+    idx1 = CEILING( ( x_release - x0 ) / dx )
+    idy1 = CEILING( ( y_release - y0 ) / dy )
 
-    R = ( released_volume / pig )**(1.0/3.0)
+    ! relative coordinates of (x_release,y_release) within the cell
+    coeff_x = ( x_release - x_stag(idx1) ) / dx
+    coeff_y = ( y_release - y_stag(idy1) ) / dy
+
+
+    ! x-derivatives at bottom and top edges of the cell
+    dBdx1 = ( B_ver(idx1+1,idy1) - B_ver(idx1,idy1) ) / dx
+    dBdx2 = ( B_ver(idx1+1,idy1+1) - B_ver(idx1,idy1+1) ) / dx
+
+    ! x-derivative of terrain at (x_release,y_release)
+    dBdx = coeff_y * dBdx2 + ( 1.d0 - coeff_y ) * dBdx1
+    
+    ! y-derivatives at left and right edges of the cell
+    dBdy1 = ( B_ver(idx1,idy1+1) - B_ver(idx1,idy1) ) / dy
+    dBdy2 = ( B_ver(idx1+1,idy1+1) - B_ver(idx1+1,idy1) ) / dx
+
+    ! y-derivative of terrain at (x_release,y_release)
+    dBdy = coeff_x * dBdy2 + ( 1.d0 - coeff_x ) * dBdy1
+
+
+    ! direction of maximum slope in radians
+    max_slope_angle_rad = datan2(dbdy,dbdx)
+
+    IF ( verbose_level .GE. 1 ) THEN
+
+       WRITE(*,*) x0,x_stag(1),y0,y_stag(1),dx,dy
+       WRITE(*,*) '---',x_stag(idx1),x_release,x_stag(idx1+1),coeff_x
+       WRITE(*,*) '---',y_stag(idy1),y_release,y_stag(idy1+1),coeff_y
+       
+       WRITE(*,*) B_ver(idx1,idy1),B_ver(idx1+1,idy1)
+       WRITE(*,*) B_ver(idx1,idy1+1),B_ver(idx1+1,idy1+1)
+       WRITE(*,*) 'dbdx,dbdy,angle',dbdx,dbdy,max_slope_angle_rad*180.d0/pig
+    
+       READ(*,*)
+
+    END IF
     
     IF ( DSQRT( (x-x_release)**2 + (y-y_release)**2 ) .LE. R ) THEN
 
-      velocity_u_function = velocity_mod_release * COS( velocity_ang_release *  &
-           ( 2.D0 * pig / 360.d0 ) )
+       velocity_ang_release_rad = velocity_ang_release * pig / 180.d0
+       
+       IF ( velocity_ang_release .GE. 0.D0 ) THEN 
 
+          ! angle departing from positive x-axis
+          velocity_u_function = velocity_mod_release                            &
+               * COS( velocity_ang_release * ( 2.D0 * pig / 360.d0 ) )
+
+       ELSE
+
+          ! angle departing from maximum slope direction
+          velocity_u_function = velocity_mod_release                            &
+               * COS( max_slope_angle_rad + velocity_ang_release_rad )
+
+       END IF
+          
     ELSE
 
       velocity_u_function = 0.d0
@@ -337,7 +395,10 @@ CONTAINS
   
     USE parameters_2d, ONLY : released_volume , x_release , y_release
     USE parameters_2d, ONLY : velocity_mod_release, velocity_ang_release
-  
+
+    USE geometry_2d, ONLY : x0 , y0 , dx , dy
+    USE geometry_2d, ONLY : x_stag , y_stag , B_ver
+
     IMPLICIT NONE
     
     REAL*8, INTENT(IN) :: x,y
@@ -345,18 +406,61 @@ CONTAINS
    
     REAL*8, PARAMETER :: pig = 4.0*ATAN(1.0)
     REAL*8 :: R
-   
-    ! example 2D from Kurganov and Petrova 2007    
-    !velocity_v_function=0.0
+    
+    INTEGER :: idx1 , idy1
+    REAL*8 :: coeff_x , coeff_y
+    
+    REAL*8 :: dBdx1 , dBdx2 , dBdx
+    REAL*8 :: dBdy1 , dBdy2 , dBdy
 
-    !velocity_v_function=0.0
+    REAL*8 :: max_slope_angle_rad
+    REAL*8 :: velocity_ang_release_rad
+
 
     R = ( released_volume / pig )**(1.0/3.0)
+
+    ! indexes of the lower-left vertex of the cell in the computational grid
+    idx1 = CEILING( ( x_release - x0 ) / dx )
+    idy1 = CEILING( ( y_release - y0 ) / dy )
+
+    ! relative coordinates of (x_release,y_release) within the cell
+    coeff_x = ( x_release - x_stag(idx1) ) / dx
+    coeff_y = ( y_release - y_stag(idy1) ) / dy
+
+
+    ! x-derivatives at bottom and top edges of the cell
+    dBdx1 = ( B_ver(idx1+1,idy1) - B_ver(idx1,idy1) ) / dx
+    dBdx2 = ( B_ver(idx1+1,idy1+1) - B_ver(idx1,idy1+1) ) / dx
+
+    ! x-derivative of terrain at (x_release,y_release)
+    dBdx = coeff_y * dBdx2 + ( 1.d0 - coeff_y ) * dBdx1
+    
+    ! y-derivatives at left and right edges of the cell
+    dBdy1 = ( B_ver(idx1,idy1+1) - B_ver(idx1,idy1) ) / dy
+    dBdy2 = ( B_ver(idx1+1,idy1+1) - B_ver(idx1+1,idy1) ) / dx
+
+    ! y-derivative of terrain at (x_release,y_release)
+    dBdy = coeff_x * dBdy2 + ( 1.d0 - coeff_x ) * dBdy1
+
+
     
     IF ( DSQRT( (x-x_release)**2 + (y-y_release)**2 ) .LE. R ) THEN
 
-      velocity_v_function = velocity_mod_release * SIN( velocity_ang_release *  &
-           ( 2.D0 * pig / 360.d0 ) )
+       velocity_ang_release_rad = velocity_ang_release * pig / 180.d0
+       
+       IF ( velocity_ang_release .GE. 0.D0 ) THEN 
+          
+          ! angle departing from positive x-axis
+          velocity_v_function = velocity_mod_release                            &
+               * SIN( velocity_ang_release * ( 2.D0 * pig / 360.d0 ) )
+          
+       ELSE
+          
+          ! angle departing from maximum slope direction
+          velocity_v_function = velocity_mod_release                            &
+               * SIN( max_slope_angle_rad + velocity_ang_release_rad )
+          
+       END IF
 
     ELSE
 

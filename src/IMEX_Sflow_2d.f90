@@ -116,8 +116,8 @@ PROGRAM IMEX_SfloW_2d
      
   END IF
   
-
-  WRITE(*,*) 't =',t,' dt =',dt, ' total volume =',dx*dy*(SUM(q(1,:,:)-B_cent(:,:)))
+  WRITE(*,FMT="(A3,F10.4,A5,F8.4,A15,F15.4)") 't =',t,'dt =',dt,                &
+       ' total volume =',dx*dy*(SUM(q(1,:,:)-B_cent(:,:)))
 
   CALL output_solution(t)
 
@@ -133,7 +133,8 @@ PROGRAM IMEX_SfloW_2d
 
      t = t+dt
 
-     WRITE(*,*) 't =',t,' dt =',dt, ' h_tot =',dx*dy*(SUM(q(1,:,:)-B_cent(:,:)))
+     WRITE(*,FMT="(A3,F10.4,A5,F8.4,A15,F15.4)") 't =',t,'dt =',dt,             &
+          ' total volume =',dx*dy*(SUM(q(1,:,:)-B_cent(:,:)))
 
      IF ( ( t .GE. t_output ) .OR. ( t .GE. t_end ) ) CALL output_solution(t)
 

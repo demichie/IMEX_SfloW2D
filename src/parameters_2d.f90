@@ -71,7 +71,11 @@ MODULE parameters_2d
     !> Initial velocity module of the pile
   REAL*8 :: velocity_mod_release
 
-  !> Initial velocity direction (angle in degree, departing from positive x-axis)
+  !> Initial velocity direction (angle in degree):\n
+  !> - >=0    => departing from positive x-axis
+  !> - <0     => departign from maximum slope direction
+  !.
+  
   REAL*8 :: velocity_ang_release
 
   !> Initial temperature of the pile of material
