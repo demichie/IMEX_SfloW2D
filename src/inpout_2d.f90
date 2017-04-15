@@ -1229,7 +1229,7 @@ CONTAINS
        
        output_file_2d = TRIM(run_name)//'_'//idx_string//'.p_2d'
        
-       WRITE(*,*) 'WRITING ',output_file_2d,comp_cells_y,comp_cells_x
+       WRITE(*,*) 'WRITING ',output_file_2d
        
        OPEN(output_unit_2d,FILE=output_file_2d,status='unknown',form='formatted')
        
