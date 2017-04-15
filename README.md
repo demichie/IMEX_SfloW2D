@@ -47,3 +47,7 @@ Doxygen generated documentation of the code can be found at:
 ### Authors
 
 Mattia de' Michieli Vitturi, Giacomo Lari
+
+### Acknowledgments
+
+The development of IMEX-SfloW2D has been partially funded by Istituto Nazionale di Geofisica e Vulcanologia and Italian DPC (INGV - DPC B2 2016 Ob. 4 - Subtask D1).
