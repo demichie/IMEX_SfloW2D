@@ -38,6 +38,9 @@ Doxygen generated documentation of the code can be found at:
 
 [http://demichie.github.io/IMEX_SfloW2D/html/](http://demichie.github.io/IMEX_SfloW2D/html/) 
 
+### Acknowledgments
+
+The development of IMEX-SfloW2D has been partially funded by Istituto Nazionale di Geofisica e Vulcanologia and Italian DPC (INGV - DPC B2 2016 Ob. 4 - Subtask D1).
 
 ### References
 
