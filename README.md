@@ -44,4 +44,5 @@ The development of IMEX-SfloW2D has been partially funded by Istituto Nazionale 
 
 ### References
 
-M. de’ Michieli Vitturi, 2016.
+[https://github.com/demichie/IMEX_SfloW2D/raw/gh-pages/Relazione_Tecnica_IMEX.pdf](M. de’ Michieli Vitturi, G. Lari, IMEX_SfloW2D,
+a Shallow Water numerical solver, Tech Report, 2016)
