@@ -35,22 +35,22 @@ MODULE solver_2d
   REAL*8, ALLOCATABLE :: q0(:,:,:)        
   !> Solution of the finite-volume semidiscrete cheme
   REAL*8, ALLOCATABLE :: q_fv(:,:,:)     
-  !> Reconstructed value at the left of the interface
-  REAL*8, ALLOCATABLE :: q_interfaceW(:,:,:)        
-  !> Reconstructed value at the right of the interface
-  REAL*8, ALLOCATABLE :: q_interfaceE(:,:,:)
-  !> Reconstructed value at the left of the interface
-  REAL*8, ALLOCATABLE :: q_interfaceS(:,:,:)        
-  !> Reconstructed value at the right of the interface
-  REAL*8, ALLOCATABLE :: q_interfaceN(:,:,:)
-  !> Local speeds at the left of the interface
-  REAL*8, ALLOCATABLE :: a_interfaceL(:,:,:)
-  !> Local speeds at the right of the interface
-  REAL*8, ALLOCATABLE :: a_interfaceR(:,:,:)
-  !> Local speeds at the left of the interface
-  REAL*8, ALLOCATABLE :: b_interfaceD(:,:,:)
-  !> Local speeds at the right of the interface
-  REAL*8, ALLOCATABLE :: b_interfaceU(:,:,:)
+  !> Reconstructed value at the left of the x-interface
+  REAL*8, ALLOCATABLE :: q_interfaceL(:,:,:)        
+  !> Reconstructed value at the right of the x-interface
+  REAL*8, ALLOCATABLE :: q_interfaceR(:,:,:)
+  !> Reconstructed value at the bottom of the y-interface
+  REAL*8, ALLOCATABLE :: q_interfaceB(:,:,:)        
+  !> Reconstructed value at the top of the y-interface
+  REAL*8, ALLOCATABLE :: q_interfaceT(:,:,:)
+  !> Local speeds at the left of the x-interface
+  REAL*8, ALLOCATABLE :: a_interface_xNeg(:,:,:)
+  !> Local speeds at the right of the x-interface
+  REAL*8, ALLOCATABLE :: a_interface_xPos(:,:,:)
+  !> Local speeds at the bottom of the y-interface
+  REAL*8, ALLOCATABLE :: a_interface_yNeg(:,:,:)
+  !> Local speeds at the top of the y-interface
+  REAL*8, ALLOCATABLE :: a_interface_yPos(:,:,:)
   !> Semidiscrete numerical interface fluxes 
   REAL*8, ALLOCATABLE :: H_interface_x(:,:,:)
   !> Semidiscrete numerical interface fluxes 
@@ -140,18 +140,19 @@ CONTAINS
 
     ALLOCATE( q_fv( n_vars , comp_cells_x , comp_cells_y ) )
 
-    ALLOCATE( q_interfaceW( n_vars , 0:comp_interfaces_x, comp_interfaces_y ) )
-    ALLOCATE( q_interfaceE( n_vars , 0:comp_interfaces_x, comp_interfaces_y ) )
-    ALLOCATE( q_interfaceS( n_vars , comp_interfaces_x, 0:comp_interfaces_y ) )
-    ALLOCATE( q_interfaceN( n_vars , comp_interfaces_x, 0:comp_interfaces_y ) )
-
-    ALLOCATE( a_interfaceL( n_eqns , comp_interfaces_x, comp_cells_y ) )
-    ALLOCATE( a_interfaceR( n_eqns , comp_interfaces_x, comp_cells_y ) )
-    ALLOCATE( b_interfaceD( n_eqns , comp_cells_x, comp_interfaces_y ) )
-    ALLOCATE( b_interfaceU( n_eqns , comp_cells_x, comp_interfaces_y ) )
-
-
+    ALLOCATE( q_interfaceL( n_vars , comp_interfaces_x, comp_cells_y ) )
+    ALLOCATE( q_interfaceR( n_vars , comp_interfaces_x, comp_cells_y ) )
+    ALLOCATE( a_interface_xNeg( n_eqns , comp_interfaces_x, comp_cells_y ) )
+    ALLOCATE( a_interface_xPos( n_eqns , comp_interfaces_x, comp_cells_y ) )
     ALLOCATE( H_interface_x( n_eqns , comp_interfaces_x, comp_cells_y ) )
+
+
+    ALLOCATE( q_interfaceB( n_vars , comp_cells_x, comp_interfaces_y ) )
+    ALLOCATE( q_interfaceT( n_vars , comp_cells_x, comp_interfaces_y ) )
+    ALLOCATE( a_interface_yNeg( n_eqns , comp_cells_x, comp_interfaces_y ) )
+    ALLOCATE( a_interface_yPos( n_eqns , comp_cells_x, comp_interfaces_y ) )
+
+
     ALLOCATE( H_interface_y( n_eqns , comp_cells_x, comp_interfaces_y ) )
 
     ALLOCATE( solve_mask( comp_cells_x , comp_cells_y ) )
@@ -320,16 +321,15 @@ CONTAINS
 
     DEALLOCATE( q_fv )
 
-    DEALLOCATE( q_interfaceW )
-    DEALLOCATE( q_interfaceE )
-    DEALLOCATE( q_interfaceS )
-    DEALLOCATE( q_interfaceN )
+    DEALLOCATE( q_interfaceL )
+    DEALLOCATE( q_interfaceR )
+    DEALLOCATE( q_interfaceB )
+    DEALLOCATE( q_interfaceT )
 
-    DEALLOCATE( a_interfaceL )
-    DEALLOCATE( a_interfaceR )
-
-    DEALLOCATE( b_interfaceD )
-    DEALLOCATE( b_interfaceU )
+    DEALLOCATE( a_interface_xNeg )
+    DEALLOCATE( a_interface_xPos )
+    DEALLOCATE( a_interface_yNeg )
+    DEALLOCATE( a_interface_yPos )
 
     DEALLOCATE( H_interface_x )
     DEALLOCATE( H_interface_y )
@@ -509,8 +509,8 @@ CONTAINS
 
     REAL*8 :: dt_cfl        !< local time step
 
-    REAL*8 :: a_interface_max(n_eqns,comp_interfaces_x,comp_cells_y)
-    REAL*8 :: b_interface_max(n_eqns,comp_cells_x,comp_interfaces_y)
+    REAL*8 :: a_interface_x_max(n_eqns,comp_interfaces_x,comp_cells_y)
+    REAL*8 :: a_interface_y_max(n_eqns,comp_cells_x,comp_interfaces_y)
     REAL*8 :: dt_interface_x, dt_interface_y
 
     INTEGER :: i,j,k          !< loop counter
@@ -525,9 +525,9 @@ CONTAINS
 
        DO i=1,n_vars
 
-          a_interface_max(i,:,:) = MAX( a_interfaceR(i,:,:),-a_interfaceL(i,:,:))
+          a_interface_x_max(i,:,:) = MAX( a_interface_xPos(i,:,:),-a_interface_xNeg(i,:,:))
 
-          b_interface_max(i,:,:) = MAX( b_interfaceU(i,:,:),-b_interfaceD(i,:,:))
+          a_interface_y_max(i,:,:) = MAX( a_interface_yPos(i,:,:),-a_interface_yNeg(i,:,:))
 
        END DO
 
@@ -535,11 +535,11 @@ CONTAINS
 
           DO k = 1,comp_cells_y
 
-             dt_interface_x = cfl * dx / MAX( MAXVAL(a_interface_max(:,j,k)) &
-                  , MAXVAL(a_interface_max(:,j+1,k)) )
+             dt_interface_x = cfl * dx / MAX( MAXVAL(a_interface_x_max(:,j,k)) &
+                  , MAXVAL(a_interface_y_max(:,j+1,k)) )
              
-             dt_interface_y = cfl * dy/MAX( MAXVAL(b_interface_max(:,j,k+1)) &
-                  , MAXVAL(b_interface_max(:,j,k)) )
+             dt_interface_y = cfl * dy/MAX( MAXVAL(a_interface_x_max(:,j,k+1)) &
+                  , MAXVAL(a_interface_y_max(:,j,k)) )
              
              dt_cfl = MIN( dt_interface_x , dt_interface_y )
              
@@ -681,7 +681,6 @@ CONTAINS
                 NH( 1:n_eqns , j , k , i_RK ) = 1.D0 / a_diag * ( ( q_guess -   &
                      q0( 1:n_vars , j , k ) ) / dt +                            &
                      ( MATMUL(Fxj+ Expl_terms_j,a_tilde) - MATMUL(NHj,a_dirk) ) )
-!                     ( MATMUL(Fxj,a_tilde) - MATMUL(NHj,a_dirk) ) )
                 
              END IF
              
@@ -866,7 +865,6 @@ CONTAINS
     IF ( normalize_f ) THEN
 
        qj = qj_old - dt * ( MATMUL(Fxj+ Expl_terms_j,a_tilde) - MATMUL(NHj,a_dirk) )
-!       qj = qj_old - dt * ( MATMUL(Fxj,a_tilde) - MATMUL(NHj,a_dirk) )
 
        CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf ,                   &
             qj , qj_old , a_tilde , a_dirk , a_diag , coeff_f , right_term ,    &
@@ -1369,7 +1367,6 @@ CONTAINS
          r_qj = qj , r_nh_term_impl = nh_term_impl ) 
 
     Rj = ( MATMUL(Fxj+ Expl_terms_j,a_tilde) - MATMUL(NHj,a_dirk) ) - a_diag * nh_term_impl
-!    Rj = ( MATMUL(Fxj,a_tilde) - MATMUL(NHj,a_dirk) ) - a_diag * nh_term_impl
 
     f_nl = qj - qj_old + dt * Rj
 
@@ -1578,19 +1575,22 @@ CONTAINS
           h_new = q_expl(1,j,k) - dt * F_x(1,j,k) - B_cent(j,k)
 
           IF ( h_new .LT. 0.D0 ) THEN
-
-             WRITE(*,*) 'j,k,h',j,k,h_new
+          
+             WRITE(*,*) 'j,k,h',j,k,h_new, F_x(1,j,k)
              WRITE(*,*) 'dt',dt
 
-             WRITE(*,*) 'w_interface(j,k) ',q_interfaceE(1,j,k) ,               &
-                  q_interfaceW(1,j,k)
+             WRITE(*,*) 'w_interface(j,k) ',q_interfaceL(1,j,k) ,               &
+                  q_interfaceR(1,j,k)
 
-             WRITE(*,*) 'w_interface(j+1,k) ',q_interfaceE(1,j+1,k) ,           &
-                  q_interfaceW(1,j+1,k)
+             WRITE(*,*) 'w_interface(j+1,k) ',q_interfaceL(1,j+1,k) ,           &
+                  q_interfaceR(1,j+1,k)
 
-             WRITE(*,*) 'H_interface ',H_interface_x(i,j,k) ,                   &
-                  H_interface_x(i,j+1,k)
-             WRITE(*,*) 
+             WRITE(*,*) 'H_interface_x',H_interface_x(1,j,k) ,                   &
+                  H_interface_x(1,j+1,k)
+
+             WRITE(*,*) 'H_interface_y',H_interface_y(i,j,k) ,                   &
+                  H_interface_y(1,j,k+1)
+
              READ(*,*) 
 
           END IF
@@ -1623,8 +1623,8 @@ CONTAINS
 
     REAL*8 :: fluxL(n_eqns)           !< Numerical fluxes from the eqns 
     REAL*8 :: fluxR(n_eqns)           !< Numerical fluxes from the eqns
-    REAL*8 :: fluxD(n_eqns)           !< Numerical fluxes from the eqns 
-    REAL*8 :: fluxU(n_eqns)           !< Numerical fluxes from the eqns
+    REAL*8 :: fluxB(n_eqns)           !< Numerical fluxes from the eqns 
+    REAL*8 :: fluxT(n_eqns)           !< Numerical fluxes from the eqns
 
     REAL*8 :: flux_avg_x(n_eqns)   
     REAL*8 :: flux_avg_y(n_eqns)   
@@ -1632,76 +1632,75 @@ CONTAINS
     INTEGER :: j,k                      !< Loop counter
     INTEGER :: i                      !< Loop counter
 
-    DO j = 0 , comp_cells_x
+    DO j = 1,comp_interfaces_x
 
-       DO k = 0 , comp_cells_y
+       DO k = 1,comp_cells_y
 
-          IF ( k .NE. 0 ) THEN
+          CALL eval_fluxes( B_stag_x(j,k) ,                                  &
+               r_qj = q_interfaceL(1:n_vars,j,k) , r_flux=fluxL , dir=1 )
+          
+          CALL eval_fluxes( B_stag_x(j,k) ,                                  &
+               r_qj = q_interfaceR(1:n_vars,j,k) , r_flux=fluxR , dir=1 )
+                    
+          CALL average_KT( a_interface_xNeg(:,j,k) , a_interface_xPos(:,j,k) ,       &
+               fluxL , fluxR , flux_avg_x )
+          
+          eqns_loop:DO i=1,n_eqns
+             
+             IF ( a_interface_xNeg(i,j,k) .EQ. a_interface_xPos(i,j,k) ) THEN
+                
+                H_interface_x(i,j,k) = 0.D0
+                
+             ELSE
+                
+                H_interface_x(i,j,k) = flux_avg_x(i)                         &
+                     + ( a_interface_xPos(i,j,k) * a_interface_xNeg(i,j,k) )         &
+                     / ( a_interface_xPos(i,j,k) - a_interface_xNeg(i,j,k) )         &
+                     * ( q_interfaceR(i,j,k) - q_interfaceL(i,j,k) )             
+                
+             END IF
+             
+          ENDDO eqns_loop
 
-             CALL eval_fluxes( B_stag_x(j+1,k) ,                                &
-                  r_qj = q_interfaceE(1:n_vars,j,k) , r_flux=fluxL , dir=1 )
-
-             CALL eval_fluxes( B_stag_x(j+1,k) ,                                &
-                  r_qj = q_interfaceW(1:n_vars,j+1,k) , r_flux=fluxR , dir=1 )
-
-
-             CALL average_KT( a_interfaceL(:,j+1,k) , a_interfaceR(:,j+1,k) ,   &
-                  fluxL , fluxR , flux_avg_x )
-
-             eqns_loop:DO i=1,n_eqns
-
-                IF ( a_interfaceL(i,j+1,k) .EQ. a_interfaceR(i,j+1,k) ) THEN
-                   
-                   H_interface_x(i,j+1,k) = 0.D0
-                   
-                ELSE
-
-                   H_interface_x(i,j+1,k) = flux_avg_x(i)                       &
-                        + ( a_interfaceR(i,j+1,k) * a_interfaceL(i,j+1,k) )     &
-                        / ( a_interfaceR(i,j+1,k) - a_interfaceL(i,j+1,k) )     &
-                        * ( q_interfaceW(i,j+1,k) - q_interfaceE(i,j,k) )             
-
-                END IF
-
-             ENDDO eqns_loop
-
-          ENDIF
-
-          IF ( j .NE. 0 ) THEN
-
-             CALL eval_fluxes( B_stag_y(j,k+1) ,                                &
-                  r_qj = q_interfaceN(1:n_vars,j,k) , r_flux=fluxD , dir=2 )
-
-             CALL eval_fluxes( B_stag_y(j,k+1) ,                                &
-                  r_qj = q_interfaceS(1:n_vars,j,k+1) , r_flux=fluxU , dir=2 )
-
-
-             CALL average_KT( b_interfaceD(:,j,k+1) , b_interfaceU(:,j,k+1) ,   &
-                  fluxD , fluxU , flux_avg_y )
-
-             DO i=1,n_eqns
-
-                IF ( b_interfaceU(i,j,k+1) .EQ. b_interfaceD(i,j,k+1) ) THEN
-
-                   H_interface_y(i,j,k+1) = 0.D0
-
-                ELSE
-
-                   H_interface_y(i,j,k+1) = flux_avg_y(i)                       &
-                        + ( b_interfaceU(i,j,k+1) * b_interfaceD(i,j,k+1) )     &
-                        / ( b_interfaceU(i,j,k+1) - b_interfaceD(i,j,k+1) )     &
-                        * ( q_interfaceS(i,j,k+1) - q_interfaceN(i,j,k) )             
-
-                END IF
-
-             END DO
-
-          ENDIF
-
-       ENDDO
+       END DO
 
     END DO
 
+    DO j = 1,comp_cells_x
+
+       DO k = 1,comp_interfaces_y
+
+          CALL eval_fluxes( B_stag_y(j,k) ,                                &
+               r_qj = q_interfaceB(1:n_vars,j,k) , r_flux=fluxB , dir=2 )
+          
+          CALL eval_fluxes( B_stag_y(j,k) ,                                &
+               r_qj = q_interfaceT(1:n_vars,j,k) , r_flux=fluxT , dir=2 )
+          
+          
+          CALL average_KT( a_interface_yNeg(:,j,k) , a_interface_yPos(:,j,k) ,   &
+               fluxB , fluxT , flux_avg_y )
+          
+          DO i=1,n_eqns
+             
+             IF ( a_interface_yNeg(i,j,k) .EQ. a_interface_yPos(i,j,k) ) THEN
+                
+                H_interface_y(i,j,k) = 0.D0
+                
+             ELSE
+                
+                H_interface_y(i,j,k) = flux_avg_y(i)                       &
+                     + ( a_interface_yPos(i,j,k) * a_interface_yNeg(i,j,k) )     &
+                     / ( a_interface_yPos(i,j,k) - a_interface_yNeg(i,j,k) )     &
+                     * ( q_interfaceT(i,j,k) - q_interfaceB(i,j,k) )             
+                
+             END IF
+             
+          END DO
+
+       ENDDO
+       
+    END DO
+    
   END SUBROUTINE eval_flux_KT
 
   !******************************************************************************
@@ -1720,28 +1719,28 @@ CONTAINS
   !******************************************************************************
 
 
-  SUBROUTINE average_KT( aL , aR , wL , wR , w_avg )
+  SUBROUTINE average_KT( a1 , a2 , w1 , w2 , w_avg )
 
     IMPLICIT NONE
 
-    REAL*8, INTENT(IN) :: aL(:) , aR(:)
-    REAL*8, INTENT(IN) :: wL(:) , wR(:)
+    REAL*8, INTENT(IN) :: a1(:) , a2(:)
+    REAL*8, INTENT(IN) :: w1(:) , w2(:)
     REAL*8, INTENT(OUT) :: w_avg(:)
 
     INTEGER :: n
     INTEGER :: i 
 
-    n = SIZE( aL )
+    n = SIZE( a1 )
 
     DO i=1,n
 
-       IF ( aL(i) .EQ. aR(i) ) THEN
+       IF ( a1(i) .EQ. a2(i) ) THEN
 
-          w_avg(i) = 0.5D0 * ( wL(i) + wR(i) )
+          w_avg(i) = 0.5D0 * ( w1(i) + w2(i) )
 
        ELSE
 
-          w_avg(i) = ( aR(i) * wL(i) - aL(i) * wR(i) ) / ( aR(i) - aL(i) )  
+          w_avg(i) = ( a2(i) * w1(i) - a1(i) * w2(i) ) / ( a2(i) - a1(i) )  
 
        END IF
 
@@ -2010,16 +2009,16 @@ CONTAINS
              ENDIF
 
              ! Convert back from physical to conservative variables
-             CALL qp_to_qc( qpW , B_stag_x(j,k) , q_interfaceW(:,j,k) )
-             CALL qp_to_qc( qpE , B_stag_x(j+1,k) , q_interfaceE(:,j,k) )
-             CALL qp_to_qc( qpS , B_stag_y(j,k) , q_interfaceS(:,j,k) )
-             CALL qp_to_qc( qpN , B_stag_y(j,k+1) , q_interfaceN(:,j,k) )
+             CALL qp_to_qc( qpW , B_stag_x(j,k) , q_interfaceR(:,j,k) )
+             CALL qp_to_qc( qpE , B_stag_x(j+1,k) , q_interfaceL(:,j+1,k) )
+             CALL qp_to_qc( qpS , B_stag_y(j,k) , q_interfaceT(:,j,k) )
+             CALL qp_to_qc( qpN , B_stag_y(j,k+1) , q_interfaceB(:,j,k+1) )
 
           ENDDO
 
-          ! ghost cells
+          ! boundary conditions
 
-          ! qN(i,j,0)
+          ! South q_interfaceB(:,j,1)
           IF(k.EQ.1)THEN
 
              DO i=1,n_vars
@@ -2032,22 +2031,15 @@ CONTAINS
 
                    qp_bdry(i) = qpS(i)
 
-                   ! fixed wall
-                   !IF(i.eq.3)THEN
-                   !   qp_bdry(i) = -qpS(i)
-                   !ELSE
-                   !   qp_bdry(i) = qpS(i)
-                   !ENDIF
-
                 END IF
 
              ENDDO
 
-             CALL qp_to_qc( qp_bdry ,  B_stag_y(j,1) ,  q_interfaceN(:,j,0) )
+             CALL qp_to_qc( qp_bdry ,  B_stag_y(j,1) ,  q_interfaceB(:,j,1) )
 
           ENDIF
 
-          ! qS(i,j,comp_interfaces_y)
+          ! North qT(i,j,comp_interfaces_y)
           IF(k.EQ.comp_cells_y)THEN
 
              DO i=1,n_vars
@@ -2060,23 +2052,16 @@ CONTAINS
 
                    qp_bdry(i) = qpN(i)
 
-                   ! fixed wall
-                   !IF(i.eq.3)THEN
-                   !   qp_bdry(i) = -qpN(i)
-                   !ELSE
-                   !   qp_bdry(i) = qpN(i)
-                   !ENDIF
-
                 END IF
 
              ENDDO
 
              CALL qp_to_qc( qp_bdry ,  B_stag_y(j,comp_interfaces_y) ,          &
-                  q_interfaceS(:,j,comp_interfaces_y) )
+                  q_interfaceT(:,j,comp_interfaces_y) )
 
           ENDIF
 
-          ! qE(i,0,k)
+          ! West q_interfaceL(:,1,k)
           IF(j.EQ.1)THEN
 
              DO i=1,n_vars
@@ -2089,22 +2074,15 @@ CONTAINS
 
                    qp_bdry(i) = qpW(i)
 
-                   ! fixed wall
-                   !IF(i.eq.2)THEN
-                   !   qp_bdry(i) = -qpW(i)
-                   !ELSE
-                   !   qp_bdry(i) = qpW(i)
-                   !ENDIF
-
                 END IF
 
              ENDDO
 
-             CALL qp_to_qc( qp_bdry ,  B_stag_x(1,k) ,  q_interfaceE(:,0,k) )
+             CALL qp_to_qc( qp_bdry ,  B_stag_x(1,k) ,  q_interfaceL(:,1,k) )
 
           ENDIF
 
-          ! qW(i,comp_interfaces_x,k)
+          ! East q_interfaceR(:,comp_interfaces_x,k)
           IF(j.EQ.comp_cells_x)THEN
 
              DO i=1,n_vars
@@ -2117,19 +2095,12 @@ CONTAINS
 
                    qp_bdry(i) = qpE(i)
 
-                   ! fixed wall
-                   !IF(i.eq.2)THEN
-                   !   qp_bdry(i) = -qpE(i)
-                   !ELSE
-                   !   qp_bdry(i) = qpE(i)
-                   !ENDIF
-
                 END IF
 
              ENDDO
 
              CALL qp_to_qc( qp_bdry ,  B_stag_x(comp_interfaces_x,k) , &
-                  & q_interfaceW(:,comp_interfaces_x,k) )
+                  & q_interfaceR(:,comp_interfaces_x,k) )
 
           ENDIF
 
@@ -2160,48 +2131,48 @@ CONTAINS
 
     REAL*8 :: abslambdaL_min(n_vars) , abslambdaL_max(n_vars)
     REAL*8 :: abslambdaR_min(n_vars) , abslambdaR_max(n_vars)
-    REAL*8 :: abslambdaD_min(n_vars) , abslambdaD_max(n_vars)
-    REAL*8 :: abslambdaU_min(n_vars) , abslambdaU_max(n_vars)
+    REAL*8 :: abslambdaB_min(n_vars) , abslambdaB_max(n_vars)
+    REAL*8 :: abslambdaT_min(n_vars) , abslambdaT_max(n_vars)
     REAL*8 :: min_r(n_vars) , max_r(n_vars)
 
     INTEGER :: j,k
 
-    DO j = 0 , comp_cells_x
+    DO j = 1,comp_interfaces_x
 
-       DO k = 1 , comp_cells_y
+       DO k = 1, comp_cells_y
 
-          CALL eval_local_speeds2_x( q_interfaceW(:,j+1,k) , B_stag_x(j+1,k) ,  &
-               abslambdaR_min , abslambdaR_max )
-
-          CALL eval_local_speeds2_x( q_interfaceE(:,j,k) , B_stag_x(j+1,k) ,    &
+          CALL eval_local_speeds2_x( q_interfaceL(:,j,k) , B_stag_x(j,k) ,  &
                abslambdaL_min , abslambdaL_max )
+
+          CALL eval_local_speeds2_x( q_interfaceR(:,j,k) , B_stag_x(j,k) ,    &
+               abslambdaR_min , abslambdaR_max )
 
           min_r = MIN(abslambdaL_min , abslambdaR_min , 0.0D0)
           max_r = MAX(abslambdaL_max , abslambdaR_max , 0.0D0)
 
-          a_interfaceL(:,j+1,k) = min_r
-          a_interfaceR(:,j+1,k) = max_r
+          a_interface_xNeg(:,j,k) = min_r
+          a_interface_xPos(:,j,k) = max_r
 
        ENDDO
 
     END DO
 
 
-    DO j = 1 , comp_cells_x
+    DO j = 1,comp_cells_x
 
-       DO k = 0 , comp_cells_y
+       DO k = 1,comp_interfaces_y
 
-          CALL eval_local_speeds2_y( q_interfaceS(:,j,k+1) , B_stag_y(j,k+1) ,  &
-               abslambdaU_min , abslambdaU_max )
+          CALL eval_local_speeds2_y( q_interfaceB(:,j,k) , B_stag_y(j,k) ,  &
+               abslambdaB_min , abslambdaB_max )
 
-          CALL eval_local_speeds2_y( q_interfaceN(:,j,k) , B_stag_y(j,k+1) ,    &
-               abslambdaD_min , abslambdaD_max )
+          CALL eval_local_speeds2_y( q_interfaceT(:,j,k) , B_stag_y(j,k) ,    &
+               abslambdaT_min , abslambdaT_max )
 
-          min_r = MIN(abslambdaD_min , abslambdaU_min , 0.0D0)
-          max_r = MAX(abslambdaD_max , abslambdaU_max , 0.0D0)
+          min_r = MIN(abslambdaB_min , abslambdaT_min , 0.0D0)
+          max_r = MAX(abslambdaB_max , abslambdaT_max , 0.0D0)
 
-          b_interfaceD(:,j,k+1) = min_r
-          b_interfaceU(:,j,k+1) = max_r
+          a_interface_yNeg(:,j,k) = min_r
+          a_interface_yPos(:,j,k) = max_r
 
        ENDDO
 

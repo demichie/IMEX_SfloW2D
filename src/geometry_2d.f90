@@ -187,7 +187,7 @@ CONTAINS
              y_comp(k) = 0.5 * ( y_stag(k) + y_stag(k+1) )
 
              ! right column
-             IF(j.EQ.comp_cells_x.AND.k.NE.comp_cells_y)THEN
+             IF ( j.EQ.comp_cells_x .AND. k.NE.comp_cells_y ) THEN
 
                 CALL interp_1d_scalar(                                          &
                      topography_profile(2,n_topography_profile_x,:) ,           &
@@ -195,7 +195,7 @@ CONTAINS
                      y_stag(k+1) , B_ver(j+1,k+1) )
 
                 ! top row
-             ELSEIF(j.NE.comp_cells_x.AND.k.EQ.comp_cells_y)THEN
+             ELSEIF ( j.NE.comp_cells_x .AND. k.EQ.comp_cells_y ) THEN
 
                 CALL interp_1d_scalar(                                          &
                      topography_profile(1,:,n_topography_profile_y) ,           &
@@ -203,7 +203,7 @@ CONTAINS
                      x_stag(j+1) , B_ver(j+1,k+1) ) 
 
                 ! right-top vertex
-             ELSEIF(j.EQ.comp_cells_x.AND.k.EQ.comp_cells_y)THEN
+             ELSEIF ( j.EQ.comp_cells_x .AND. k.EQ.comp_cells_y ) THEN
 
                 B_ver(j+1,k+1) = topography_profile( 3, n_topography_profile_x ,&
                      n_topography_profile_y)
@@ -264,7 +264,7 @@ CONTAINS
 
                 y_stag(k+1) = y_stag(k) + dy
 
-                y_comp(k) = 0.5 * ( y_stag(k) + y_stag(k+1) )
+                y_comp(k) = 0.5D0 * ( y_stag(k) + y_stag(k+1) )
 
              ENDIF
 
@@ -274,19 +274,19 @@ CONTAINS
 
              IF(k.GT.0)THEN
 
-                B_stag_x(j+1,k)=0.5*(B_ver(j+1,k+1)+B_ver(j+1,k))
+                B_stag_x(j+1,k)=0.5D0 * (B_ver(j+1,k+1)+B_ver(j+1,k))
 
              ENDIF
 
              IF(j.GT.0)THEN
 
-                B_stag_y(j,k+1)=0.5*(B_ver(j+1,k+1)+B_ver(j,k+1))
+                B_stag_y(j,k+1)=0.5D0 * (B_ver(j+1,k+1)+B_ver(j,k+1))
 
              ENDIF
 
              IF( ( j.GT.0 ).AND.( k.GT.0 ) ) THEN
 
-                B_cent(j,k) = 0.25 * ( B_stag_x(j,k) + B_stag_x(j+1,k) +        &
+                B_cent(j,k) = 0.25D0 * ( B_stag_x(j,k) + B_stag_x(j+1,k) +      &
                      B_stag_y(j,k) + B_stag_y(j,k+1) )
 
                 B_prime_x(j,k) = ( B_stag_x(j+1,k) - B_stag_x(j,k) ) /          &
