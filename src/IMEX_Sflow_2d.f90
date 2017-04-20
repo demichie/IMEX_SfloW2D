@@ -47,6 +47,7 @@ PROGRAM IMEX_SfloW_2d
   USE solver_2d, ONLY : deallocate_solver_variables
   USE solver_2d, ONLY : imex_RK_solver
   USE solver_2d, ONLY : timestep, timestep2
+  ! USE solver_2d, ONLY : check_solve
 
   USE inpout_2d, ONLY : restart
 
@@ -56,7 +57,8 @@ PROGRAM IMEX_SfloW_2d
   USE parameters_2d, ONLY : riemann_flag
   USE parameters_2d, ONLY : verbose_level
 
-  USE solver_2d, ONLY : q , dt
+  USE solver_2d, ONLY : q , dt 
+  ! USE solver_2d, ONLY : solve_mask
 
   IMPLICIT NONE
 
@@ -122,6 +124,9 @@ PROGRAM IMEX_SfloW_2d
   CALL output_solution(t)
 
   DO WHILE ( t .LT. t_end )
+
+     ! CALL check_solve
+     ! WRITE(*,*) 'cells to solve:',COUNT(solve_mask)
 
      CALL timestep
      !CALL timestep2

@@ -59,6 +59,8 @@ MODULE solver_2d
   REAL*8, ALLOCATABLE :: qp(:,:,:)
 
 
+  LOGICAL, ALLOCATABLE :: solve_mask(:,:) , solve_mask0(:,:)
+
   !> Time step
   REAL*8 :: dt
 
@@ -113,7 +115,7 @@ MODULE solver_2d
 
 CONTAINS
 
-  !*****************************************************************************
+  !******************************************************************************
   !> \brief Memory allocation
   !
   !> This subroutine allocate the memory for the variables of the 
@@ -123,7 +125,7 @@ CONTAINS
   !> @author 
   !> Mattia de' Michieli Vitturi
   !
-  !*****************************************************************************
+  !******************************************************************************
 
   SUBROUTINE allocate_solver_variables
 
@@ -151,6 +153,9 @@ CONTAINS
 
     ALLOCATE( H_interface_x( n_eqns , comp_interfaces_x, comp_cells_y ) )
     ALLOCATE( H_interface_y( n_eqns , comp_cells_x, comp_interfaces_y ) )
+
+    ALLOCATE( solve_mask( comp_cells_x , comp_cells_y ) )
+    ALLOCATE( solve_mask0( comp_cells_x , comp_cells_y ) )
 
     ALLOCATE( qp( n_vars , comp_cells_x , comp_cells_y ) )
 
@@ -329,6 +334,8 @@ CONTAINS
     DEALLOCATE( H_interface_x )
     DEALLOCATE( H_interface_y )
 
+    DEALLOCATE( solve_mask , solve_mask0 )
+
     Deallocate( qp )
 
     DEALLOCATE( a_tilde_ij )
@@ -344,9 +351,11 @@ CONTAINS
     DEALLOCATE( q_rk )
     DEALLOCATE( F_x )
     DEALLOCATE( NH )
+    DEALLOCATE( expl_terms )
 
     DEALLOCATE( Fxj )
     DEALLOCATE( NHj )
+    DEALLOCATE( expl_terms_j )
 
     DEALLOCATE( mask22 , mask21 , mask11 , mask12 )
 
@@ -354,6 +363,50 @@ CONTAINS
 
   END SUBROUTINE deallocate_solver_variables
 
+
+  !******************************************************************************
+  !> \brief Masking of cells to solve
+  !
+  !> This subroutine compute a 2D array of logicals defining the cells where the
+  !> systems of equations have to be solved. It is defined according to the 
+  !> positive thickness in the cell and in the neighbour cells
+  !
+  !> \date 20/04/2017
+  !> @author 
+  !> Mattia de' Michieli Vitturi
+  !
+  !******************************************************************************
+
+  SUBROUTINE check_solve
+
+    IMPLICIT NONE
+
+    INTEGER :: i
+
+    solve_mask0(1:comp_cells_x,1:comp_cells_y) = .FALSE.
+
+    solve_mask = solve_mask0
+    
+    WHERE ( q(1,:,:) - B_cent(:,:) .GT. 0.D0 ) solve_mask = .TRUE.
+    
+    DO i = 1,n_RK
+       
+       solve_mask(1+i:comp_cells_x,:) =  solve_mask(1+i:comp_cells_x,:) .OR.    &
+            solve_mask(1:comp_cells_x-i,:) 
+       
+       solve_mask(1:comp_cells_x-i,:) =  solve_mask(1:comp_cells_x-i,:) .OR.    &
+            solve_mask(1+i:comp_cells_x,:) 
+       
+       solve_mask(:,1+i:comp_cells_y) =  solve_mask(:,1+i:comp_cells_y) .OR.    &
+            solve_mask(:,1:comp_cells_y-i) 
+       
+       solve_mask(:,1:comp_cells_y-i) =  solve_mask(:,1:comp_cells_y-i) .OR.    &
+            solve_mask(:,1+i:comp_cells_y) 
+       
+    END DO
+
+
+  END SUBROUTINE check_solve
 
   !******************************************************************************
   !> \brief Time-step computation
@@ -398,35 +451,35 @@ CONTAINS
           DO k = 1,comp_cells_y
 
              qj = q( 1:n_vars , j , k )
-
+             
              ! x direction
-             CALL eval_local_speeds_x( qj , B_cent(j,k) ,                       &
+             CALL eval_local_speeds_x( qj , B_cent(j,k) ,                    &
                   vel_min , vel_max )
-
+             
              vel_j = MAX( MAXVAL(ABS(vel_min)) , MAXVAL(ABS(vel_max)) )
-
+             
              dt_cfl = cfl * dx / vel_j
-
+             
              dt_x = MIN( dt , dt_cfl )
-
+             
              ! y direction
-             CALL eval_local_speeds_y( qj , B_cent(j,k) ,                       &
+             CALL eval_local_speeds_y( qj , B_cent(j,k) ,                    &
                   vel_min , vel_max )
-
+             
              vel_j = MAX( MAXVAL(ABS(vel_min)) , MAXVAL(ABS(vel_max)) )
-
+             
              dt_cfl = cfl * dy / vel_j
-
+             
              dt_y = MIN( dt , dt_cfl )
-
+             
              dt = MIN(dt_x,dt_y)
-
-          ENDDO
-
-       END DO
-
-    END IF
-
+             
+             ENDDO
+             
+          END DO
+          
+       END IF
+       
   END SUBROUTINE timestep
 
 
@@ -482,20 +535,20 @@ CONTAINS
 
           DO k = 1,comp_cells_y
 
-             dt_interface_x = cfl * dx / MAX( MAXVAL(a_interface_max(:,j,k)) ,  &
-                  MAXVAL(a_interface_max(:,j+1,k)) )
-
-             dt_interface_y = cfl * dy / MAX( MAXVAL(b_interface_max(:,j,k+1)) ,&
-                  MAXVAL(b_interface_max(:,j,k)) )
-
+             dt_interface_x = cfl * dx / MAX( MAXVAL(a_interface_max(:,j,k)) &
+                  , MAXVAL(a_interface_max(:,j+1,k)) )
+             
+             dt_interface_y = cfl * dy/MAX( MAXVAL(b_interface_max(:,j,k+1)) &
+                  , MAXVAL(b_interface_max(:,j,k)) )
+             
              dt_cfl = MIN( dt_interface_x , dt_interface_y )
-
+             
              dt = MIN(dt,dt_cfl)
-
+             
           ENDDO
-
+          
        END DO
-
+       
     END IF
 
   END SUBROUTINE timestep2
@@ -563,87 +616,88 @@ CONTAINS
           loop_over_ycells:DO k = 1,comp_cells_y
 
              IF ( verbose_level .GE. 2 ) THEN
-
+                
                 WRITE(*,*) 'solver, imex_RK_solver: j',j,k
-
+                
              END IF
-
+             
              IF ( i_RK .EQ. 1 ) THEN
-
+                
                 q_guess(1:n_vars) = q0( 1:n_vars , j , k) 
-
+                
              ELSE
-
+                
                 q_guess(1:n_vars) = q_rk( 1:n_vars , j , k , MAX(1,i_RK-1) )
-
+                
              END IF
-
+             
              Fxj(1:n_eqns,1:n_RK) = F_x( 1:n_eqns , j , k , 1:n_RK )
-
+             
              NHj(1:n_eqns,1:n_RK) = NH( 1:n_eqns , j , k , 1:n_RK )
-
+             
              Expl_terms_j(1:n_eqns,1:n_RK) = expl_terms( 1:n_eqns,j,k,1:n_RK )
-
+             
              IF ( verbose_level .GE. 2 ) THEN
-
+                
                 WRITE(*,*) 'q_guess',q_guess
                 CALL qc_to_qp( q_guess , B_cent(j,k) , qp(1:n_vars,j,k) )
                 WRITE(*,*) 'q_guess: qp',qp(1:n_vars,j,k)
-
+                
              END IF
-
+             
              IF ( a_diag .NE. 0.D0 ) THEN
-
+                
                 ! solve the implicit system
-                CALL solve_rk_step( B_cent(j,k) , B_prime_x(j,k) ,              &
-                     B_prime_y(j,k), grav_surf(j,k) ,                           &
-                     q_guess , q0(1:n_vars,j,k ) , a_tilde ,                    &
+                CALL solve_rk_step( B_cent(j,k) , B_prime_x(j,k) ,               &
+                     B_prime_y(j,k), grav_surf(j,k) ,                            &
+                     q_guess , q0(1:n_vars,j,k ) , a_tilde ,                     &
                      a_dirk , a_diag )
-
+                
              END IF
-
+             
              q_rk( 1:n_vars , j , k , i_RK ) = q_guess
-
+             
              h_new = q_guess(1) - B_cent(j,k)
-
+             
              IF ( h_new .LT. 0.D0 ) THEN
-
+                
                 WRITE(*,*) 'j,k,h',j,k,h_new,qp(1,j,k)- B_cent(j,k)
                 WRITE(*,*) 'dt',dt
-
+                
                 WRITE(*,*) 
                 READ(*,*) 
-
+                
              END IF
-
+             
              ! store the non-hyperbolic term for the explicit computations
              IF ( a_diag .EQ. 0.D0 ) THEN
-
+                
                 CALL eval_nonhyperbolic_terms( B_cent(j,k) , B_prime_x(j,k) ,   &
                      B_prime_y(j,k) , grav_surf(j,k) ,                          &
                      r_qj = q_guess , r_nh_term_impl = NH(1:n_eqns,j,k,i_RK) ) 
-
+                
              ELSE
-
+                
                 NH( 1:n_eqns , j , k , i_RK ) = 1.D0 / a_diag * ( ( q_guess -   &
                      q0( 1:n_vars , j , k ) ) / dt +                            &
-                     ( MATMUL(Fxj,a_tilde) - MATMUL(NHj,a_dirk) ) )
-
+                     ( MATMUL(Fxj+ Expl_terms_j,a_tilde) - MATMUL(NHj,a_dirk) ) )
+!                     ( MATMUL(Fxj,a_tilde) - MATMUL(NHj,a_dirk) ) )
+                
              END IF
-
+             
              IF ( verbose_level .GE. 2 ) THEN
-
+                
                 WRITE(*,*) 'imex_RK_solver: qc',q_guess
                 CALL qc_to_qp( q_guess, B_cent(j,k) , qp(1:n_vars,j,k) )
                 WRITE(*,*) 'imex_RK_solver: qp',qp(1:n_vars,j,k)
                 READ(*,*)
-
+                
              END IF
-
+             
           END DO loop_over_ycells
-
+          
        ENDDO loop_over_xcells
-
+       
        ! Eval and save the explicit hyperbolic (fluxes) terms
        CALL eval_hyperbolic_terms( q_rk(1:n_vars,1:comp_cells_x,1:comp_cells_y, &
             i_RK) , F_x(1:n_eqns,1:comp_cells_x,1:comp_cells_y,i_RK) )
@@ -674,46 +728,46 @@ CONTAINS
     DO j = 1,comp_cells_x
 
        DO k = 1,comp_cells_y
-
+          
           residual_term(1:n_vars,j,k) = MATMUL( F_x(1:n_eqns,j,k,1:n_RK)        &
                + expl_terms(1:n_eqns,j,k,1:n_RK) , omega_tilde )                &
                - MATMUL( NH(1:n_eqns,j,k,1:n_RK) , omega )
-
+          
        ENDDO
-
+       
     END DO
-
+    
     DO j = 1,comp_cells_x
-
+       
        DO k = 1,comp_cells_y
-
+          
           IF ( verbose_level .GE. 1 ) THEN
-
+             
              WRITE(*,*) 'cell jk =',j,k
              WRITE(*,*) 'before imex_RK_solver: qc',q0(1:n_vars,j,k)
              CALL qc_to_qp(q0(1:n_vars,j,k) , B_cent(j,k) , qp(1:n_vars,j,k))
              WRITE(*,*) 'before imex_RK_solver: qp',qp(1:n_vars,j,k)
-
+             
           END IF
-
+          
           q(1:n_vars,j,k) = q0(1:n_vars,j,k) - dt * residual_term(1:n_vars,j,k)
-
+          
           IF ( verbose_level .GE. 1 ) THEN
-
+             
              CALL qc_to_qp(q(1:n_vars,j,k) , B_cent(j,k) , qp(1:n_vars,j,k))
-
+             
              WRITE(*,*) 'after imex_RK_solver: qc',q(1:n_vars,j,k)
              WRITE(*,*) 'after imex_RK_solver: qp',qp(1:n_vars,j,k)
              READ(*,*)
-
+             
           END IF
-
+          
        ENDDO
-
+       
     END DO
-
+    
   END SUBROUTINE imex_RK_solver
-
+  
   !******************************************************************************
   !> \brief Runge-Kutta single step integration
   !
@@ -811,7 +865,8 @@ CONTAINS
 
     IF ( normalize_f ) THEN
 
-       qj = qj_old - dt * ( MATMUL(Fxj,a_tilde) - MATMUL(NHj,a_dirk) )
+       qj = qj_old - dt * ( MATMUL(Fxj+ Expl_terms_j,a_tilde) - MATMUL(NHj,a_dirk) )
+!       qj = qj_old - dt * ( MATMUL(Fxj,a_tilde) - MATMUL(NHj,a_dirk) )
 
        CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf ,                   &
             qj , qj_old , a_tilde , a_dirk , a_diag , coeff_f , right_term ,    &
@@ -1313,7 +1368,8 @@ CONTAINS
     CALL eval_nonhyperbolic_terms( Bj , Bprimej_x , Bprimej_y , grav3_surf ,    &
          r_qj = qj , r_nh_term_impl = nh_term_impl ) 
 
-    Rj = ( MATMUL(Fxj,a_tilde) - MATMUL(NHj,a_dirk) ) - a_diag * nh_term_impl
+    Rj = ( MATMUL(Fxj+ Expl_terms_j,a_tilde) - MATMUL(NHj,a_dirk) ) - a_diag * nh_term_impl
+!    Rj = ( MATMUL(Fxj,a_tilde) - MATMUL(NHj,a_dirk) ) - a_diag * nh_term_impl
 
     f_nl = qj - qj_old + dt * Rj
 
