@@ -32,10 +32,10 @@ MODULE inpout_2d
   USE parameters_2d, ONLY : T_init , T_ambient
 
   ! -- Variables for the namelist LEFT_STATE
-  USE init_2d, ONLY : hB_W , u_W , v_W
+  USE init_2d, ONLY : hB_W , u_W , v_W , T_W
 
   ! -- Variables for the namelist RIGHT_STATE
-  USE init_2d, ONLY : hB_E , u_E , v_E
+  USE init_2d, ONLY : hB_E , u_E , v_E , T_E
 
   ! -- Variables for the namelists LEFT/RIGHT_BOUNDARY_CONDITIONS
   USE parameters_2d, ONLY : bc
@@ -128,9 +128,9 @@ MODULE inpout_2d
   NAMELIST / initial_conditions /  released_volume , x_release , y_release ,    &
        velocity_mod_release , velocity_ang_release , T_init , T_ambient
 
-  NAMELIST / left_state / hB_W , u_W , v_W
+  NAMELIST / left_state / hB_W , u_W , v_W , T_W
 
-  NAMELIST / right_state / hB_E , u_E , v_E
+  NAMELIST / right_state / hB_E , u_E , v_E , T_E
 
   NAMELIST / west_boundary_conditions / hB_bcW , u_bcW , v_bcW , T_bcW
 
@@ -205,11 +205,13 @@ CONTAINS
     hB_W = 2.222D0
     u_W = 0.8246D0
     v_W = 0.D0
-
+    T_W = -1.D0
+    
     !-- Inizialization of the Variables for the namelist right_state
     hB_E = -1.0D0
     u_E = -1.6359D0
     u_E = 0.D0
+    T_E = -1.D0
 
     !-- Inizialization of the Variables for the namelist west boundary conditions
     hB_bcW%flag = 1 
@@ -366,6 +368,10 @@ CONTAINS
 
     INTEGER :: j,k
 
+    INTEGER :: dot_idx
+    
+    CHARACTER(LEN=3) :: check_file
+
     LOGICAL :: lexist
 
     CHARACTER(LEN=15) :: chara
@@ -407,6 +413,17 @@ CONTAINS
 
     END IF
 
+    IF ( ( comp_cells_x .EQ. 1 ) .OR. ( comp_cells_y .EQ. 1 ) ) THEN
+
+       WRITE(*,*) '----- 1D SIMULATION -----' 
+
+    ELSE
+       
+       WRITE(*,*) '----- 2D SIMULATION -----' 
+
+    END IF
+       
+       
     IF ( temperature_flag ) THEN
 
        n_vars = 4
@@ -439,12 +456,20 @@ CONTAINS
           
        END IF
 
-       IF ( ( temperature_flag ) .AND. ( T_init*T_ambient .EQ. 0.D0 ) ) THEN
-
-          WRITE(*,*) 'T_init=',T_init
-          WRITE(*,*) 'T_ambient=',T_ambient
-          WRITE(*,*) 'Add the two variables to the namelist RESTART_PARAMETERS'
-          STOP
+       IF ( temperature_flag .AND. restart ) THEN
+          
+          dot_idx = SCAN(restart_file, ".", .TRUE.)
+          
+          check_file = restart_file(dot_idx+1:dot_idx+3)
+          
+          IF ( ( check_file .EQ. 'asc' )  .AND. ( T_init*T_ambient .EQ. 0.D0 ) ) THEN
+          
+             WRITE(*,*) 'T_init=',T_init
+             WRITE(*,*) 'T_ambient=',T_ambient
+             WRITE(*,*) 'Add the two variables to the namelist RESTART_PARAMETERS'
+             STOP
+             
+          END IF
 
        END IF
 
@@ -464,6 +489,14 @@ CONTAINS
           ELSE
              
              REWIND(input_unit)
+
+             IF ( ( temperature_flag ) .AND. ( T_W .EQ. -1.D0 ) ) THEN
+
+                WRITE(*,*) 'ERROR: problem with namelist LEFT_PARAMETERS'
+                WRITE(*,*) 'Initial temperature T_W not defined'
+                STOP
+                
+             END IF
              
           END IF
           
@@ -479,7 +512,16 @@ CONTAINS
           ELSE
              
              REWIND(input_unit)
- 
+
+             IF ( ( temperature_flag ) .AND. ( T_E .EQ. -1.D0 ) ) THEN
+
+                WRITE(*,*) 'ERROR: problem with namelist RIGHT_PARAMETERS'
+                WRITE(*,*) 'Initial temperature T_E not defined'
+                STOP
+                
+             END IF
+             
+             
           END IF
             
        ELSE
@@ -516,95 +558,103 @@ CONTAINS
 
     ! ------- READ boundary_conditions NAMELISTS --------------------------------
 
-    ! West boundary conditions
-    READ(input_unit,west_boundary_conditions,IOSTAT=ios)
+    IF ( COMP_CELLS_X .GT. 1 ) THEN
+    
+       ! West boundary conditions
+       READ(input_unit,west_boundary_conditions,IOSTAT=ios)
+       
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist WEST_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+       
+       bcW(1) = hB_bcW 
+       bcW(2) = u_bcW 
+       bcW(3) = v_bcW 
+       
+       ! East boundary conditions
+       READ(input_unit,east_boundary_conditions,IOSTAT=ios)
+       
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist EAST_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+       
+       bcE(1) = hB_bcE 
+       bcE(2) = u_bcE 
+       bcE(3) = v_bcE 
 
-    IF ( ios .NE. 0 ) THEN
-       
-       WRITE(*,*) 'IOSTAT=',ios
-       WRITE(*,*) 'ERROR: problem with namelist WEST_BOUNDARY_CONDITIONS'
-       WRITE(*,*) 'Please check the input file'
-       STOP
-       
-    ELSE
-       
-       REWIND(input_unit)
-       
-    END IF
-        
-    bcW(1) = hB_bcW 
-    bcW(2) = u_bcW 
-    bcW(3) = v_bcW 
-
-    ! East boundary conditions
-    READ(input_unit,east_boundary_conditions,IOSTAT=ios)
-
-    IF ( ios .NE. 0 ) THEN
-       
-       WRITE(*,*) 'IOSTAT=',ios
-       WRITE(*,*) 'ERROR: problem with namelist EAST_BOUNDARY_CONDITIONS'
-       WRITE(*,*) 'Please check the input file'
-       STOP
-       
-    ELSE
-       
-       REWIND(input_unit)
-       
-    END IF
-
-    bcE(1) = hB_bcE 
-    bcE(2) = u_bcE 
-    bcE(3) = v_bcE 
-
-    ! South boundary conditions
-    READ(input_unit,south_boundary_conditions,IOSTAT=ios)
-
-    IF ( ios .NE. 0 ) THEN
-       
-       WRITE(*,*) 'IOSTAT=',ios
-       WRITE(*,*) 'ERROR: problem with namelist SOUTH_BOUNDARY_CONDITIONS'
-       WRITE(*,*) 'Please check the input file'
-       STOP
-       
-    ELSE
-       
-       REWIND(input_unit)
-       
     END IF
 
-    bcS(1) = hB_bcS 
-    bcS(2) = u_bcS 
-    bcS(3) = v_bcS 
+    IF ( comp_cells_y .GT. 1 ) THEN
+    
+       ! South boundary conditions
+       READ(input_unit,south_boundary_conditions,IOSTAT=ios)
+       
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist SOUTH_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+       
+       bcS(1) = hB_bcS 
+       bcS(2) = u_bcS 
+       bcS(3) = v_bcS 
+       
+       ! North boundary conditions
+       READ(input_unit,north_boundary_conditions,IOSTAT=ios)
+       
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist NORTH_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+       
+       bcN(1) = hB_bcN 
+       bcN(2) = u_bcN 
+       bcN(3) = v_bcN 
 
-    ! North boundary conditions
-    READ(input_unit,north_boundary_conditions,IOSTAT=ios)
-
-    IF ( ios .NE. 0 ) THEN
-       
-       WRITE(*,*) 'IOSTAT=',ios
-       WRITE(*,*) 'ERROR: problem with namelist NORTH_BOUNDARY_CONDITIONS'
-       WRITE(*,*) 'Please check the input file'
-       STOP
-       
-    ELSE
-       
-       REWIND(input_unit)
-       
     END IF
-
-    bcN(1) = hB_bcN 
-    bcN(2) = u_bcN 
-    bcN(3) = v_bcN 
-
+    
     IF ( temperature_flag ) THEN
-
+       
        bcW(4) = T_bcW
        bcE(4) = T_bcE
        bcS(4) = T_bcS
        bcN(4) = T_bcN
-
+       
     END IF
-
+    
     ! ------- READ numeric_parameters NAMELIST ---------------------------------
 
     READ(input_unit,numeric_parameters)
@@ -1084,9 +1134,25 @@ CONTAINS
        DO k=1,comp_cells_y
           
           DO j=1,comp_cells_x
-             
-             READ(restart_unit,1003) xj , yk , q(:,j,k)
 
+             IF ( temperature_flag ) THEN
+             
+                READ(restart_unit,1004) xj , yk , q(:,j,k)
+
+             ELSE
+                
+                READ(restart_unit,1003) xj , yk , q(:,j,k)
+
+             END IF
+                
+             IF ( verbose_level .GE. 2 ) THEN
+                
+                WRITE(*,*) 'x,y,q,B',xj,yk,q(:,j,k),B_cent(j,k)
+                WRITE(*,*) 'h,T',q(1,j,k)-B_cent(j,k), q(4,j,k) / ( q(1,j,k)-B_cent(j,k) )
+                READ(*,*)
+                
+             END IF
+             
              IF ( q(1,j,k) .LE. B_cent(j,k) ) THEN
 
                 IF ( verbose_level .GE. 2 ) THEN
@@ -1111,6 +1177,7 @@ CONTAINS
        WRITE(*,*) 'Total volume =',dx*dy* SUM( q(1,:,:)-B_cent(:,:) )
           
 1003   FORMAT(5e20.12)
+1004   FORMAT(6e20.12)
 
        j = SCAN(restart_file, '.' , .TRUE. )
        
