@@ -231,17 +231,18 @@ CONTAINS
 
   END SUBROUTINE initial_conditions
 
+  
+  !******************************************************************************
+  !> Thickness function
+  !
+  !> This subroutine defines thickness height hB=h+B
+  !> in the input (x,y) grid point
+  !> \date OCTOBER 2016
+  !> \param    x           original grid                (\b input)
+  !> \param    y           original grid                (\b input)
+  !> \param    Bj          original grid                (\b input)
+  !******************************************************************************
 
-!---------------------------------------------------------------------------
-!> Thickness function
-!
-!> This subroutine defines thickness height hB=h+B
-!> in the input (x,y) grid point
-!> \date OCTOBER 2016
-!> \param    x           original grid                (\b input)
-!> \param    y           original grid                (\b input)
-!> \param    Bj          original grid                (\b input)
-!---------------------------------------------------------------------------
   REAL*8 FUNCTION thickness_function(x,y,Bj)
 
     USE parameters_2d, ONLY : released_volume , x_release , y_release
@@ -278,15 +279,16 @@ CONTAINS
 
   END FUNCTION thickness_function
 
-!--------------------------------------------------------------------------------
-!> Velocity u function
-!
-!> This subroutine defines x component of the velocity
-!> in the input (x,y) grid point
-!> \date OCTOBER 2016
-!> \param    x           original grid                (\b input)
-!> \param    y           original grid                (\b input)
-!--------------------------------------------------------------------------------
+  !******************************************************************************
+  !> Velocity u function
+  !
+  !> This subroutine defines x component of the velocity
+  !> in the input (x,y) grid point
+  !> \date OCTOBER 2016
+  !> \param    x           original grid                (\b input)
+  !> \param    y           original grid                (\b input)
+  !******************************************************************************
+
   REAL*8 FUNCTION velocity_u_function(x,y,Bj)
   
     USE parameters_2d, ONLY : released_volume , x_release , y_release
@@ -382,15 +384,16 @@ CONTAINS
 
   END FUNCTION velocity_u_function
 
-!--------------------------------------------------------------------------------
-!> Velocity v function
-!
-!> This subroutine defines y component of the velocity
-!> in the input (x,y) grid point
-!> \date OCTOBER 2016
-!> \param    x           original grid                (\b input)
-!> \param    y           original grid                (\b input)
-!--------------------------------------------------------------------------------
+  !******************************************************************************
+  !> Velocity v function
+  !
+  !> This subroutine defines y component of the velocity
+  !> in the input (x,y) grid point
+  !> \date OCTOBER 2016
+  !> \param    x           original grid                (\b input)
+  !> \param    y           original grid                (\b input)
+  !******************************************************************************
+  
   REAL*8 FUNCTION velocity_v_function(x,y,Bj)
   
     USE parameters_2d, ONLY : released_volume , x_release , y_release
@@ -471,15 +474,16 @@ CONTAINS
   END FUNCTION velocity_v_function
   
 
-!--------------------------------------------------------------------------------
-!> Temperature function
-!
-!> This subroutine defines the temperature in the pile and outside as a function 
-!> of the input (x,y) grid point
-!> \date OCTOBER 2016
-!> \param    x           original grid                (\b input)
-!> \param    y           original grid                (\b input)
-!--------------------------------------------------------------------------------
+  !******************************************************************************
+  !> Temperature function
+  !
+  !> This subroutine defines the temperature in the pile and outside as a function 
+  !> of the input (x,y) grid point
+  !> \date OCTOBER 2016
+  !> \param    x           original grid                (\b input)
+  !> \param    y           original grid                (\b input)
+  !******************************************************************************
+
   REAL*8 FUNCTION temperature_function(x,y)
   
     USE parameters_2d, ONLY : released_volume , x_release , y_release

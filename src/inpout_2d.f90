@@ -462,11 +462,12 @@ CONTAINS
           
           check_file = restart_file(dot_idx+1:dot_idx+3)
           
-          IF ( ( check_file .EQ. 'asc' )  .AND. ( T_init*T_ambient .EQ. 0.D0 ) ) THEN
+          IF ( ( check_file .EQ. 'asc' )  .AND.                                 &
+               ( T_init*T_ambient .EQ. 0.D0 ) ) THEN
           
              WRITE(*,*) 'T_init=',T_init
              WRITE(*,*) 'T_ambient=',T_ambient
-             WRITE(*,*) 'Add the two variables to the namelist RESTART_PARAMETERS'
+             WRITE(*,*) 'Add the variables to the namelist RESTART_PARAMETERS'
              STOP
              
           END IF
@@ -672,7 +673,7 @@ CONTAINS
        
     END IF
 
-    IF ( ( solver_scheme .NE. 'LxF' ) .AND. ( solver_scheme .NE. 'KT' ) .AND. &
+    IF ( ( solver_scheme .NE. 'LxF' ) .AND. ( solver_scheme .NE. 'KT' ) .AND.   &
          ( solver_scheme .NE. 'GFORCE' ) ) THEN
 
        WRITE(*,*) 'WARNING: no correct solver scheme selected',solver_scheme
@@ -1148,7 +1149,8 @@ CONTAINS
              IF ( verbose_level .GE. 2 ) THEN
                 
                 WRITE(*,*) 'x,y,q,B',xj,yk,q(:,j,k),B_cent(j,k)
-                WRITE(*,*) 'h,T',q(1,j,k)-B_cent(j,k), q(4,j,k) / ( q(1,j,k)-B_cent(j,k) )
+                WRITE(*,*) 'h,T',q(1,j,k)-B_cent(j,k), q(4,j,k)                 &
+                     / ( q(1,j,k)-B_cent(j,k) )
                 READ(*,*)
                 
              END IF
@@ -1397,7 +1399,8 @@ CONTAINS
        
        CLOSE(dem_esri_unit)
 
-       OPEN(dem_esri_unit,FILE='dem_interfaces_esri.asc',status='unknown',form='formatted')
+       OPEN(dem_esri_unit,FILE='dem_interfaces_esri.asc',status='unknown',      &
+            form='formatted')
        
        WRITE(dem_esri_unit,'(A,I5)') 'ncols ', comp_interfaces_x
        WRITE(dem_esri_unit,'(A,I5)') 'nrows ', comp_interfaces_y

@@ -386,23 +386,23 @@ CONTAINS
     solve_mask0(1:comp_cells_x,1:comp_cells_y) = .FALSE.
 
     solve_mask = solve_mask0
-    
+
     WHERE ( q(1,:,:) - B_cent(:,:) .GT. 0.D0 ) solve_mask = .TRUE.
-    
+
     DO i = 1,n_RK
-       
+
        solve_mask(1+i:comp_cells_x,:) =  solve_mask(1+i:comp_cells_x,:) .OR.    &
             solve_mask(1:comp_cells_x-i,:) 
-       
+
        solve_mask(1:comp_cells_x-i,:) =  solve_mask(1:comp_cells_x-i,:) .OR.    &
             solve_mask(1+i:comp_cells_x,:) 
-       
+
        solve_mask(:,1+i:comp_cells_y) =  solve_mask(:,1+i:comp_cells_y) .OR.    &
             solve_mask(:,1:comp_cells_y-i) 
-       
+
        solve_mask(:,1:comp_cells_y-i) =  solve_mask(:,1:comp_cells_y-i) .OR.    &
             solve_mask(:,1+i:comp_cells_y) 
-       
+
     END DO
 
 
@@ -451,35 +451,33 @@ CONTAINS
           DO k = 1,comp_cells_y
 
              qj = q( 1:n_vars , j , k )
-             
+
              ! x direction
-             CALL eval_local_speeds_x( qj , B_cent(j,k) ,                    &
-                  vel_min , vel_max )
-             
+             CALL eval_local_speeds_x( qj , B_cent(j,k) , vel_min , vel_max )
+
              vel_j = MAX( MAXVAL(ABS(vel_min)) , MAXVAL(ABS(vel_max)) )
-             
+
              dt_cfl = cfl * dx / vel_j
-             
+
              dt_x = MIN( dt , dt_cfl )
-             
+
              ! y direction
-             CALL eval_local_speeds_y( qj , B_cent(j,k) ,                    &
-                  vel_min , vel_max )
-             
+             CALL eval_local_speeds_y( qj , B_cent(j,k) , vel_min , vel_max )
+
              vel_j = MAX( MAXVAL(ABS(vel_min)) , MAXVAL(ABS(vel_max)) )
-             
+
              dt_cfl = cfl * dy / vel_j
-             
+
              dt_y = MIN( dt , dt_cfl )
-             
+
              dt = MIN(dt_x,dt_y)
-             
-             ENDDO
-             
-          END DO
-          
-       END IF
-       
+
+          ENDDO
+
+       END DO
+
+    END IF
+
   END SUBROUTINE timestep
 
 
@@ -525,9 +523,11 @@ CONTAINS
 
        DO i=1,n_vars
 
-          a_interface_x_max(i,:,:) = MAX( a_interface_xPos(i,:,:),-a_interface_xNeg(i,:,:))
+          a_interface_x_max(i,:,:) =                                            &
+               MAX( a_interface_xPos(i,:,:) , -a_interface_xNeg(i,:,:) )
 
-          a_interface_y_max(i,:,:) = MAX( a_interface_yPos(i,:,:),-a_interface_yNeg(i,:,:))
+          a_interface_y_max(i,:,:) =                                            &
+               MAX( a_interface_yPos(i,:,:) , -a_interface_yNeg(i,:,:) )
 
        END DO
 
@@ -535,20 +535,20 @@ CONTAINS
 
           DO k = 1,comp_cells_y
 
-             dt_interface_x = cfl * dx / MAX( MAXVAL(a_interface_x_max(:,j,k)) &
+             dt_interface_x = cfl * dx / MAX( MAXVAL(a_interface_x_max(:,j,k))  &
                   , MAXVAL(a_interface_y_max(:,j+1,k)) )
-             
-             dt_interface_y = cfl * dy/MAX( MAXVAL(a_interface_x_max(:,j,k+1)) &
+
+             dt_interface_y = cfl * dy/MAX( MAXVAL(a_interface_x_max(:,j,k+1))  &
                   , MAXVAL(a_interface_y_max(:,j,k)) )
-             
+
              dt_cfl = MIN( dt_interface_x , dt_interface_y )
-             
+
              dt = MIN(dt,dt_cfl)
-             
+
           ENDDO
-          
+
        END DO
-       
+
     END IF
 
   END SUBROUTINE timestep2
@@ -616,87 +616,88 @@ CONTAINS
           loop_over_ycells:DO k = 1,comp_cells_y
 
              IF ( verbose_level .GE. 2 ) THEN
-                
+
                 WRITE(*,*) 'solver, imex_RK_solver: j',j,k
-                
+
              END IF
-             
+
              IF ( i_RK .EQ. 1 ) THEN
-                
+
                 q_guess(1:n_vars) = q0( 1:n_vars , j , k) 
-                
+
              ELSE
-                
+
                 q_guess(1:n_vars) = q_rk( 1:n_vars , j , k , MAX(1,i_RK-1) )
-                
+
              END IF
-             
+
              divFluxj(1:n_eqns,1:n_RK) = divFlux( 1:n_eqns , j , k , 1:n_RK )
-             
+
              NHj(1:n_eqns,1:n_RK) = NH( 1:n_eqns , j , k , 1:n_RK )
-             
+
              Expl_terms_j(1:n_eqns,1:n_RK) = expl_terms( 1:n_eqns,j,k,1:n_RK )
-             
+
              IF ( verbose_level .GE. 2 ) THEN
-                
+
                 WRITE(*,*) 'q_guess',q_guess
                 CALL qc_to_qp( q_guess , B_cent(j,k) , qp(1:n_vars,j,k) )
                 WRITE(*,*) 'q_guess: qp',qp(1:n_vars,j,k)
-                
+
              END IF
-             
+
              IF ( a_diag .NE. 0.D0 ) THEN
-                
+
                 ! solve the implicit system
-                CALL solve_rk_step( B_cent(j,k) , B_prime_x(j,k) ,               &
-                     B_prime_y(j,k), grav_surf(j,k) ,                            &
-                     q_guess , q0(1:n_vars,j,k ) , a_tilde ,                     &
+                CALL solve_rk_step( B_cent(j,k) , B_prime_x(j,k) ,              &
+                     B_prime_y(j,k), grav_surf(j,k) ,                           &
+                     q_guess , q0(1:n_vars,j,k ) , a_tilde ,                    &
                      a_dirk , a_diag )
-                
+
              END IF
-             
+
              q_rk( 1:n_vars , j , k , i_RK ) = q_guess
-             
+
              h_new = q_guess(1) - B_cent(j,k)
-             
+
              IF ( h_new .LT. 0.D0 ) THEN
-                
+
                 WRITE(*,*) 'j,k,h',j,k,h_new,qp(1,j,k),B_cent(j,k)
                 WRITE(*,*) 'dt',dt
-                
+
                 WRITE(*,*) 
                 READ(*,*) 
-                
+
              END IF
-             
+
              ! store the non-hyperbolic term for the explicit computations
              IF ( a_diag .EQ. 0.D0 ) THEN
-                
+
                 CALL eval_nonhyperbolic_terms( B_cent(j,k) , B_prime_x(j,k) ,   &
                      B_prime_y(j,k) , grav_surf(j,k) ,                          &
                      r_qj = q_guess , r_nh_term_impl = NH(1:n_eqns,j,k,i_RK) ) 
-                
+
              ELSE
-                
+
                 NH( 1:n_eqns , j , k , i_RK ) = 1.D0 / a_diag * ( ( q_guess -   &
                      q0( 1:n_vars , j , k ) ) / dt +                            &
-                     ( MATMUL(divFluxj+ Expl_terms_j,a_tilde) - MATMUL(NHj,a_dirk) ) )
-                
+                     ( MATMUL( divFluxj + Expl_terms_j , a_tilde)               &
+                     - MATMUL( NHj , a_dirk ) ) )
+
              END IF
-             
+
              IF ( verbose_level .GE. 2 ) THEN
-                
+
                 WRITE(*,*) 'imex_RK_solver: qc',q_guess
                 CALL qc_to_qp( q_guess, B_cent(j,k) , qp(1:n_vars,j,k) )
                 WRITE(*,*) 'imex_RK_solver: qp',qp(1:n_vars,j,k)
                 READ(*,*)
-                
+
              END IF
-             
+
           END DO loop_over_ycells
-          
+
        ENDDO loop_over_xcells
-       
+
        ! Eval and save the explicit hyperbolic (fluxes) terms
        CALL eval_hyperbolic_terms( q_rk(1:n_vars,1:comp_cells_x,1:comp_cells_y, &
             i_RK) , divFlux(1:n_eqns,1:comp_cells_x,1:comp_cells_y,i_RK) )
@@ -708,12 +709,12 @@ CONTAINS
        IF ( verbose_level .GE. 1 ) THEN
 
           WRITE(*,*) 'div_flux(2),div_flux(3),expl_terms(2),expl_terms(3)'
-          
+
           DO j = 1,comp_cells_x
 
              DO k = 1,comp_cells_y
 
-                WRITE(*,*) divFlux(2,j,k,i_RK) , divFlux(3,j,k,i_RK) ,                  &
+                WRITE(*,*) divFlux(2,j,k,i_RK) , divFlux(3,j,k,i_RK) ,          &
                      expl_terms(2,j,k,i_RK) , expl_terms(3,j,k,i_RK)
 
              ENDDO
@@ -729,46 +730,46 @@ CONTAINS
     DO j = 1,comp_cells_x
 
        DO k = 1,comp_cells_y
-          
-          residual_term(1:n_vars,j,k) = MATMUL( divFlux(1:n_eqns,j,k,1:n_RK)        &
+
+          residual_term(1:n_vars,j,k) = MATMUL( divFlux(1:n_eqns,j,k,1:n_RK)    &
                + expl_terms(1:n_eqns,j,k,1:n_RK) , omega_tilde )                &
                - MATMUL( NH(1:n_eqns,j,k,1:n_RK) , omega )
-          
+
        ENDDO
-       
+
     END DO
-    
+
     DO j = 1,comp_cells_x
-       
+
        DO k = 1,comp_cells_y
-          
+
           IF ( verbose_level .GE. 1 ) THEN
-             
+
              WRITE(*,*) 'cell jk =',j,k
              WRITE(*,*) 'before imex_RK_solver: qc',q0(1:n_vars,j,k)
              CALL qc_to_qp(q0(1:n_vars,j,k) , B_cent(j,k) , qp(1:n_vars,j,k))
              WRITE(*,*) 'before imex_RK_solver: qp',qp(1:n_vars,j,k)
-             
+
           END IF
-          
+
           q(1:n_vars,j,k) = q0(1:n_vars,j,k) - dt * residual_term(1:n_vars,j,k)
-          
+
           IF ( verbose_level .GE. 1 ) THEN
-             
+
              CALL qc_to_qp(q(1:n_vars,j,k) , B_cent(j,k) , qp(1:n_vars,j,k))
-             
+
              WRITE(*,*) 'after imex_RK_solver: qc',q(1:n_vars,j,k)
              WRITE(*,*) 'after imex_RK_solver: qp',qp(1:n_vars,j,k)
              READ(*,*)
-             
+
           END IF
-          
+
        ENDDO
-       
+
     END DO
-    
+
   END SUBROUTINE imex_RK_solver
-  
+
   !******************************************************************************
   !> \brief Runge-Kutta single step integration
   !
@@ -866,7 +867,8 @@ CONTAINS
 
     IF ( normalize_f ) THEN
 
-       qj = qj_old - dt * ( MATMUL(divFluxj+ Expl_terms_j,a_tilde) - MATMUL(NHj,a_dirk) )
+       qj = qj_old - dt * ( MATMUL(divFluxj+ Expl_terms_j,a_tilde)              &
+            - MATMUL(NHj,a_dirk) )
 
        CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf ,                   &
             qj , qj_old , a_tilde , a_dirk , a_diag , coeff_f , right_term ,    &
@@ -895,18 +897,6 @@ CONTAINS
        END IF
 
     END IF
-
-    ! set the initial guess for the NR iterative solver
-
-!!$    qj = qj_old - dt * ( MATMUL(divFluxj,a_tilde) - MATMUL(NHj,a_dirk) )
-!!$
-!!$    DO i=1,n_eqns
-!!$       
-!!$       IF ( implicit_flag(i) ) qj(i) = qj_old(i)
-!!$       
-!!$    END DO
-
-    !    qj = qj_old
 
     !---- normalize the conservative variables ------
 
@@ -1178,8 +1168,8 @@ CONTAINS
 
     ALF = 1.0d-4
 
-    IF ( size(grad_f) == size(desc_dir) .AND. size(grad_f) == size(qj_rel) .AND.&
-         size(qj_rel) == size(qj_rel_NR_old) ) THEN
+    IF ( size(grad_f) == size(desc_dir) .AND. size(grad_f) == size(qj_rel)      &
+         .AND. size(qj_rel) == size(qj_rel_NR_old) ) THEN
 
        ndum = size(grad_f)
 
@@ -1224,9 +1214,8 @@ CONTAINS
 
        qj = qj_rel * qj_org
 
-       CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf ,         &
-            qj , qj_old , a_tilde , a_dirk , a_diag , coeff_f ,       &
-            right_term , scal_f )
+       CALL eval_f( Bj , Bprimej_x , Bprimej_y , grav3_surf , qj , qj_old ,     &
+            a_tilde , a_dirk , a_diag , coeff_f , right_term , scal_f )
 
        IF ( verbose_level .GE. 4 ) THEN
 
@@ -1368,7 +1357,8 @@ CONTAINS
     CALL eval_nonhyperbolic_terms( Bj , Bprimej_x , Bprimej_y , grav3_surf ,    &
          r_qj = qj , r_nh_term_impl = nh_term_impl ) 
 
-    Rj = ( MATMUL(divFluxj+ Expl_terms_j,a_tilde) - MATMUL(NHj,a_dirk) ) - a_diag * nh_term_impl
+    Rj = ( MATMUL(divFluxj+ Expl_terms_j,a_tilde) - MATMUL(NHj,a_dirk) )        &
+         - a_diag * nh_term_impl
 
     f_nl = qj - qj_old + dt * Rj
 
@@ -1570,7 +1560,7 @@ CONTAINS
 
           DO i=1,n_eqns
 
-             divFlux(i,j,k) = ( H_interface_x(i,j+1,k) - H_interface_x(i,j,k) )     &
+             divFlux(i,j,k) = ( H_interface_x(i,j+1,k) - H_interface_x(i,j,k) ) &
                   / dx + ( H_interface_y(i,j,k+1) - H_interface_y(i,j,k) ) / dy
           END DO
 
@@ -1578,33 +1568,30 @@ CONTAINS
 
           ! IF ( h_new .LT. 0.D0 ) THEN
           IF ( j .EQ. 0 ) THEN
-          
+
              WRITE(*,*) 'j,k,h,divF',j,k,h_new, divFlux(1,j,k)
              WRITE(*,*) 'dt',dt
 
-             WRITE(*,*) 'h_interface(j,k) ',q_interfaceL(1,j,k) - B_stag_x(j,k) ,   &
+             WRITE(*,*) 'h_interface(j,k) ',q_interfaceL(1,j,k)-B_stag_x(j,k) , &
                   q_interfaceR(1,j,k) - B_stag_x(j,k)
 
-             WRITE(*,*) 'hu_interface(j,k)',q_interfaceL(2,j,k),q_interfaceR(2,j,k)
-             
-             WRITE(*,*) 'h_interface(j+1,k) ',q_interfaceL(1,j+1,k) - B_stag_y(j+1,k) ,  &
-                  q_interfaceR(1,j+1,k) - B_stag_y(j+1,k)
+             WRITE(*,*) 'hu_interface(j,k)' , q_interfaceL(2,j,k) ,             &
+                  q_interfaceR(2,j,k)
 
-             WRITE(*,*) 'hu_interface(j+1,k)',q_interfaceL(2,j+1,k),q_interfaceR(2,j+1,k)
+             WRITE(*,*) 'h_interface(j+1,k) ' , q_interfaceL(1,j+1,k)           &
+                  - B_stag_y(j+1,k) , q_interfaceR(1,j+1,k) - B_stag_y(j+1,k)
 
-             WRITE(*,*) 'h flux x',H_interface_x(1,j,k) ,                   &
-                  H_interface_x(1,j+1,k)
+             WRITE(*,*) 'hu_interface(j+1,k)' , q_interfaceL(2,j+1,k) ,         &
+                  q_interfaceR(2,j+1,k)
 
-             WRITE(*,*) 'h flux y',H_interface_y(i,j,k) ,                   &
-                  H_interface_y(1,j,k+1)
+             WRITE(*,*) 'h flux x',H_interface_x(1,j,k) , H_interface_x(1,j+1,k)
 
-             WRITE(*,*) 'hu flux x',H_interface_x(2,j,k) ,                   &
-                  H_interface_x(2,j+1,k)
+             WRITE(*,*) 'h flux y',H_interface_y(i,j,k) , H_interface_y(1,j,k+1)
 
-             WRITE(*,*) 'hu flux y',H_interface_y(2,j,k) ,                   &
-                  H_interface_y(2,j,k+1)
+             WRITE(*,*) 'hu flux x',H_interface_x(2,j,k) , H_interface_x(2,j+1,k)
 
-             
+             WRITE(*,*) 'hu flux y',H_interface_y(2,j,k) , H_interface_y(2,j,k+1)
+
              READ(*,*) 
 
           END IF
@@ -1647,35 +1634,35 @@ CONTAINS
     INTEGER :: i                      !< Loop counter
 
     IF ( comp_cells_x .GT. 1 ) THEN
-    
+
        DO j = 1,comp_interfaces_x
-          
+
           DO k = 1,comp_cells_y
-             
+
              CALL eval_fluxes( B_stag_x(j,k) ,                                  &
                   r_qj = q_interfaceL(1:n_vars,j,k) , r_flux=fluxL , dir=1 )
-             
+
              CALL eval_fluxes( B_stag_x(j,k) ,                                  &
                   r_qj = q_interfaceR(1:n_vars,j,k) , r_flux=fluxR , dir=1 )
-             
-             CALL average_KT( a_interface_xNeg(:,j,k) , a_interface_xPos(:,j,k) ,       &
+
+             CALL average_KT( a_interface_xNeg(:,j,k), a_interface_xPos(:,j,k) ,&
                   fluxL , fluxR , flux_avg_x )
-             
+
              eqns_loop:DO i=1,n_eqns
-                
+
                 IF ( a_interface_xNeg(i,j,k) .EQ. a_interface_xPos(i,j,k) ) THEN
-                   
+
                    H_interface_x(i,j,k) = 0.D0
-                   
+
                 ELSE
-                   
+
                    H_interface_x(i,j,k) = flux_avg_x(i)                         &
-                        + ( a_interface_xPos(i,j,k) * a_interface_xNeg(i,j,k) )         &
-                        / ( a_interface_xPos(i,j,k) - a_interface_xNeg(i,j,k) )         &
+                        + ( a_interface_xPos(i,j,k) * a_interface_xNeg(i,j,k) ) &
+                        / ( a_interface_xPos(i,j,k) - a_interface_xNeg(i,j,k) ) &
                         * ( q_interfaceR(i,j,k) - q_interfaceL(i,j,k) )             
-                   
+
                 END IF
-                
+
              ENDDO eqns_loop
 
              IF ( j .EQ. 0 ) THEN
@@ -1689,52 +1676,52 @@ CONTAINS
 
              END IF
 
-             
+
           END DO
-          
+
        END DO
 
     END IF
-    
+
     IF ( comp_cells_y .GT. 1 ) THEN
-       
+
        DO j = 1,comp_cells_x
-          
+
           DO k = 1,comp_interfaces_y
-             
-             CALL eval_fluxes( B_stag_y(j,k) ,                                &
+
+             CALL eval_fluxes( B_stag_y(j,k) ,                                  &
                   r_qj = q_interfaceB(1:n_vars,j,k) , r_flux=fluxB , dir=2 )
-             
-             CALL eval_fluxes( B_stag_y(j,k) ,                                &
-               r_qj = q_interfaceT(1:n_vars,j,k) , r_flux=fluxT , dir=2 )
-             
-             
-             CALL average_KT( a_interface_yNeg(:,j,k) , a_interface_yPos(:,j,k) ,   &
-                  fluxB , fluxT , flux_avg_y )
-             
+
+             CALL eval_fluxes( B_stag_y(j,k) ,                                  &
+                  r_qj = q_interfaceT(1:n_vars,j,k) , r_flux=fluxT , dir=2 )
+
+
+             CALL average_KT( a_interface_yNeg(:,j,k) ,                         &
+                  a_interface_yPos(:,j,k) , fluxB , fluxT , flux_avg_y )
+
              DO i=1,n_eqns
-                
+
                 IF ( a_interface_yNeg(i,j,k) .EQ. a_interface_yPos(i,j,k) ) THEN
-                   
+
                    H_interface_y(i,j,k) = 0.D0
-                   
+
                 ELSE
-                   
-                   H_interface_y(i,j,k) = flux_avg_y(i)                       &
-                        + ( a_interface_yPos(i,j,k) * a_interface_yNeg(i,j,k) )     &
-                        / ( a_interface_yPos(i,j,k) - a_interface_yNeg(i,j,k) )     &
+
+                   H_interface_y(i,j,k) = flux_avg_y(i)                         &
+                        + ( a_interface_yPos(i,j,k) * a_interface_yNeg(i,j,k) ) &
+                        / ( a_interface_yPos(i,j,k) - a_interface_yNeg(i,j,k) ) &
                         * ( q_interfaceT(i,j,k) - q_interfaceB(i,j,k) )             
-                   
+
                 END IF
-                
+
              END DO
-             
+
           ENDDO
-          
+
        END DO
 
     END IF
-       
+
   END SUBROUTINE eval_flux_KT
 
   !******************************************************************************
@@ -1796,12 +1783,12 @@ CONTAINS
 
   END SUBROUTINE eval_flux_GFORCE
 
-  !*****************************************************************************
+  !******************************************************************************
   !> \brief Numerical fluxes Lax-Friedrichs
   !> \date 07/10/2016
   !> @author 
   !> Mattia de' Michieli Vitturi
-  !*****************************************************************************
+  !******************************************************************************
 
   SUBROUTINE eval_flux_LxF
 
@@ -1869,11 +1856,11 @@ CONTAINS
     ! Linear reconstruction
 
     x_loop:DO j = 1,comp_cells_x
-       
+
        y_loop:DO k = 1,comp_cells_y
-          
+
           vars_loop:DO i=1,n_vars
-             
+
              ! x direction
 
              ! west boundary
@@ -1890,7 +1877,7 @@ CONTAINS
                    CALL limit( qp_stencil , x_stencil , limiter(i) , qp_prime_x ) 
 
                    ! WRITE(*,*) 'qp_stencil',j,k,i,qp_stencil,qp_prime_x
-                   
+
                 ELSEIF ( bcW(i)%flag .EQ. 1 ) THEN
 
                    qp_prime_x = bcW(i)%value
@@ -2049,16 +2036,16 @@ CONTAINS
              CALL qp_to_qc( qpE , B_stag_x(j+1,k) , q_interfaceL(:,j+1,k) )
              CALL qp_to_qc( qpS , B_stag_y(j,k) , q_interfaceT(:,j,k) )
              CALL qp_to_qc( qpN , B_stag_y(j,k+1) , q_interfaceB(:,j,k+1) )
-             
+
           ENDDO vars_loop
 
           IF ( j.EQ.0 ) THEN
-          
+
              WRITE(*,*) 'qpW',qpW
              WRITE(*,*) 'qpE',qpE
-          
+
           END IF
-             
+
           ! boundary conditions
 
           ! South q_interfaceB(:,j,1)
@@ -2121,14 +2108,10 @@ CONTAINS
 
              ENDDO
 
-             ! WRITE(*,*) 'qp_bdry',qp_bdry
-             
              CALL qp_to_qc( qp_bdry ,  B_stag_x(1,k) ,  q_interfaceL(:,1,k) )
 
              q_interfaceR(:,1,k) = q_interfaceL(:,1,k)
 
-             ! WRITE(*,*) 'q_interfaceL(:,1,k)',q_interfaceL(:,1,k)
-             
           ENDIF
 
           ! East q_interfaceR(:,comp_interfaces_x,k)
@@ -2148,21 +2131,14 @@ CONTAINS
 
              ENDDO
 
-             CALL qp_to_qc( qp_bdry ,  B_stag_x(comp_interfaces_x,k) , &
-                  & q_interfaceR(:,comp_interfaces_x,k) )
-             
-             q_interfaceL(:,comp_interfaces_x,k) = q_interfaceR(:,comp_interfaces_x,k)
+             CALL qp_to_qc( qp_bdry ,  B_stag_x(comp_interfaces_x,k) ,          &
+                  q_interfaceR(:,comp_interfaces_x,k) )
+
+             q_interfaceL(:,comp_interfaces_x,k) =                              &
+                  q_interfaceR(:,comp_interfaces_x,k)
 
           ENDIF
 
-          !IF ( j.EQ.1 ) THEN
-          !
-          !WRITE(*,*) 'qp_bdry',qp_bdry
-          !
-          !END IF
-             
-
-          
        END DO y_loop
 
     END DO x_loop
@@ -2200,10 +2176,10 @@ CONTAINS
 
        DO k = 1, comp_cells_y
 
-          CALL eval_local_speeds2_x( q_interfaceL(:,j,k) , B_stag_x(j,k) ,  &
+          CALL eval_local_speeds2_x( q_interfaceL(:,j,k) , B_stag_x(j,k) ,      &
                abslambdaL_min , abslambdaL_max )
 
-          CALL eval_local_speeds2_x( q_interfaceR(:,j,k) , B_stag_x(j,k) ,    &
+          CALL eval_local_speeds2_x( q_interfaceR(:,j,k) , B_stag_x(j,k) ,      &
                abslambdaR_min , abslambdaR_max )
 
           min_r = MIN(abslambdaL_min , abslambdaR_min , 0.0D0)
@@ -2221,10 +2197,10 @@ CONTAINS
 
        DO k = 1,comp_interfaces_y
 
-          CALL eval_local_speeds2_y( q_interfaceB(:,j,k) , B_stag_y(j,k) ,  &
+          CALL eval_local_speeds2_y( q_interfaceB(:,j,k) , B_stag_y(j,k) ,      &
                abslambdaB_min , abslambdaB_max )
 
-          CALL eval_local_speeds2_y( q_interfaceT(:,j,k) , B_stag_y(j,k) ,    &
+          CALL eval_local_speeds2_y( q_interfaceT(:,j,k) , B_stag_y(j,k) ,      &
                abslambdaT_min , abslambdaT_max )
 
           min_r = MIN(abslambdaB_min , abslambdaT_min , 0.0D0)
