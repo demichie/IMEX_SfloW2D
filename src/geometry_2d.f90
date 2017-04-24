@@ -103,8 +103,26 @@ CONTAINS
 
     ALLOCATE( grav_surf(comp_cells_x,comp_cells_y) )
 
-    dx = cell_size
-    dy = cell_size
+    IF ( comp_cells_x .GT. 1 ) THEN
+
+       dx = cell_size
+
+    ELSE
+       
+       dx = 1.D0
+
+    END IF
+
+    
+    IF ( comp_cells_y .GT. 1 ) THEN
+
+       dy = cell_size
+    
+    ELSE
+
+       dy = 1.D0
+
+    END IF
 
     xN = x0 + comp_cells_x * dx
     yN = y0 + comp_cells_y * dy

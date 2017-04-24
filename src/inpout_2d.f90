@@ -47,6 +47,15 @@ MODULE inpout_2d
   ! -- Variables for the namelist SOURCE_PARAMETERS
   USE constitutive_2d, ONLY : grav, mu, xi, tau
 
+  ! -- Variables for the namelist TEMPERATURE_PARAMETERS
+  USE constitutive_2d, ONLY : rho , emissivity , exp_area_fract , enne , emme , &
+       atm_heat_transf_coeff , thermal_conductivity , T_env , T_ref , T_ground ,&
+       visc_par , mu_ref , c_p
+    
+  ! -- Variables for the namelist RHEOLOGY_PARAMETERS
+  USE parameters_2d, ONLY : rheology_model
+  USE constitutive_2d, ONLY : mu , xi , tau , mu_ref , visc_par , T_ref , rho
+
   IMPLICIT NONE
 
   CHARACTER(LEN=40) :: run_name           !< Name of the run
@@ -122,8 +131,7 @@ MODULE inpout_2d
   NAMELIST / restart_parameters / restart_file , T_init , T_ambient
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
-       cell_size , temperature_flag , rheology_flag , rheology_model ,          &
-       riemann_flag
+       cell_size , temperature_flag , rheology_flag , riemann_flag
 
   NAMELIST / initial_conditions /  released_volume , x_release , y_release ,    &
        velocity_mod_release , velocity_ang_release , T_init , T_ambient
@@ -143,8 +151,15 @@ MODULE inpout_2d
   NAMELIST / numeric_parameters / solver_scheme, max_dt , cfl, limiter , theta, &
        reconstr_coeff , interfaces_relaxation , n_RK   
 
+  NAMELIST / source_parameters / grav 
 
-  NAMELIST / source_parameters / grav, mu, xi, tau
+  NAMELIST / temperature_parameters / emissivity ,  atm_heat_transf_coeff ,     &
+       thermal_conductivity , exp_area_fract , c_p , enne , emme , T_env ,      &
+       T_ground
+
+  NAMELIST / rheology_parameters / rheology_model , mu , xi , tau , mu_ref ,    &
+       visc_par , T_ref , rho
+
 
 CONTAINS
 
@@ -197,7 +212,6 @@ CONTAINS
     cell_size = 2.5D-3
     temperature_flag = .FALSE.
     rheology_flag = .FALSE.
-    rheology_model = 1
     riemann_flag=.TRUE.
     riemann_interface = 0.5D0
 
@@ -258,13 +272,33 @@ CONTAINS
     theta=1.0
     reconstr_coeff = 1.0
 
-
-    !-- Inizialization of the Variables for the namelist source_parameters
+    !-- Inizialization of the Variables for the namelist SOURCE_PARAMETERS
     grav = 9.81D0
+
+    !-- Inizialization of the Variables for the namelist TEMPERATURE_PARAMETERS
+    exp_area_fract = 0.5D0
+    emissivity = 0.0D0                 ! no radiation to atmosphere
+    atm_heat_transf_coeff = 0.0D0      ! no convection to atmosphere
+    thermal_conductivity = 0.0D0       ! no conduction to ground
+    mu_ref = 0.0D0                     ! no viscous heating
+    enne = 4.0D0
+    emme = 12.D0
+    T_env = 300.0D0
+    T_ground = 1200.0D0
+    c_p = 1200.D0
+    
+    !-- Inizialization of the Variables for the namelist RHEOLOGY_PARAMETERS
+    rheology_model = 0
     mu = 0.D0
     xi = 0.D0
     tau = 0.D0
+    rho = 0.D0
+    T_ref = 0.D0
+    visc_par = 0.0D0
+    mu_ref = 0.0D0
 
+
+    !-------------- Check if input file exists ----------------------------------
     input_file = 'IMEX_SfloW2D.inp'
 
     INQUIRE (FILE=input_file,exist=lexist)
@@ -656,7 +690,7 @@ CONTAINS
        
     END IF
     
-    ! ------- READ numeric_parameters NAMELIST ---------------------------------
+    ! ------- READ numeric_parameters NAMELIST ----------------------------------
 
     READ(input_unit,numeric_parameters)
 
@@ -743,6 +777,201 @@ CONTAINS
        REWIND(input_unit)
        
     END IF
+
+    ! ------- READ temperature_parameters NAMELIST ------------------------------
+
+    IF ( temperature_flag ) THEN
+
+       READ(input_unit, temperature_parameters,IOSTAT=ios)
+       
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+       
+       IF ( emissivity .EQ. 0.D0 ) THEN
+
+          WRITE(*,*) 'No radiative term: emissivity =',emissivity
+
+       END IF
+
+       IF ( atm_heat_transf_coeff .EQ. 0.D0 ) THEN
+
+          WRITE(*,*) 'No convective term: atm_heat_transf_coeff =',             &
+               atm_heat_transf_coeff
+
+       END IF
+       
+       IF ( thermal_conductivity .EQ. 0.D0 ) THEN
+
+          WRITE(*,*) 'No conductive term: thermal_conductivity =',              &
+               thermal_conductivity
+
+       END IF
+
+    END IF
+
+
+    ! ------- READ rheology_parameters NAMELIST --------------------------------
+
+    IF ( rheology_flag ) THEN
+
+       READ(input_unit, rheology_parameters,IOSTAT=ios)
+       
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+ 
+       IF ( rheology_model .EQ. 0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+          WRITE(*,*) 'RHEOLOGY_FLAG' , rheology_flag , 'RHEOLOGY_MODEL =' ,     &
+               rheology_model
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSEIF ( rheology_model .EQ. 1 ) THEN
+
+          IF ( ( mu .EQ. 0.D0 ) .AND. ( xi .EQ. 0.D0 ) ) THEN
+
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'RHEOLOGY_MODEL =' , rheology_model
+             WRITE(*,*) 'MU =' , mu ,' XI =' , xi
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+
+          IF ( ( rho .NE. 0.D0 ) .OR. ( T_ref .NE. 0.D0 ) .OR.                  &
+               ( mu_ref .NE. 0.D0 ) .OR. ( visc_par .NE. 0.D0 ) .OR.            &
+               ( tau .NE. 0.D0 ) ) THEN
+
+             WRITE(*,*) 'WARNING: parameters not used in RHEOLOGY_PARAMETERS'
+             IF ( rho .NE. 0.D0 ) WRITE(*,*) 'rho =',rho 
+             IF ( T_ref .NE. 0.D0 ) WRITE(*,*) 'T_ref =',T_ref 
+             IF ( mu_ref .NE. 0.D0 ) WRITE(*,*) 'mu_ref =',mu_ref 
+             IF ( visc_par .NE. 0.D0 ) WRITE(*,*) 'visc_par =',visc_par
+             IF ( tau .NE. 0.D0 ) WRITE(*,*) 'tau =',tau 
+             WRITE(*,*) 'Press ENTER to continue'
+             READ(*,*)
+
+          END IF
+
+       ELSEIF ( rheology_model .EQ. 1 ) THEN
+
+          IF ( tau .EQ. 0.D0 )  THEN
+
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'RHEOLOGY_MODEL =' , rheology_model
+             WRITE(*,*) 'TAU =' , tau
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+          
+          IF ( ( rho .NE. 0.D0 ) .OR. ( T_ref .NE. 0.D0 ) .OR.                  &
+               ( mu_ref .NE. 0.D0 ) .OR. ( visc_par .NE. 0.D0 ) .OR.            &
+               ( mu .NE. 0.D0 ) .OR. ( xi .NE. 0.D0 ) ) THEN
+
+             WRITE(*,*) 'WARNING: parameters not used in RHEOLOGY_PARAMETERS'
+             IF ( rho .NE. 0.D0 ) WRITE(*,*) 'rho =',rho 
+             IF ( T_ref .NE. 0.D0 ) WRITE(*,*) 'T_ref =',T_ref 
+             IF ( mu_ref .NE. 0.D0 ) WRITE(*,*) 'mu_ref =',mu_ref 
+             IF ( visc_par .NE. 0.D0 ) WRITE(*,*) 'visc_par =',visc_par
+             IF ( mu .NE. 0.D0 ) WRITE(*,*) 'mu =',mu 
+             IF ( xi .NE. 0.D0 ) WRITE(*,*) 'xi =',xi
+             WRITE(*,*) 'Press ENTER to continue'
+             READ(*,*)
+
+
+          END IF
+
+       ELSEIF ( rheology_model .EQ. 3 ) THEN
+
+          IF ( mu_ref .LE. 0.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'MU_REF =' , mu_ref 
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+
+          IF ( T_ref .LE. 0.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'T_REF =' , T_ref 
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+
+          IF ( rho .LE. 0.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'RHO =' , rho
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+
+          IF ( visc_par .LT. 0.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'VISC_PAR =' , visc_par
+             WRITE(*,*) 'Please check the input file'
+             STOP
+          
+          ELSEIF ( visc_par .EQ. 0.D0 ) THEN
+             
+             WRITE(*,*) 'WARNING: temperature and momentum uncoupled'
+             WRITE(*,*) 'VISC_PAR =' , visc_par
+             WRITE(*,*) 'Press ENTER to continue'
+             READ(*,*)
+   
+          END IF
+
+          IF ( ( mu .NE. 0.D0 ) .OR. ( xi .NE. 0.D0 ) .OR. ( tau .NE. 0.D0 ) )  &
+               THEN
+
+             WRITE(*,*) 'WARNING: parameters not used in RHEOLOGY_PARAMETERS'
+             IF ( mu .NE. 0.D0 ) WRITE(*,*) 'mu =',mu 
+             IF ( xi .NE. 0.D0 ) WRITE(*,*) 'xi =',xi
+             IF ( tau .NE. 0.D0 ) WRITE(*,*) 'tau =',tau 
+             WRITE(*,*) 'Press ENTER to continue'
+             READ(*,*)
+
+          END IF
+
+       ELSE
+
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'RHEOLOGY_MODEL =' , rheology_model
+             WRITE(*,*) 'Please check the input file'
+             STOP
+
+       END IF
+
+    END IF
+
+    ! ---------------------------------------------------------------------------
 
     IF ( verbose_level .GE. 1 ) WRITE(*,*) 
     
@@ -931,15 +1160,27 @@ CONTAINS
 
     END IF
 
-    WRITE(backup_unit,west_boundary_conditions)
-    WRITE(backup_unit,east_boundary_conditions)
-    WRITE(backup_unit,north_boundary_conditions)
-    WRITE(backup_unit,south_boundary_conditions)
+    IF ( comp_cells_x .GT. 1 ) THEN
+
+       WRITE(backup_unit,west_boundary_conditions)
+       WRITE(backup_unit,east_boundary_conditions)
+
+    END IF
+
+    IF ( comp_cells_y .GT. 1 ) THEN
+
+       WRITE(backup_unit,north_boundary_conditions)
+       WRITE(backup_unit,south_boundary_conditions)
+
+    END IF
 
     WRITE(backup_unit, numeric_parameters )
 
     WRITE(backup_unit, source_parameters )
 
+    IF ( temperature_flag ) WRITE(backup_unit,temperature_parameters)
+
+    IF ( rheology_flag ) WRITE(backup_unit,rheology_parameters)
 
     IF ( .NOT.topography_demfile ) THEN
 
@@ -1170,8 +1411,6 @@ CONTAINS
              
           ENDDO
           
-          WRITE(*,*) 'xj,yk',k,j,xj,yk
-
           READ(restart_unit,*)  
           
        END DO

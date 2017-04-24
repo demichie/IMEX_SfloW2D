@@ -15,7 +15,7 @@ MODULE constitutive_2d
   CHARACTER(LEN=20) :: phase2_name
 
 
-  COMPLEX*16 :: h      !< height
+  COMPLEX*16 :: h      !< height [m]
   COMPLEX*16 :: u      !< velocity (x direction)
   COMPLEX*16 :: v      !< velocity (y direction)
   COMPLEX*16 :: T      !< temperature
@@ -29,6 +29,57 @@ MODULE constitutive_2d
   
   !> drag coefficients (plastic model)
   REAL*8 :: tau
+
+  !> evironment temperature [K]
+  REAL*8 :: T_env
+
+  !> radiative coefficient
+  REAL*8 :: rad_coeff
+
+  !> friction coefficient
+  REAL*8 :: frict_coeff
+
+  !> fluid density [kg/m3]
+  REAL*8 :: rho
+
+  !> reference temperature [K]
+  REAL*8 :: T_ref
+
+  !> reference dynamic viscosity [Pa s]
+  REAL*8 :: mu_ref
+
+  !> reference kinematic viscosity [m2/s]
+  REAL*8 :: nu_ref
+
+  !> viscosity parameter [K-1] (b in Table 1 Costa & Macedonio, 2005)
+  REAL*8 :: visc_par
+
+  !> velocity boundary layer fraction of total thickness
+  REAL*8 :: emme
+
+  !> specific heat [J kg-1 K-1]
+  REAL*8 :: c_p
+
+  !> atmospheric heat trasnfer coefficient [W m-2 K-1] (lambda in C&M, 2005)
+  REAL*8 :: atm_heat_transf_coeff
+
+  !> fractional area of the exposed inner core (f in C&M, 2005)
+  REAL*8 :: exp_area_fract
+
+  !> Stephan-Boltzmann constant [W m-2 K-4]
+  REAL*8, PARAMETER :: SBconst = 5.67D-8
+
+  !> emissivity (eps in Costa & Macedonio, 2005)
+  REAL*8 :: emissivity
+
+  !> thermal boundary layer fraction of total thickness
+  REAL*8 :: enne
+
+  !> temperature of lava-ground interface
+  REAL*8 :: T_ground
+
+  !> thermal conductivity [W m-1 K-1] (k in Costa & Macedonio, 2005)
+  REAL*8 :: thermal_conductivity
 
 CONTAINS
 
@@ -213,22 +264,22 @@ CONTAINS
     REAL*8, INTENT(IN)  :: Bj
     REAL*8, INTENT(OUT) :: vel_min(n_vars) , vel_max(n_vars)
 
-    REAL*8 :: h_temp , v_temp
+    REAL*8 :: h_temp , vel_temp
 
     h_temp = qj(1) - Bj
 
     IF ( h_temp .NE. 0.D0 ) THEN
 
-       v_temp = qj(3) / h_temp
+       vel_temp = qj(3) / h_temp
 
     ELSE
 
-       v_temp = 0.D0
+       vel_temp = 0.D0
 
     END IF
 
-    vel_min(1:n_eqns) = REAL(v_temp) - DSQRT( grav * REAL(h_temp) )
-    vel_max(1:n_eqns) = REAL(v_temp) + DSQRT( grav * REAL(h_temp) )
+    vel_min(1:n_eqns) = REAL(vel_temp) - DSQRT( grav * REAL(h_temp) )
+    vel_max(1:n_eqns) = REAL(vel_temp) + DSQRT( grav * REAL(h_temp) )
 
   END SUBROUTINE eval_local_speeds2_y
 
@@ -558,6 +609,22 @@ CONTAINS
 
     COMPLEX*16 :: mod_vel
     
+    COMPLEX*16 :: gamma
+
+    COMPLEX*16 :: visc_heat_coeff
+
+    REAL*8 :: radiative_coeff
+
+    COMPLEX*16 :: radiative_term
+
+    REAL*8 :: convective_coeff
+
+    COMPLEX*16 :: convective_term
+
+    COMPLEX*16 :: conductive_coeff , conductive_term
+
+    REAL*8 :: thermal_diffusivity
+
     IF ( present(c_qj) .AND. present(c_nh_term_impl) ) THEN
 
        qj = c_qj
@@ -578,10 +645,10 @@ CONTAINS
     END IF
 
     ! initialize and evaluate the relaxation terms
-    relaxation_term(1:n_eqns) = DCMPLX(0.D0) 
+    relaxation_term(1:n_eqns) = DCMPLX(0.D0,0.D0) 
 
     ! initialize and evaluate the forces terms
-    forces_term(1:n_eqns) = DCMPLX(0.D0)
+    forces_term(1:n_eqns) = DCMPLX(0.D0,0.D0)
 
     IF (rheology_flag) THEN
 
@@ -590,22 +657,22 @@ CONTAINS
        mod_vel = CDSQRT( u**2 + v**2 )
        
        ! Voellmy Salm rheology
-       IF (rheology_model .EQ. 1) THEN
+       IF ( rheology_model .EQ. 1 ) THEN
        
           IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
           
-             forces_term(2) = forces_term(2) - (u/mod_vel) *                 &
-                  ( mu*h * ( - grav * grav3_surf )                           &
+             forces_term(2) = forces_term(2) -  ( u / mod_vel ) *               &
+                  ( mu * h * ( - grav * grav3_surf )                            &
                   + ( grav / xi ) * mod_vel ** 2 )
           
-             forces_term(3) = forces_term(3) - (v/mod_vel) *                 &
-                  ( mu*h * ( - grav * grav3_surf )                           &
+             forces_term(3) = forces_term(3) -  ( v / mod_vel ) *               &
+                  ( mu * h * ( - grav * grav3_surf )                            &
                   + ( grav / xi ) * mod_vel ** 2 )
           
           ENDIF
         
-       ! plastic rheology
-       ELSEIF (rheology_model .EQ. 2) THEN
+       ! Plastic rheology
+       ELSEIF ( rheology_model .EQ. 2 ) THEN
        
           IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
           
@@ -615,22 +682,95 @@ CONTAINS
 
           ENDIF
 
-       ELSE
+       ! Temperature dependent rheology
+       ELSEIF ( rheology_model .EQ. 3 ) THEN
 
-             WRITE(*,*) 'rheology model unknown'
-             STOP
+          nu_ref = mu_ref / rho
+
+          IF ( REAL(h) .GT. 0.d0 ) THEN
+    
+             ! Equation 6 from Costa & Macedonio, 2005
+             gamma = 3.D0 * nu_ref / h * CDEXP( - visc_par * ( T - T_ref ) )
+             
+             ! Equation 10 from Costa & Macedonio, 2005
+             visc_heat_coeff = emme * mu_ref / ( rho * c_p * h ) 
+
+          ELSE
+
+             gamma =  DCMPLX(0.D0,0.D0)
+           
+             visc_heat_coeff =  DCMPLX(0.D0,0.D0)
+  
+          END IF
+   
+          IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
+          
+             ! Last R.H.S. term in equation 2 from Costa & Macedonio, 2005
+             forces_term(2) = forces_term(2) - gamma * u
+          
+             ! Last R.H.S. term in equation 3 from Costa & Macedonio, 2005
+             forces_term(3) = forces_term(3) - gamma * v
+
+             ! Last R.H.S. term in equation 4 from Costa & Macedonio, 2005
+             forces_term(4) = forces_term(4) + visc_heat_coeff * ( u**2+v**2 )  &
+                  * CDEXP( visc_par * ( T - T_ref ) ) 
+
+          ENDIF
           
        ENDIF
-       
-       
+              
     ENDIF
 
     IF ( temperature_flag ) THEN
 
        CALL phys_var(Bj,c_qj = qj)
-       
-       forces_term(4) = DCMPLX(0.D0)
 
+       IF ( REAL(h) .GT. 0.d0 ) THEN
+
+          ! Equation 8 from Costa & Macedonio, 2005
+          radiative_coeff = emissivity * SBconst * exp_area_fract / ( rho * c_p )
+       
+       ELSE
+
+          radiative_coeff = 0.D0
+
+       END IF
+
+       ! First R.H.S. term in equation 4 from Costa & Macedonio, 2005
+       radiative_term = - radiative_coeff * ( T**4 - T_env**4 )
+
+       IF ( REAL(h) .GT. 0.d0 ) THEN
+       
+          ! Equation 9 from Costa & Macedonio, 2005
+          convective_coeff = atm_heat_transf_coeff * exp_area_fract             &
+               / ( rho * c_p )
+
+       ELSE
+
+          convective_coeff = 0.D0
+
+       END IF
+
+       ! Second R.H.S. term in equation 4 from Costa & Macedonio, 2005
+       convective_term = - convective_coeff * ( T - T_env )
+
+       IF ( REAL(h) .GT. 0.d0 ) THEN
+    
+          thermal_diffusivity = thermal_conductivity / ( rho * c_p ) 
+
+          ! Equation 7 from Costa & Macedonio, 2005
+          conductive_coeff = enne * thermal_diffusivity * h
+
+       ELSE
+
+          conductive_coeff =  DCMPLX(0.D0,0.D0)
+
+       END IF
+
+       ! Third R.H.S. term in equation 4 from Costa & Macedonio, 2005
+       conductive_term = - conductive_coeff * ( T - T_ground )
+
+       relaxation_term(4) = radiative_term + convective_term + conductive_term
 
     END IF
 

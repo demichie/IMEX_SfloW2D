@@ -75,6 +75,4 @@
  /
 &SOURCE_PARAMETERS
  GRAV= 2.D0     ,
- MU=  0.D0     ,
- XI=  0.D0     ,
  /
