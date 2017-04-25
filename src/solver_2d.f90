@@ -58,6 +58,8 @@ MODULE solver_2d
   !> Physical variables (\f$\alpha_1, p_1, p_2, \rho u, w, T\f$)
   REAL*8, ALLOCATABLE :: qp(:,:,:)
 
+  !> Array defining fraction of cells affected by source term
+  REAL*8, ALLOCATABLE :: source_xy(:,:)
 
   LOGICAL, ALLOCATABLE :: solve_mask(:,:) , solve_mask0(:,:)
 
@@ -160,6 +162,9 @@ CONTAINS
 
     ALLOCATE( qp( n_vars , comp_cells_x , comp_cells_y ) )
 
+    ALLOCATE( source_xy( comp_cells_x , comp_cells_y ) )
+
+    
     ALLOCATE( a_tilde_ij(n_RK,n_RK) )
     ALLOCATE( a_dirk_ij(n_RK,n_RK) )
     ALLOCATE( omega_tilde(n_RK) )
@@ -338,6 +343,8 @@ CONTAINS
 
     Deallocate( qp )
 
+    DEALLOCATE( source_xy )
+    
     DEALLOCATE( a_tilde_ij )
     DEALLOCATE( a_dirk_ij )
     DEALLOCATE( omega_tilde )
@@ -1464,7 +1471,7 @@ CONTAINS
 
   SUBROUTINE eval_explicit_terms( q_expl , expl_terms )
 
-    USE constitutive_2d, ONLY : eval_explicit_forces
+    USE constitutive_2d, ONLY : eval_expl_terms
 
     IMPLICIT NONE
 
@@ -1482,8 +1489,8 @@ CONTAINS
 
           qc = q_expl(1:n_vars,j,k)
 
-          CALL eval_explicit_forces( B_cent(j,k), B_prime_x(j,k),               &
-               B_prime_y(j,k), qc, expl_forces_term)
+          CALL eval_expl_terms( B_cent(j,k), B_prime_x(j,k),                    &
+               B_prime_y(j,k), source_xy(j,k) , qc, expl_forces_term )
 
           expl_terms(1:n_eqns,j,k) =  expl_forces_term
 

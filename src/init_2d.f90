@@ -70,9 +70,10 @@ CONTAINS
 
     IF ( verbose_level .GE. 1 ) WRITE(*,*) 'Riemann problem initialization'
 
-
+    i1 = 0
+    
     riemann_int_search:DO j = 1,comp_cells_x
-
+       
        IF ( x_comp(j) .LT. riemann_interface ) THEN
 
           i1 = j
@@ -84,7 +85,7 @@ CONTAINS
        END IF
 
     END DO riemann_int_search
-
+    
     eps = 1.D-10
 
     ! Left initial state
@@ -231,6 +232,42 @@ CONTAINS
 
   END SUBROUTINE initial_conditions
 
+  !******************************************************************************
+  !> \brief Source initialization
+  !
+  !> This subroutine initialize the source terms. 
+  !> \date 25/04/2017
+  !******************************************************************************
+
+  SUBROUTINE init_source
+
+    USE geometry_2d, ONLY : x_comp , comp_cells_x, y_comp , comp_cells_y
+
+    USE parameters_2d, ONLY : x_source , y_source , r_source
+
+    USE solver_2d, ONLY : source_xy
+    
+    IMPLICIT NONE
+
+    INTEGER :: j,k          !< loop counter
+
+    DO j=1,comp_cells_x
+
+      DO k=1,comp_cells_y
+
+         IF ( ( x_comp(j) - x_source )**2 - ( y_comp(k) - y_source ) **2 .LE.   &
+              r_source**2 ) THEN
+
+            source_xy(j,k) = 1.D0 
+         
+         END IF
+
+      ENDDO
+
+    ENDDO
+    
+
+  END SUBROUTINE init_source
   
   !******************************************************************************
   !> Thickness function

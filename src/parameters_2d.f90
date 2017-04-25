@@ -59,6 +59,18 @@ MODULE parameters_2d
   !> .
   LOGICAL :: temperature_flag
 
+  !> Flag to choose if there is a source of mass within the domain
+  !> - T      => source term added to the system
+  !> - F      => source term not added to the system 
+  !> .
+  LOGICAL :: source_flag
+ 
+  REAL*8 :: x_source
+  REAL*8 :: y_source
+  REAL*8 :: r_source
+  REAL*8 :: vel_source
+  REAL*8 :: T_source
+  
   !> Initial volume of the flow
   REAL*8 :: released_volume
 

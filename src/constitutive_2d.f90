@@ -798,27 +798,38 @@ CONTAINS
   !> \param[out]    expl_forces_term   forces term
   !******************************************************************************
 
-  SUBROUTINE eval_explicit_forces( Bj , Bprimej_x , Bprimej_y ,                 &
-       qj , expl_forces_term )
+  SUBROUTINE eval_expl_terms( Bj, Bprimej_x , Bprimej_y , source_xy , qj ,      &
+       expl_forces_term )
+
+    USE parameters_2d, ONLY : source_flag , vel_source , T_source
     
     IMPLICIT NONE
 
     REAL*8, INTENT(IN) :: Bj
     REAL*8, INTENT(IN) :: Bprimej_x
     REAL*8, INTENT(IN) :: Bprimej_y
-
+    REAL*8, INTENT(IN) :: source_xy
+    
     REAL*8, INTENT(IN) :: qj(n_eqns)                 !< conservative variables 
     REAL*8, INTENT(OUT) :: expl_forces_term(n_eqns)  !< explicit forces 
 
     expl_forces_term(1:n_eqns) = 0.D0
 
     CALL phys_var(Bj,r_qj = qj)
+
+    IF ( source_flag ) expl_forces_term(1) = source_xy * vel_source
     
     expl_forces_term(2) = grav * h * Bprimej_x
    
     expl_forces_term(3) = grav * h * Bprimej_y
+
+    IF ( temperature_flag .AND. source_flag ) THEN
+    
+       expl_forces_term(4) = source_xy * vel_source * T_source
+
+    END IF
            
-  END SUBROUTINE eval_explicit_forces
+  END SUBROUTINE eval_expl_terms
 
 END MODULE constitutive_2d
 

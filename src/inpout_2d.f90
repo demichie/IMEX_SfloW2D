@@ -24,7 +24,7 @@ MODULE inpout_2d
        n_topography_profile_y
   USE init_2d, ONLY : riemann_interface
   USE parameters_2d, ONLY : temperature_flag , riemann_flag , rheology_flag
-  USE parameters_2d, ONLY : rheology_model
+  USE parameters_2d, ONLY : source_flag
 
   ! -- Variables for the namelist INITIAL_CONDITIONS
   USE parameters_2d, ONLY : released_volume , x_release , y_release
@@ -44,9 +44,13 @@ MODULE inpout_2d
   USE parameters_2d, ONLY : solver_scheme, max_dt , cfl, limiter , theta,       &
        reconstr_coeff , interfaces_relaxation , n_RK   
 
-  ! -- Variables for the namelist SOURCE_PARAMETERS
-  USE constitutive_2d, ONLY : grav, mu, xi, tau
+  ! -- Variables for the namelist EXPL_TERMS_PARAMETERS
+  USE constitutive_2d, ONLY : grav
+  USE parameters_2d, ONLY : x_source , y_source , r_source , vel_source ,       &
+       T_source
 
+
+  
   ! -- Variables for the namelist TEMPERATURE_PARAMETERS
   USE constitutive_2d, ONLY : rho , emissivity , exp_area_fract , enne , emme , &
        atm_heat_transf_coeff , thermal_conductivity , T_env , T_ref , T_ground ,&
@@ -131,7 +135,7 @@ MODULE inpout_2d
   NAMELIST / restart_parameters / restart_file , T_init , T_ambient
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
-       cell_size , temperature_flag , rheology_flag , riemann_flag
+       cell_size , temperature_flag , source_flag , rheology_flag , riemann_flag
 
   NAMELIST / initial_conditions /  released_volume , x_release , y_release ,    &
        velocity_mod_release , velocity_ang_release , T_init , T_ambient
@@ -151,7 +155,7 @@ MODULE inpout_2d
   NAMELIST / numeric_parameters / solver_scheme, max_dt , cfl, limiter , theta, &
        reconstr_coeff , interfaces_relaxation , n_RK   
 
-  NAMELIST / source_parameters / grav 
+  NAMELIST / expl_terms_parameters / grav 
 
   NAMELIST / temperature_parameters / emissivity ,  atm_heat_transf_coeff ,     &
        thermal_conductivity , exp_area_fract , c_p , enne , emme , T_env ,      &
@@ -211,6 +215,7 @@ CONTAINS
     comp_cells_y = 1
     cell_size = 2.5D-3
     temperature_flag = .FALSE.
+    source_flag = .FALSE.
     rheology_flag = .FALSE.
     riemann_flag=.TRUE.
     riemann_interface = 0.5D0
@@ -272,8 +277,13 @@ CONTAINS
     theta=1.0
     reconstr_coeff = 1.0
 
-    !-- Inizialization of the Variables for the namelist SOURCE_PARAMETERS
+    !-- Inizialization of the Variables for the namelist EXPL_TERMS_PARAMETERS
     grav = 9.81D0
+    x_source = 0.D0
+    y_source = 0.D0
+    r_source = 0.D0
+    vel_source = 0.D0
+    T_source = 0.D0
 
     !-- Inizialization of the Variables for the namelist TEMPERATURE_PARAMETERS
     exp_area_fract = 0.5D0
@@ -316,7 +326,7 @@ CONTAINS
        WRITE(input_unit, south_boundary_conditions )
        WRITE(input_unit, north_boundary_conditions )
        WRITE(input_unit, numeric_parameters )
-       WRITE(input_unit, source_parameters )
+       WRITE(input_unit, expl_terms_parameters )
 
        n_topography_profile_x = 2
        n_topography_profile_y = 2
@@ -761,14 +771,14 @@ CONTAINS
 
     END IF
 
-    ! ------- READ source_parameters NAMELIST -----------------------------------
+    ! ------- READ expl_terms_parameters NAMELIST -------------------------------
 
-    READ(input_unit, source_parameters,IOSTAT=ios)
+    READ(input_unit, expl_terms_parameters,IOSTAT=ios)
 
     IF ( ios .NE. 0 ) THEN
        
        WRITE(*,*) 'IOSTAT=',ios
-       WRITE(*,*) 'ERROR: problem with namelist SOURCE_PARAMETERS'
+       WRITE(*,*) 'ERROR: problem with namelist EXPL_TERMS_PARAMETERS'
        WRITE(*,*) 'Please check the input file'
        STOP
        
@@ -778,6 +788,37 @@ CONTAINS
        
     END IF
 
+    IF ( source_flag ) THEN
+
+       IF ( r_source .EQ. 0.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist EXPL_TERMS_PARAMETERS'
+          WRITE(*,*) 'R_SOURCE =',r_source
+          WRITE(*,*) 'Please check the input file'
+          STOP
+
+       END IF
+
+       IF ( vel_source .EQ. 0.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist EXPL_TERMS_PARAMETERS'
+          WRITE(*,*) 'VEL_SOURCE =',vel_source
+          WRITE(*,*) 'Please check the input file'
+          STOP
+
+       END IF
+
+       IF ( temperature_flag .AND. ( r_source .EQ. 0.D0 ) ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist EXPL_TERMS_PARAMETERS'
+          WRITE(*,*) 'TEMPERATURE_FLAG =',temperature_flag,' R_SOURCE =',r_source
+          WRITE(*,*) 'Please check the input file'
+          STOP
+
+       END IF
+
+    END IF
+    
     ! ------- READ temperature_parameters NAMELIST ------------------------------
 
     IF ( temperature_flag ) THEN
@@ -1176,7 +1217,7 @@ CONTAINS
 
     WRITE(backup_unit, numeric_parameters )
 
-    WRITE(backup_unit, source_parameters )
+    WRITE(backup_unit, expl_terms_parameters )
 
     IF ( temperature_flag ) WRITE(backup_unit,temperature_parameters)
 
