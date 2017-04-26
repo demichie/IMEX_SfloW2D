@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['geometry_5f2d',['geometry_2d',['../classgeometry__2d.html',1,'']]]
+  ['log10',['log10',['../interfacecomplexify_1_1log10.html',1,'complexify']]]
 ];

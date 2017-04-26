@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['init_5f2d',['init_2d',['../classinit__2d.html',1,'']]],
-  ['inpout_5f2d',['inpout_2d',['../classinpout__2d.html',1,'']]]
+  ['max',['max',['../interfacecomplexify_1_1max.html',1,'complexify']]],
+  ['min',['min',['../interfacecomplexify_1_1min.html',1,'complexify']]]
 ];

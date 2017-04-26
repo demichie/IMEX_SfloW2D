@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['log10',['log10',['../interfacecomplexify_1_1log10.html',1,'complexify']]]
+  ['nint',['nint',['../interfacecomplexify_1_1nint.html',1,'complexify']]]
 ];
