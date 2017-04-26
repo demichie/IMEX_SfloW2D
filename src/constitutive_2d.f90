@@ -791,15 +791,16 @@ CONTAINS
   !******************************************************************************
   !> \brief Explicit Forces term
   !
-  !> This subroutine evaluates the forces to be treated explicitely
-  !> in the DIRK numerical scheme (e.g. gravity)
+  !> This subroutine evaluates the non-hyperbolic terms to be treated explicitely
+  !> in the DIRK numerical scheme (e.g. gravity,source of mass). The sign of the
+  !> terms is taken with the terms on the left-hand side of the equations.
   !> \date 01/06/2012
   !> \param[in]     qj                 conservative variables 
-  !> \param[out]    expl_forces_term   forces term
+  !> \param[out]    expl_term          explicit term
   !******************************************************************************
 
   SUBROUTINE eval_expl_terms( Bj, Bprimej_x , Bprimej_y , source_xy , qj ,      &
-       expl_forces_term )
+       expl_term )
 
     USE parameters_2d, ONLY : source_flag , vel_source , T_source
     
@@ -811,21 +812,21 @@ CONTAINS
     REAL*8, INTENT(IN) :: source_xy
     
     REAL*8, INTENT(IN) :: qj(n_eqns)                 !< conservative variables 
-    REAL*8, INTENT(OUT) :: expl_forces_term(n_eqns)  !< explicit forces 
+    REAL*8, INTENT(OUT) :: expl_term(n_eqns)         !< explicit forces 
 
-    expl_forces_term(1:n_eqns) = 0.D0
+    expl_term(1:n_eqns) = 0.D0
 
     CALL phys_var(Bj,r_qj = qj)
 
-    IF ( source_flag ) expl_forces_term(1) = source_xy * vel_source
+    IF ( source_flag ) expl_term(1) = - source_xy * vel_source
     
-    expl_forces_term(2) = grav * h * Bprimej_x
+    expl_term(2) = grav * h * Bprimej_x
    
-    expl_forces_term(3) = grav * h * Bprimej_y
+    expl_term(3) = grav * h * Bprimej_y
 
     IF ( temperature_flag .AND. source_flag ) THEN
     
-       expl_forces_term(4) = source_xy * vel_source * T_source
+       expl_term(4) = - source_xy * vel_source * T_source
 
     END IF
            

@@ -1492,6 +1492,9 @@ CONTAINS
           CALL eval_expl_terms( B_cent(j,k), B_prime_x(j,k),                    &
                B_prime_y(j,k), source_xy(j,k) , qc, expl_forces_term )
 
+          !WRITE(*,*) 'j,k',j,k,source_xy(j,k)
+          !READ(*,*)
+
           expl_terms(1:n_eqns,j,k) =  expl_forces_term
 
        ENDDO

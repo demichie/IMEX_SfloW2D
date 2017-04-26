@@ -155,7 +155,8 @@ MODULE inpout_2d
   NAMELIST / numeric_parameters / solver_scheme, max_dt , cfl, limiter , theta, &
        reconstr_coeff , interfaces_relaxation , n_RK   
 
-  NAMELIST / expl_terms_parameters / grav 
+  NAMELIST / expl_terms_parameters / grav , x_source , y_source , r_source ,    &
+       vel_source , T_source
 
   NAMELIST / temperature_parameters / emissivity ,  atm_heat_transf_coeff ,     &
        thermal_conductivity , exp_area_fract , c_p , enne , emme , T_env ,      &

@@ -173,7 +173,8 @@ CONTAINS
 
     USE geometry_2d, ONLY : dx , dy
 
-    USE parameters_2d, ONLY : n_vars , released_volume , verbose_level
+    USE parameters_2d, ONLY : n_vars , released_volume , verbose_level ,        &
+         source_flag
 
     USE solver_2d, ONLY : q
 
@@ -231,6 +232,8 @@ CONTAINS
 
     IF ( verbose_level .GE. 1 ) READ(*,*)
 
+    IF ( source_flag ) CALL init_source
+
     RETURN
 
   END SUBROUTINE initial_conditions
@@ -254,12 +257,19 @@ CONTAINS
 
     INTEGER :: j,k          !< loop counter
 
+    source_xy(:,:) = 0.D0
+
     DO j=1,comp_cells_x
 
       DO k=1,comp_cells_y
 
-         IF ( ( x_comp(j) - x_source )**2 - ( y_comp(k) - y_source ) **2 .LE.   &
+         IF ( ( x_comp(j) - x_source )**2 + ( y_comp(k) - y_source ) **2 .LE.   &
               r_source**2 ) THEN
+
+            !WRITE(*,*) x_comp(j) , x_source , y_comp(k) , y_source , r_source
+            !WRITE(*,*) ( x_comp(j) - x_source )**2 + ( y_comp(k) - y_source ) **2
+            !WRITE(*,*) r_source**2
+            !READ(*,*) 
 
             source_xy(j,k) = 1.D0 
          
