@@ -434,7 +434,7 @@ CONTAINS
 
     ! External variables
     USE geometry_2d, ONLY : dx,dy
-    USE parameters_2d, ONLY : max_dt , cfl
+    USE parameters_2d, ONLY : max_dt , min_dt , cfl
 
     ! External procedures
     USE constitutive_2d, ONLY : eval_local_speeds_x, eval_local_speeds_y
@@ -487,6 +487,8 @@ CONTAINS
 
     END IF
 
+    dt = MAX(dt,min_dt)
+
   END SUBROUTINE timestep
 
 
@@ -507,7 +509,7 @@ CONTAINS
 
     ! External variables
     USE geometry_2d, ONLY : dx,dy
-    USE parameters_2d, ONLY : max_dt , cfl
+    USE parameters_2d, ONLY : max_dt , min_dt , cfl
 
     ! External procedures
     USE constitutive_2d, ONLY : eval_local_speeds2_x, eval_local_speeds2_y
@@ -559,6 +561,8 @@ CONTAINS
        END DO
 
     END IF
+
+    dt = MAX(dt,min_dt)
 
   END SUBROUTINE timestep2
 

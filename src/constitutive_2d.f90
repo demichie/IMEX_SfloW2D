@@ -759,7 +759,7 @@ CONTAINS
           thermal_diffusivity = thermal_conductivity / ( rho * c_p ) 
 
           ! Equation 7 from Costa & Macedonio, 2005
-          conductive_coeff = enne * thermal_diffusivity * h
+          conductive_coeff = enne * thermal_diffusivity / h
 
        ELSE
 

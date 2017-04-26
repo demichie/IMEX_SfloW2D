@@ -42,7 +42,7 @@ MODULE inpout_2d
 
   ! -- Variables for the namelist NUMERIC_PARAMETERS
   USE parameters_2d, ONLY : solver_scheme, max_dt , cfl, limiter , theta,       &
-       reconstr_coeff , interfaces_relaxation , n_RK   
+       reconstr_coeff , interfaces_relaxation , n_RK , min_dt   
 
   ! -- Variables for the namelist EXPL_TERMS_PARAMETERS
   USE constitutive_2d, ONLY : grav
@@ -152,8 +152,8 @@ MODULE inpout_2d
 
   NAMELIST / north_boundary_conditions / hB_bcN , u_bcN , v_bcN , T_bcN
 
-  NAMELIST / numeric_parameters / solver_scheme, max_dt , cfl, limiter , theta, &
-       reconstr_coeff , interfaces_relaxation , n_RK   
+  NAMELIST / numeric_parameters / solver_scheme, min_dt, max_dt , cfl, limiter, &
+       theta, reconstr_coeff , interfaces_relaxation , n_RK   
 
   NAMELIST / expl_terms_parameters / grav , x_source , y_source , r_source ,    &
        vel_source , T_source
@@ -270,6 +270,7 @@ CONTAINS
     v_bcN%value = 0.d0 
 
     !-- Inizialization of the Variables for the namelist NUMERIC_PARAMETERS
+    min_dt = 1.d-6
     max_dt = 1.d-3
     solver_scheme = 'KT'
     n_RK = 1

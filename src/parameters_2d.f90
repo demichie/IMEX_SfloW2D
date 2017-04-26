@@ -10,6 +10,7 @@ MODULE parameters_2d
 
   REAL*8 :: eps_newton        !< threshold for the convergence of the
                               !< Newton's method 
+  REAL*8 :: min_dt            !< Smallest time step allowed
   REAL*8 :: max_dt            !< Largest time step allowed
   REAL*8 :: cfl               !< Courant-Friedrichs-Lewy parameter 
 
