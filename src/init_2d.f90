@@ -203,10 +203,13 @@ CONTAINS
 
     ENDDO
 
+    IF ( released_volume .LT. ( dx * dy * SUM( qp(1,:,:)-B_cent(:,:) ) ) ) THEN
 
-    ! Correction for the released volume
-    qp(1,:,:) = B_cent(:,:) + ( qp(1,:,:)-B_cent(:,:) ) * released_volume       &
-         / ( dx * dy * SUM( qp(1,:,:)-B_cent(:,:) ) )
+       ! Correction for the released volume
+       qp(1,:,:) = B_cent(:,:) + ( qp(1,:,:)-B_cent(:,:) ) * released_volume    &
+            / ( dx * dy * SUM( qp(1,:,:)-B_cent(:,:) ) )
+       
+    END IF
 
     WRITE(*,*) 'Initial volume =',dx * dy * SUM( qp(1,:,:)-B_cent(:,:) ) 
 
