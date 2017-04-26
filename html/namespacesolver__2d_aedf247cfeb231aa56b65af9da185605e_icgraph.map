@@ -1,0 +1,5 @@
+<map id="solver_2d::limit" name="solver_2d::limit">
+<area shape="rect" id="node2" href="$namespacesolver__2d.html#afd826688c650c7003818593da5da0b88" title="Linear reconstruction. " alt="" coords="164,35,332,61"/>
+<area shape="rect" id="node3" href="$namespacesolver__2d.html#ae00e8a8f9cf604ed48c8a524e9d24ce7" title="Time&#45;step computation. " alt="" coords="397,5,539,32"/>
+<area shape="rect" id="node4" href="$namespacesolver__2d.html#a3490f633c5aa76cd08824229e0673ddd" title="Semidiscrete finite volume central scheme. " alt="" coords="380,57,556,98"/>
+</map>
