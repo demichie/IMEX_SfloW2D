@@ -27,6 +27,8 @@ MODULE solver_2d
 
   USE parameters_2d, ONLY : bcW , bcE , bcS , bcN
 
+  USE parameters_2d, ONLY : temperature_flag
+
   IMPLICIT none
 
   !> Conservative variables
@@ -673,6 +675,19 @@ CONTAINS
 
                 WRITE(*,*) 
                 READ(*,*) 
+
+             END IF
+
+             IF ( temperature_flag ) THEN
+
+                IF ( q_guess(4) .LT. 0.D0 ) THEN
+
+                   WRITE(*,*) 'j,k,h,hT',j,k,h_new,q_guess(4)
+                   WRITE(*,*) 'dt',dt
+                   
+                   READ(*,*) 
+                   
+                END IF
 
              END IF
 

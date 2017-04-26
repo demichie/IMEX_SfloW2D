@@ -713,7 +713,7 @@ CONTAINS
 
              ! Last R.H.S. term in equation 4 from Costa & Macedonio, 2005
              forces_term(4) = forces_term(4) + visc_heat_coeff * ( u**2+v**2 )  &
-                  * CDEXP( visc_par * ( T - T_ref ) ) 
+                  * CDEXP( -visc_par * ( T - T_ref ) ) 
 
           ENDIF
           
