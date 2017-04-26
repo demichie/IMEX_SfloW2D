@@ -203,7 +203,7 @@ CONTAINS
 
     ENDDO
 
-    IF ( released_volume .LT. ( dx * dy * SUM( qp(1,:,:)-B_cent(:,:) ) ) ) THEN
+    IF ( released_volume .GT. ( dx * dy * SUM( qp(1,:,:)-B_cent(:,:) ) ) ) THEN
 
        ! Correction for the released volume
        qp(1,:,:) = B_cent(:,:) + ( qp(1,:,:)-B_cent(:,:) ) * released_volume    &
