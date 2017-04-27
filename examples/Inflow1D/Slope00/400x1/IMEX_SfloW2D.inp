@@ -71,9 +71,9 @@
  visc_par = 0.02D0 ,
  /
 &TEMPERATURE_PARAMETERS
- emissivity = 0.0D0 ,              
- atm_heat_transf_coeff = 0.0D0 ,
- thermal_conductivity = 0.0D0 ,    
+ emissivity = 0.80D0 ,              
+ atm_heat_transf_coeff = 70.0D0 ,
+ thermal_conductivity = 2.0D0 ,    
  exp_area_fract = 0.5D0 ,
  enne = 4.0D0 ,
  emme = 12.D0 ,
