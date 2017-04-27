@@ -158,7 +158,7 @@ CONTAINS
        IF ( temperature_flag ) THEN
 
           T =  DSQRT(2.D0) * h * qj(4) / CDSQRT( h**4 + eps_sing )
-
+          
        END IF
 
     END IF

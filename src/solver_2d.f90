@@ -699,6 +699,19 @@ CONTAINS
 
                 END IF
 
+                IF ( ( q_guess(4) / h_new ) .GE. T_ref ) THEN
+
+                   IF ( verbose_level .GE. 2 ) THEN
+
+                      WRITE(*,*) 'j,k,h,T',j,k,h_new,q_guess(4)/h_new
+                   
+                   END IF
+
+                   q_guess(4) = T_ref * h_new
+
+                END IF
+
+                
              END IF
 
              ! store the non-hyperbolic term for the explicit computations

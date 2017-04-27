@@ -53,8 +53,7 @@ MODULE inpout_2d
   
   ! -- Variables for the namelist TEMPERATURE_PARAMETERS
   USE constitutive_2d, ONLY : rho , emissivity , exp_area_fract , enne , emme , &
-       atm_heat_transf_coeff , thermal_conductivity , T_env , T_ref , T_ground ,&
-       visc_par , mu_ref , c_p
+       atm_heat_transf_coeff , thermal_conductivity , T_env , T_ground , c_p
     
   ! -- Variables for the namelist RHEOLOGY_PARAMETERS
   USE parameters_2d, ONLY : rheology_model
