@@ -27,9 +27,6 @@ MODULE solver_2d
 
   USE parameters_2d, ONLY : bcW , bcE , bcS , bcN
 
-  USE parameters_2d, ONLY : temperature_flag
-  USE constitutive_2d, ONLY : T_ground , T_ref
-
   IMPLICIT none
 
   !> Conservative variables
@@ -136,6 +133,8 @@ CONTAINS
 
     IMPLICIT NONE
 
+    REAL*8 :: gamma
+
     INTEGER :: i,j
 
     ALLOCATE( q( n_vars , comp_cells_x , comp_cells_y ) , q0( n_vars ,          &
@@ -219,6 +218,8 @@ CONTAINS
 
     ! Weight coefficients of the explicit part in the final assemblage
     omega = 0.D0
+
+    gamma = 1.D0 - 1.D0 / SQRT(2.D0)
 
     IF ( n_RK .EQ. 1 ) THEN
 
@@ -394,9 +395,8 @@ CONTAINS
     solve_mask = solve_mask0
 
     WHERE ( q(1,:,:) - B_cent(:,:) .GT. 0.D0 ) solve_mask = .TRUE.
-    WHERE ( source_xy .GT. 0.D0 )  solve_mask = .TRUE.
 
-    DO i = 1,n_RK+4
+    DO i = 1,n_RK
 
        solve_mask(1+i:comp_cells_x,:) =  solve_mask(1+i:comp_cells_x,:) .OR.    &
             solve_mask(1:comp_cells_x-i,:) 
@@ -432,7 +432,7 @@ CONTAINS
 
     ! External variables
     USE geometry_2d, ONLY : dx,dy
-    USE parameters_2d, ONLY : max_dt , min_dt , cfl
+    USE parameters_2d, ONLY : max_dt , cfl
 
     ! External procedures
     USE constitutive_2d, ONLY : eval_local_speeds_x, eval_local_speeds_y
@@ -458,34 +458,32 @@ CONTAINS
           DO k = 1,comp_cells_y
 
              qj = q( 1:n_vars , j , k )
-             
+
              ! x direction
              CALL eval_local_speeds_x( qj , B_cent(j,k) , vel_min , vel_max )
-             
+
              vel_j = MAX( MAXVAL(ABS(vel_min)) , MAXVAL(ABS(vel_max)) )
-             
+
              dt_cfl = cfl * dx / vel_j
-             
+
              dt_x = MIN( dt , dt_cfl )
-             
+
              ! y direction
              CALL eval_local_speeds_y( qj , B_cent(j,k) , vel_min , vel_max )
-             
-             vel_j = MAX( MAXVAL(ABS(vel_min)) , MAXVAL(ABS(vel_max)) )
-             
-             dt_cfl = cfl * dy / vel_j
-             
-             dt_y = MIN( dt , dt_cfl )
-             
-             dt = MIN(dt_x,dt_y)
-             
-          ENDDO
-          
-       END DO
-       
-    END IF
 
-    dt = MAX(dt,min_dt)
+             vel_j = MAX( MAXVAL(ABS(vel_min)) , MAXVAL(ABS(vel_max)) )
+
+             dt_cfl = cfl * dy / vel_j
+
+             dt_y = MIN( dt , dt_cfl )
+
+             dt = MIN(dt_x,dt_y)
+
+          ENDDO
+
+       END DO
+
+    END IF
 
   END SUBROUTINE timestep
 
@@ -507,7 +505,7 @@ CONTAINS
 
     ! External variables
     USE geometry_2d, ONLY : dx,dy
-    USE parameters_2d, ONLY : max_dt , min_dt , cfl
+    USE parameters_2d, ONLY : max_dt , cfl
 
     ! External procedures
     USE constitutive_2d, ONLY : eval_local_speeds2_x, eval_local_speeds2_y
@@ -559,8 +557,6 @@ CONTAINS
        END DO
 
     END IF
-
-    dt = MAX(dt,min_dt)
 
   END SUBROUTINE timestep2
 
@@ -674,31 +670,10 @@ CONTAINS
 
                 WRITE(*,*) 'j,k,h',j,k,h_new,qp(1,j,k),B_cent(j,k)
                 WRITE(*,*) 'dt',dt
-                WRITE(*,*) 'divFluxj(1,1:n_RK)', divFluxj(1,1:n_RK)
-                WRITE(*,*) 'NHj(1,1:n_RK)',NHj(1,1:n_RK)
-                WRITE(*,*) 'Expl_terms_j(1,1:n_RK)',Expl_terms_j(1,1:n_RK)
 
-                WRITE(*,*) q0(1,j-2:j+2,k-2:k+2)-B_cent(j-2:j+2,k-2:k+2)
-
-
+                WRITE(*,*) 
                 READ(*,*) 
 
-             END IF
-
-             IF ( temperature_flag ) THEN
-
-                IF ( ( q_guess(4) / h_new ) .LE. T_ground ) THEN
-
-                   IF ( verbose_level .GE. 2 ) THEN
-
-                      WRITE(*,*) 'j,k,h,T',j,k,h_new,q_guess(4)/h_new
-                   
-                   END IF
-
-                   q_guess(4) = T_ground * h_new
-
-                END IF
-                
              END IF
 
              ! store the non-hyperbolic term for the explicit computations
@@ -885,6 +860,8 @@ CONTAINS
 
     REAL*8 :: qpj(n_vars)
 
+    REAL*8 :: desc_dir2(n_vars)
+
     REAL*8 :: desc_dir_temp(n_vars)
 
     normalize_q = .TRUE.
@@ -1048,6 +1025,8 @@ CONTAINS
                DBLE( SIZE(qj_rel) ) )
 
           grad_f = MATMUL( right_term , left_matrix )
+
+          desc_dir2 = desc_dir
 
           CALL lnsrch( Bj , Bprimej_x , Bprimej_y , grav3_surf ,                &
                qj_rel_NR_old , qj_org , qj_old , scal_f_old , grad_f ,          &
@@ -1513,9 +1492,6 @@ CONTAINS
           CALL eval_expl_terms( B_cent(j,k), B_prime_x(j,k),                    &
                B_prime_y(j,k), source_xy(j,k) , qc, expl_forces_term )
 
-          !WRITE(*,*) 'j,k',j,k,source_xy(j,k)
-          !READ(*,*)
-
           expl_terms(1:n_eqns,j,k) =  expl_forces_term
 
        ENDDO
@@ -1598,16 +1574,13 @@ CONTAINS
           h_new = q_expl(1,j,k) - dt * divFlux(1,j,k) - B_cent(j,k)
 
           ! IF ( h_new .LT. 0.D0 ) THEN
-          IF ( ( j .EQ. 0 ) .AND. ( k .EQ. 299 ) ) THEN
+          IF ( j .EQ. 0 ) THEN
 
              WRITE(*,*) 'j,k,h,divF',j,k,h_new, divFlux(1,j,k)
              WRITE(*,*) 'dt',dt
 
              WRITE(*,*) 'h_interface(j,k) ',q_interfaceL(1,j,k)-B_stag_x(j,k) , &
                   q_interfaceR(1,j,k) - B_stag_x(j,k)
-
-             WRITE(*,*) 'q_interfaceL(1,j,k)',q_interfaceL(1,j,k)
-             WRITE(*,*) 'B_stag_x(j,k)',B_stag_x(j,k)
 
              WRITE(*,*) 'hu_interface(j,k)' , q_interfaceL(2,j,k) ,             &
                   q_interfaceR(2,j,k)
@@ -2066,6 +2039,7 @@ CONTAINS
              ENDIF
 
           ENDDO vars_loop
+
 
           ! Convert back from physical to conservative variables
           CALL qp_to_qc( qpW , B_stag_x(j,k) , q_interfaceR(:,j,k) )

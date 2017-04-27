@@ -42,14 +42,12 @@ MODULE inpout_2d
 
   ! -- Variables for the namelist NUMERIC_PARAMETERS
   USE parameters_2d, ONLY : solver_scheme, max_dt , cfl, limiter , theta,       &
-       reconstr_coeff , interfaces_relaxation , n_RK , min_dt   
+       reconstr_coeff , interfaces_relaxation , n_RK   
 
   ! -- Variables for the namelist EXPL_TERMS_PARAMETERS
   USE constitutive_2d, ONLY : grav
   USE parameters_2d, ONLY : x_source , y_source , r_source , vel_source ,       &
        T_source
-
-
   
   ! -- Variables for the namelist TEMPERATURE_PARAMETERS
   USE constitutive_2d, ONLY : rho , emissivity , exp_area_fract , enne , emme , &
@@ -151,11 +149,12 @@ MODULE inpout_2d
 
   NAMELIST / north_boundary_conditions / hB_bcN , u_bcN , v_bcN , T_bcN
 
-  NAMELIST / numeric_parameters / solver_scheme, min_dt, max_dt , cfl, limiter, &
-       theta, reconstr_coeff , interfaces_relaxation , n_RK   
+  NAMELIST / numeric_parameters / solver_scheme, max_dt , cfl, limiter , theta, &
+       reconstr_coeff , interfaces_relaxation , n_RK   
 
   NAMELIST / expl_terms_parameters / grav , x_source , y_source , r_source ,    &
        vel_source , T_source
+ 
 
   NAMELIST / temperature_parameters / emissivity ,  atm_heat_transf_coeff ,     &
        thermal_conductivity , exp_area_fract , c_p , enne , emme , T_env ,      &
@@ -269,7 +268,6 @@ CONTAINS
     v_bcN%value = 0.d0 
 
     !-- Inizialization of the Variables for the namelist NUMERIC_PARAMETERS
-    min_dt = 1.d-6
     max_dt = 1.d-3
     solver_scheme = 'KT'
     n_RK = 1

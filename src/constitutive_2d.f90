@@ -103,6 +103,7 @@ CONTAINS
 
     IF ( temperature_flag ) implicit_flag(4) = .TRUE.
 
+
     n_nh = COUNT( implicit_flag )
 
   END SUBROUTINE init_problem_param
@@ -158,7 +159,7 @@ CONTAINS
        IF ( temperature_flag ) THEN
 
           T =  DSQRT(2.D0) * h * qj(4) / CDSQRT( h**4 + eps_sing )
-          
+
        END IF
 
     END IF
@@ -242,8 +243,8 @@ CONTAINS
 
     END IF
 
-    vel_min(1:n_eqns) = u_temp - DSQRT( grav * h_temp )
-    vel_max(1:n_eqns) = u_temp + DSQRT( grav * h_temp )
+    vel_min(1:n_eqns) = REAL(u_temp) - DSQRT( grav * REAL(h_temp) )
+    vel_max(1:n_eqns) = REAL(u_temp) + DSQRT( grav * REAL(h_temp) )
 
   END SUBROUTINE eval_local_speeds2_x
 
@@ -277,8 +278,8 @@ CONTAINS
 
     END IF
 
-    vel_min(1:n_eqns) = vel_temp - DSQRT( grav * h_temp )
-    vel_max(1:n_eqns) = vel_temp + DSQRT( grav * h_temp )
+    vel_min(1:n_eqns) = REAL(vel_temp) - DSQRT( grav * REAL(h_temp) )
+    vel_max(1:n_eqns) = REAL(vel_temp) + DSQRT( grav * REAL(h_temp) )
 
   END SUBROUTINE eval_local_speeds2_y
 
@@ -626,7 +627,20 @@ CONTAINS
 
     REAL*8 :: h_threshold
 
-    h_threshold = 0.D0
+    IF ( temperature_flag ) THEN
+
+       IF ( ( thermal_conductivity .GT. 0.D0 ) .OR. ( emme .GT. 0.D0 ) ) THEN
+
+          h_threshold = 1.D-2
+
+       ELSE
+
+          h_threshold = 0.D0
+
+       END IF
+       
+    END IF
+       
 
     IF ( present(c_qj) .AND. present(c_nh_term_impl) ) THEN
 
@@ -693,16 +707,8 @@ CONTAINS
           IF ( REAL(h) .GT. h_threshold ) THEN
     
              ! Equation 6 from Costa & Macedonio, 2005
-             IF ( REAL(T) .GE. T_ground ) THEN
-
-                gamma = 3.D0 * nu_ref / h * CDEXP( - visc_par * ( T - T_ref ) )
+             gamma = 3.D0 * nu_ref / h * CDEXP( - visc_par * ( T - T_ref ) )
              
-             ELSE
-
-                gamma = 3.D0 * nu_ref / h * DEXP( - visc_par * ( T_ground - T_ref ) )
-
-             END IF
-
              ! Equation 10 from Costa & Macedonio, 2005
              visc_heat_coeff = emme * mu_ref / ( rho * c_p * h ) 
 
@@ -712,6 +718,13 @@ CONTAINS
            
              visc_heat_coeff =  DCMPLX(0.D0,0.D0)
 
+             ! Equation 6 from Costa & Macedonio, 2005
+             gamma = 3.D0 * nu_ref / h_threshold * CDEXP( - visc_par * ( T - T_ref ) )
+             
+             ! Equation 10 from Costa & Macedonio, 2005
+             visc_heat_coeff = emme * mu_ref / ( rho * c_p * h_threshold ) 
+
+  
           END IF
    
           IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
@@ -722,19 +735,10 @@ CONTAINS
              ! Last R.H.S. term in equation 3 from Costa & Macedonio, 2005
              forces_term(3) = forces_term(3) - gamma * v
 
+             ! Viscous heating
              ! Last R.H.S. term in equation 4 from Costa & Macedonio, 2005
-             IF ( REAL(T) .GE. T_ground ) THEN
-
-                forces_term(4) = forces_term(4) + visc_heat_coeff * ( u**2+v**2 )  &
-                     * CDEXP( -visc_par * ( T - T_ref ) ) 
-
-             ELSE
-
-                forces_term(4) = forces_term(4) + visc_heat_coeff * ( u**2+v**2 )  &
-                     * DEXP( -visc_par * ( T_ground - T_ref ) ) 
-
-             END IF
-
+             forces_term(4) = forces_term(4) + visc_heat_coeff * ( u**2+v**2 )  &
+                  * CDEXP( - visc_par * ( T - T_ref ) ) 
 
           ENDIF
           
@@ -746,7 +750,7 @@ CONTAINS
 
        CALL phys_var(Bj,c_qj = qj)
 
-       IF ( REAL(h) .GT. h_threshold ) THEN
+       IF ( REAL(h) .GT. 0.d0 ) THEN
 
           ! Equation 8 from Costa & Macedonio, 2005
           radiative_coeff = emissivity * SBconst * exp_area_fract / ( rho * c_p )
@@ -760,7 +764,7 @@ CONTAINS
        ! First R.H.S. term in equation 4 from Costa & Macedonio, 2005
        radiative_term = - radiative_coeff * ( T**4 - T_env**4 )
 
-       IF ( REAL(h) .GT. h_threshold ) THEN
+       IF ( REAL(h) .GT. 0.d0 ) THEN
        
           ! Equation 9 from Costa & Macedonio, 2005
           convective_coeff = atm_heat_transf_coeff * exp_area_fract             &
@@ -782,15 +786,10 @@ CONTAINS
           ! Equation 7 from Costa & Macedonio, 2005
           conductive_coeff = enne * thermal_diffusivity / h
 
-          IF ( REAL(T) .LT. T_ground ) THEN
-
-             thermal_diffusivity = 1.D5 * thermal_diffusivity
-
-          END IF
-
        ELSE
 
           conductive_coeff =  DCMPLX(0.D0,0.D0)
+          conductive_coeff = enne * thermal_diffusivity / DCMPLX(h_threshold,0.D0)
 
        END IF
 
