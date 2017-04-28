@@ -327,7 +327,7 @@ CONTAINS
           DO k=1,comp_cells_y
 
              B_cent(j,k) = 0.25D0 * ( B_stag_x(j,k) + B_stag_x(j+1,k) +      &
-                  B_stag_y(j,k+1) + B_stag_y(j,k+1) )
+                  B_stag_y(j,k) + B_stag_y(j,k+1) )
              
              B_prime_x(j,k) = ( B_stag_x(j+1,k) - B_stag_x(j,k) ) /          &
                   (  x_stag(j+1) - x_stag(j) )
