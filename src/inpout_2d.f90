@@ -1140,7 +1140,7 @@ CONTAINS
 
        DO j=2,n_topography_profile_x 
 
-          topography_profile(1,j,:) = topography_profile(1,j-1,:) + cellsize
+          topography_profile(1,j,:) = xllcorner + (j-1) * cellsize
 
        ENDDO
 
@@ -1148,7 +1148,7 @@ CONTAINS
 
        DO k=2,n_topography_profile_y
 
-          topography_profile(2,:,k) = topography_profile(2,:,k-1) + cellsize
+          topography_profile(2,:,k) = yllcorner + (k-1) * cellsize
 
        ENDDO
 

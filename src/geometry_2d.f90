@@ -235,8 +235,8 @@ CONTAINS
 
              ENDIF
 
-             B_stag_x(j+1,k)=0.5*(B_ver(j+1,k+1)+B_ver(j+1,k))
-             B_stag_y(j,k+1)=0.5*(B_ver(j+1,k+1)+B_ver(j,k+1))
+             B_stag_x(j+1,k) = 0.5D0 * (B_ver(j+1,k+1)+B_ver(j+1,k))
+             B_stag_y(j,k+1) = 0.5D0 * (B_ver(j+1,k+1)+B_ver(j,k+1))
 
              B_cent(j,k) = 0.25 * ( B_stag_x(j,k) + B_stag_x(j+1,k)             &
                   + B_stag_y(j,k) + B_stag_y(j,k+1) )
@@ -266,53 +266,74 @@ CONTAINS
     ! topography from larger dem
     ELSE
 
-       DO j=0,comp_cells_x
+       DO j=1,comp_interfaces_x
 
-          IF ( j.GT.0 ) THEN
+          x_stag(j) = x0 + (j-1) * dx
 
-             x_stag(j+1) = x_stag(j) + dx
+       END DO
+          
+       DO k=1,comp_interfaces_y
 
-             x_comp(j) = 0.5 * ( x_stag(j) + x_stag(j+1) )
+          y_stag(k) = y0 + (k-1) * dy
+          
+       END DO
 
-          ENDIF
+       DO j=1,comp_cells_x
 
-          DO k=0,comp_cells_y
+          x_comp(j) = 0.5D0 * ( x_stag(j) + x_stag(j+1) )
 
-             IF(k.GT.0)THEN
+       END DO
 
-                y_stag(k+1) = y_stag(k) + dy
+       DO k=1,comp_cells_y
 
-                y_comp(k) = 0.5D0 * ( y_stag(k) + y_stag(k+1) )
+          y_comp(k) = 0.5D0 * ( y_stag(k) + y_stag(k+1) )
 
-             ENDIF
+       END DO
+
+       DO j=1,comp_interfaces_x
+          
+          DO k=1,comp_interfaces_y
 
              CALL interp_2d_scalar( topography_profile(1,:,:) ,                 &
                   topography_profile(2,:,:), topography_profile(3,:,:) ,        &
-                  x_stag(j+1), y_stag(k+1) , B_ver(j+1,k+1) )
+                  x_stag(j), y_stag(k) , B_ver(j,k) )
 
-             IF(k.GT.0)THEN
+          END DO
 
-                B_stag_x(j+1,k)=0.5D0 * (B_ver(j+1,k+1)+B_ver(j+1,k))
+       END DO
+       
+       DO j=1,comp_cells_x
+          
+          DO k=1,comp_interfaces_y
+             
+             B_stag_y(j,k) = 0.5D0 * ( B_ver(j+1,k) + B_ver(j,k) )
+             
+          END DO
+          
+       END DO
+       
+       DO j=1,comp_interfaces_x
+          
+          DO k=1,comp_cells_y
+             
+             B_stag_x(j,k) = 0.5D0 * (B_ver(j,k+1)+B_ver(j,k))
+             
+          END DO
+          
+       END DO
 
-             ENDIF
+       DO j=1,comp_cells_x
+          
+          DO k=1,comp_cells_y
 
-             IF(j.GT.0)THEN
+             B_cent(j,k) = 0.25D0 * ( B_stag_x(j,k) + B_stag_x(j+1,k) +      &
+                  B_stag_y(j,k+1) + B_stag_y(j,k+1) )
+             
+             B_prime_x(j,k) = ( B_stag_x(j+1,k) - B_stag_x(j,k) ) /          &
+                  (  x_stag(j+1) - x_stag(j) )
 
-                B_stag_y(j,k+1)=0.5D0 * (B_ver(j+1,k+1)+B_ver(j,k+1))
-
-             ENDIF
-
-             IF( ( j.GT.0 ).AND.( k.GT.0 ) ) THEN
-
-                B_cent(j,k) = 0.25D0 * ( B_stag_x(j,k) + B_stag_x(j+1,k) +      &
-                     B_stag_y(j,k) + B_stag_y(j,k+1) )
-
-                B_prime_x(j,k) = ( B_stag_x(j+1,k) - B_stag_x(j,k) ) /          &
-                     (  x_stag(j+1) - x_stag(j) )
-                B_prime_y(j,k) = ( B_stag_y(j,k+1) - B_stag_y(j,k) ) /          &
-                     (  y_stag(k+1) - y_stag(k) )
-
-             ENDIF
+             B_prime_y(j,k) = ( B_stag_y(j,k+1) - B_stag_y(j,k) ) /          &
+                  (  y_stag(k+1) - y_stag(k) )
 
           END DO
 
@@ -411,66 +432,20 @@ CONTAINS
     REAL*8, INTENT(IN) :: x2, y2
     REAL*8, INTENT(OUT) :: f2
 
-    INTEGER :: n, m, n1x, n2x
-    REAL*8 :: p,q
+    INTEGER :: ix , iy
+    REAL*8 :: alfa_x , alfa_y
+    
+    ix = FLOOR( ( x2 - x1(1,1) ) / ( x1(2,1) - x1(1,1) ) ) + 1
+    iy = FLOOR( ( y2 - y1(1,1) ) / ( y1(1,2) - y1(1,1) ) ) + 1
 
-    n1x = SIZE(x1,1)
-    n2x = SIZE(x1,2)
+    ix = MIN( ix , SIZE(x1,1)-1 )
+    iy = MIN( iy , SIZE(x1,2)-1 )
 
-    IF ( n1x .EQ. 1 ) THEN 
-
-       n = 1
-
-    ELSE
-
-       n=2
-       
-       DO WHILE (x2.GT.x1(n,1))
-          
-          n=n+1
-          
-       ENDDO
-       
-    END IF
-
-    IF ( n2x .EQ. 1 ) THEN
-
-       m = 1
-
-    ELSE
-
-       m=2
-       
-       DO WHILE (y2.GT.y1(1,m))
-          
-          m=m+1
-          
-       ENDDO
-
-    END IF
-       
-    IF ( n1x .EQ. 1 ) THEN
-
-       q = ( y2-y1(n,m-1) ) / ( y1(n,m) - y1(n,m-1) )
-       
-       f2 = ( 1.d0 - q ) * f1(1,m-1) + q * f1(1,m)
-       
-    ELSEIF ( n2x .EQ. 1 ) THEN
-
-       p = ( x2-x1(n-1,m) ) / ( x1(n,m) - x1(n-1,m) )
-       
-       f2 = ( 1.d0 - p ) * f1(n-1,1) + p * f1(n,1)
-       
-    ELSE
-      
-       p = ( x2-x1(n-1,m) ) / ( x1(n,m) - x1(n-1,m) )
-       
-       q = ( y2-y1(n,m-1) ) / ( y1(n,m) - y1(n,m-1) )
-       
-       f2 = ( 1.d0 - q ) * ( ( 1.d0 - p ) * f1(n-1,m-1) + p * f1(n,m-1) ) +        &
-            q * ( ( 1.d0 - p ) * f1(n-1,m) + p * f1(n,m) )
-       
-    END IF
+    alfa_x = ( x1(ix+1,1) - x2 ) / (  x1(ix+1,1) - x1(ix,1) )
+    alfa_y = ( y1(1,iy+1) - y2 ) / (  y1(1,iy+1) - y1(1,iy) )
+    
+    f2 = alfa_x * ( alfa_y * f1(ix,iy) + ( 1.D0 - alfa_y ) * f1(ix,iy+1) )  &
+         + ( 1.D0 - alfa_x ) *  ( alfa_y * f1(ix+1,iy) + ( 1.D0 - alfa_y ) * f1(ix+1,iy+1) )
 
   END SUBROUTINE interp_2d_scalar
 

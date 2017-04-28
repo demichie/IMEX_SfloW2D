@@ -611,8 +611,6 @@ CONTAINS
     
     COMPLEX*16 :: gamma
 
-    COMPLEX*16 :: visc_heat_coeff
-
     REAL*8 :: radiative_coeff
 
     COMPLEX*16 :: radiative_term
@@ -631,7 +629,7 @@ CONTAINS
 
        IF ( ( thermal_conductivity .GT. 0.D0 ) .OR. ( emme .GT. 0.D0 ) ) THEN
 
-          h_threshold = 1.D-2
+          h_threshold = 1.D-10
 
        ELSE
 
@@ -708,23 +706,12 @@ CONTAINS
     
              ! Equation 6 from Costa & Macedonio, 2005
              gamma = 3.D0 * nu_ref / h * CDEXP( - visc_par * ( T - T_ref ) )
-             
-             ! Equation 10 from Costa & Macedonio, 2005
-             visc_heat_coeff = emme * mu_ref / ( rho * c_p * h ) 
 
           ELSE
-
-             gamma =  DCMPLX(0.D0,0.D0)
-           
-             visc_heat_coeff =  DCMPLX(0.D0,0.D0)
 
              ! Equation 6 from Costa & Macedonio, 2005
              gamma = 3.D0 * nu_ref / h_threshold * CDEXP( - visc_par * ( T - T_ref ) )
              
-             ! Equation 10 from Costa & Macedonio, 2005
-             visc_heat_coeff = emme * mu_ref / ( rho * c_p * h_threshold ) 
-
-  
           END IF
    
           IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
@@ -734,11 +721,6 @@ CONTAINS
           
              ! Last R.H.S. term in equation 3 from Costa & Macedonio, 2005
              forces_term(3) = forces_term(3) - gamma * v
-
-             ! Viscous heating
-             ! Last R.H.S. term in equation 4 from Costa & Macedonio, 2005
-             forces_term(4) = forces_term(4) + visc_heat_coeff * ( u**2+v**2 )  &
-                  * CDEXP( - visc_par * ( T - T_ref ) ) 
 
           ENDIF
           
@@ -761,8 +743,16 @@ CONTAINS
 
        END IF
 
-       ! First R.H.S. term in equation 4 from Costa & Macedonio, 2005
-       radiative_term = - radiative_coeff * ( T**4 - T_env**4 )
+       IF ( REAL(T) .GT. T_env ) THEN
+
+          ! First R.H.S. term in equation 4 from Costa & Macedonio, 2005
+          radiative_term = - radiative_coeff * ( T**4 - T_env**4 )
+
+       ELSE
+
+          radiative_term = DCMPLX(0.D0,0.D0)
+
+       END IF
 
        IF ( REAL(h) .GT. 0.d0 ) THEN
        
@@ -776,8 +766,16 @@ CONTAINS
 
        END IF
 
-       ! Second R.H.S. term in equation 4 from Costa & Macedonio, 2005
-       convective_term = - convective_coeff * ( T - T_env )
+       IF ( REAL(T) .GT. T_env ) THEN
+
+          ! Second R.H.S. term in equation 4 from Costa & Macedonio, 2005
+          convective_term = - convective_coeff * ( T - T_env )
+
+       ELSE
+
+          convective_term =  DCMPLX(0.D0,0.D0)
+
+       END IF
 
        IF ( REAL(h) .GT. h_threshold ) THEN
     
@@ -794,7 +792,15 @@ CONTAINS
        END IF
 
        ! Third R.H.S. term in equation 4 from Costa & Macedonio, 2005
-       conductive_term = - conductive_coeff * ( T - T_ground )
+       IF ( REAL(T) .GT. T_ground ) THEN
+
+          conductive_term = - conductive_coeff * ( T - T_ground )
+
+       ELSE
+
+           conductive_term = DCMPLX(0.D0,0.D0)
+
+        END IF
 
        relaxation_term(4) = radiative_term + convective_term + conductive_term
 
@@ -840,20 +846,39 @@ CONTAINS
     REAL*8, INTENT(IN) :: qj(n_eqns)                 !< conservative variables 
     REAL*8, INTENT(OUT) :: expl_term(n_eqns)         !< explicit forces 
 
+    REAL*8 :: visc_heat_coeff
+
     expl_term(1:n_eqns) = 0.D0
 
     CALL phys_var(Bj,r_qj = qj)
 
     IF ( source_flag ) expl_term(1) = - source_xy * vel_source
     
-    expl_term(2) = grav * h * Bprimej_x
+    expl_term(2) = grav * REAL(h) * Bprimej_x
    
-    expl_term(3) = grav * h * Bprimej_y
+    expl_term(3) = grav * REAL(h) * Bprimej_y
 
     IF ( temperature_flag .AND. source_flag ) THEN
     
        expl_term(4) = - source_xy * vel_source * T_source
 
+       ! Equation 10 from Costa & Macedonio, 2005
+
+       IF ( REAL(h) .GT. 0.D0 ) THEN
+
+          visc_heat_coeff = emme * mu_ref / ( rho * c_p * h ) 
+
+       ELSE
+
+          visc_heat_coeff = 0.D0
+
+       END IF
+
+       ! Viscous heating
+       ! Last R.H.S. term in equation 4 from Costa & Macedonio, 2005
+       expl_term(4) = expl_term(4) - visc_heat_coeff * ( u**2+v**2 )  &
+            * CDEXP( - visc_par * ( T - T_ref ) ) 
+       
     END IF
            
   END SUBROUTINE eval_expl_terms

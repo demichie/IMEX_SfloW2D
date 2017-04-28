@@ -2288,7 +2288,7 @@ CONTAINS
 
        ! van_leer
 
-       slope_lim = minmod( 0.5D0*c , theta * minmod( a , b ) )
+       slope_lim = minmod( c , theta * minmod( a , b ) )
 
     END SELECT
 
@@ -2310,7 +2310,7 @@ CONTAINS
        sa = a / ABS(a)
        sb = b / ABS(b)
 
-       minmod = 0.5 * ( sa+sb ) * MIN( ABS(a) , ABS(b) )
+       minmod = 0.5D0 * ( sa+sb ) * MIN( ABS(a) , ABS(b) )
 
     END IF
 
@@ -2331,7 +2331,7 @@ CONTAINS
        sa = a / ABS(a)
        sb = b / ABS(b)
 
-       maxmod = 0.5 * ( sa+sb ) * MAX( ABS(a) , ABS(b) )
+       maxmod = 0.5D0 * ( sa+sb ) * MAX( ABS(a) , ABS(b) )
 
     END IF
 
