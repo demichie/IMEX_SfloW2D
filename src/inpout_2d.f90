@@ -1759,7 +1759,8 @@ CONTAINS
     END IF
     
     idx_string = lettera(output_idx-1)
-    
+
+    !Save thickness
     output_esri_file = TRIM(run_name)//'_'//idx_string//'.asc'
 
     WRITE(*,*) 'WRITING ',output_esri_file
@@ -1788,6 +1789,41 @@ CONTAINS
     ENDDO
     
     CLOSE(output_esri_unit)
+
+    IF ( temperature_flag ) THEN
+
+       !Save temperature
+       output_esri_file = TRIM(run_name)//'_T_'//idx_string//'.asc'
+       
+       WRITE(*,*) 'WRITING ',output_esri_file
+       
+       OPEN(output_esri_unit,FILE=output_esri_file,status='unknown',form='formatted')
+       
+       grid_output = -9999 
+       
+       WHERE ( q(1,:,:) - B_cent(:,:) .GE. 1.D-5 )
+          
+          grid_output = q(4,:,:) / ( q(1,:,:) - B_cent(:,:) )
+          
+       END WHERE
+
+       WRITE(output_esri_unit,'(A,I5)') 'ncols ', comp_cells_x
+       WRITE(output_esri_unit,'(A,I5)') 'nrows ', comp_cells_y
+       WRITE(output_esri_unit,'(A,F15.3)') 'xllcorner ', x0 + 0.5D0 * dx
+       WRITE(output_esri_unit,'(A,F15.3)') 'yllcorner ', y0 + 0.5D0 * dy
+       WRITE(output_esri_unit,'(A,F15.3)') 'cellsize ', cell_size
+       WRITE(output_esri_unit,'(A,I5)') 'NODATA_value ', -9999
+       
+       DO j = comp_cells_y,1,-1
+          
+          WRITE(output_esri_unit,*) grid_output(1:comp_cells_x,j)
+          
+       ENDDO
+       
+       CLOSE(output_esri_unit)
+
+    END IF
+       
     
   END SUBROUTINE output_esri
 
