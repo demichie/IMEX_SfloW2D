@@ -145,7 +145,7 @@ MODULE inpout_2d
        hv_bcW , T_bcW
 
   NAMELIST / east_boundary_conditions / hB_bcE , u_bcE , v_bcE , hu_bcE ,       &
-       v_bcE , T_bcE
+       hv_bcE , T_bcE
 
   NAMELIST / south_boundary_conditions / hB_bcS , u_bcS , v_bcS , hu_bcS ,      &
        hv_bcS , T_bcS

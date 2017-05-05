@@ -780,7 +780,6 @@ CONTAINS
                 q(2:n_vars,j,k) = 0.D0
                 
              ELSE
-
                 
                 WRITE(*,*) 'j,k',j,k
                 

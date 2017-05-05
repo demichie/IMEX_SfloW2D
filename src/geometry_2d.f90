@@ -127,8 +127,8 @@ CONTAINS
     xN = x0 + comp_cells_x * dx
     yN = y0 + comp_cells_y * dy
 
-    dx2 = dx/2.d0
-    dy2 = dy/2.d0
+    dx2 = dx / 2.d0
+    dy2 = dy / 2.d0
 
     ! eps_sing = MIN( dx ** 4.D0,dy ** 4.D0 )
     eps_sing=MIN(MIN( dx ** 4.D0,dy ** 4.D0 ),1.d-20)
