@@ -64,10 +64,9 @@
  GRAV= 2.D0     ,
  /
 &RHEOLOGY_PARAMETERS
- RHEOLOGY_MODEL = 3 ,
- rho = 2500.D0 ,
+ rheology_model = 3 ,
  T_ref = 1300.D0 ,
- mu_ref = 1.0D+2 ,   
+ mu_ref = 0.04D0 ,   
  visc_par = 0.02D0 ,
  /
 &TEMPERATURE_PARAMETERS
@@ -80,5 +79,6 @@
  T_env = 300.0D0 ,
  T_ground = 1200.0D0 ,
  c_p = 1200.D0 ,
+ rho = 2500.D0 ,
  /
     

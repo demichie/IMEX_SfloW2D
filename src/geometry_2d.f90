@@ -130,8 +130,8 @@ CONTAINS
     dx2 = dx/2.d0
     dy2 = dy/2.d0
 
-    !eps_sing = MIN( dx ** 4.D0,dy ** 4.D0 )
-    eps_sing=MIN(MIN( dx ** 4.D0,dy ** 4.D0 ),1.d-16)
+    ! eps_sing = MIN( dx ** 4.D0,dy ** 4.D0 )
+    eps_sing=MIN(MIN( dx ** 4.D0,dy ** 4.D0 ),1.d-20)
 
     IF ( verbose_level .GE. 1 ) WRITE(*,*) 'eps_sing = ',eps_sing
 
@@ -316,7 +316,7 @@ CONTAINS
           
           DO k=1,comp_cells_y
              
-             B_stag_x(j,k) = 0.5D0 * (B_ver(j,k+1)+B_ver(j,k))
+             B_stag_x(j,k) = 0.5D0 * ( B_ver(j,k+1) + B_ver(j,k) )
              
           END DO
           
@@ -444,8 +444,9 @@ CONTAINS
     alfa_x = ( x1(ix+1,1) - x2 ) / (  x1(ix+1,1) - x1(ix,1) )
     alfa_y = ( y1(1,iy+1) - y2 ) / (  y1(1,iy+1) - y1(1,iy) )
     
-    f2 = alfa_x * ( alfa_y * f1(ix,iy) + ( 1.D0 - alfa_y ) * f1(ix,iy+1) )  &
-         + ( 1.D0 - alfa_x ) *  ( alfa_y * f1(ix+1,iy) + ( 1.D0 - alfa_y ) * f1(ix+1,iy+1) )
+    f2 = alfa_x * ( alfa_y * f1(ix,iy) + ( 1.D0 - alfa_y ) * f1(ix,iy+1) )      &
+         + ( 1.D0 - alfa_x ) *  ( alfa_y * f1(ix+1,iy) + ( 1.D0 - alfa_y )      &
+         * f1(ix+1,iy+1) )
 
   END SUBROUTINE interp_2d_scalar
 
