@@ -248,33 +248,78 @@ CONTAINS
   SUBROUTINE init_source
 
     USE geometry_2d, ONLY : x_comp , comp_cells_x, y_comp , comp_cells_y
-
+    USE geometry_2d, ONLY : dx , dy
+    
     USE parameters_2d, ONLY : x_source , y_source , r_source
+    USE parameters_2d, ONLY : vfr_source , vel_source
 
     USE solver_2d, ONLY : source_xy
     
     IMPLICIT NONE
 
-    INTEGER :: j,k          !< loop counter
+    INTEGER :: h,j,k          !< loop counter
+    
+    REAL*8, ALLOCATABLE :: x_subgrid(:) , y_subgrid(:)
+    INTEGER, ALLOCATABLE :: check_subgrid(:)
 
+    INTEGER n_points , n_points2
+    
+    
+    n_points = 200
+    n_points2 = n_points**2
+
+    ALLOCATE( x_subgrid(n_points2) )
+    ALLOCATE( y_subgrid(n_points2) )
+    ALLOCATE( check_subgrid(n_points2) )
+
+    x_subgrid = 0.D0
+    y_subgrid = 0.D0
+    
+    DO h = 1,n_points
+
+       x_subgrid(h:n_points2:n_points) = h
+       y_subgrid((h-1)*n_points+1:h*n_points) = h
+
+    END DO
+
+    x_subgrid = x_subgrid / ( n_points +1 )
+    y_subgrid = y_subgrid / ( n_points +1 )
+    
+    x_subgrid = ( x_subgrid - 0.5D0 ) * dx
+    y_subgrid = ( y_subgrid - 0.5D0 ) * dy
+    
     source_xy(:,:) = 0.D0
-
+    
     DO j=1,comp_cells_x
 
       DO k=1,comp_cells_y
 
-         IF ( ( x_comp(j) - x_source )**2 + ( y_comp(k) - y_source )**2 .LE.    &
-              r_source**2 ) THEN
-
-            source_xy(j,k) = 1.D0 
+         check_subgrid = 0
          
-         END IF
+         WHERE ( ( x_comp(j) + x_subgrid - x_source )**2                        &
+              + ( y_comp(k) + y_subgrid - y_source )**2 < r_source**2 )
+         
+            check_subgrid = 1
 
+         END WHERE
+
+         ! WRITE(*,*) x_comp(j),y_comp(k),REAL(SUM(check_subgrid))/10201.D0
+
+         source_xy(j,k) = REAL(SUM(check_subgrid))/n_points2
+         
       ENDDO
 
     ENDDO
-    
 
+    WRITE(*,*) 'Source area =',dx*dy*SUM(source_xy),' Error =',ABS( 1.D0 -      &
+         dx*dy*SUM(source_xy) / ( 4.D0*ATAN(1.D0)*r_source**2 ) )
+
+    vel_source = vfr_source / dx*dy*SUM(source_xy)
+
+    WRITE(*,*) 'Vel source =',vel_source
+    
+    READ(*,*)
+    
   END SUBROUTINE init_source
   
   !******************************************************************************
@@ -297,7 +342,7 @@ CONTAINS
     REAL*8, INTENT(IN) :: x,y
     REAL*8, INTENT(IN) :: Bj
     
-    REAL*8, PARAMETER :: pig = 4.0*ATAN(1.0)
+    REAL*8, PARAMETER :: pig = 4.D0*ATAN(1.D0)
     REAL*8 :: R
 
     ! example 1D from Kurganov and Petrova 2007    

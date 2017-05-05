@@ -42,11 +42,11 @@ MODULE inpout_2d
 
   ! -- Variables for the namelist NUMERIC_PARAMETERS
   USE parameters_2d, ONLY : solver_scheme, max_dt , cfl, limiter , theta,       &
-       reconstr_coeff , interfaces_relaxation , n_RK   
+       reconstr_variables , reconstr_coeff , interfaces_relaxation , n_RK   
 
   ! -- Variables for the namelist EXPL_TERMS_PARAMETERS
   USE constitutive_2d, ONLY : grav
-  USE parameters_2d, ONLY : x_source , y_source , r_source , vel_source ,       &
+  USE parameters_2d, ONLY : x_source , y_source , r_source , vfr_source ,       &
        T_source
   
   ! -- Variables for the namelist TEMPERATURE_PARAMETERS
@@ -55,7 +55,7 @@ MODULE inpout_2d
     
   ! -- Variables for the namelist RHEOLOGY_PARAMETERS
   USE parameters_2d, ONLY : rheology_model
-  USE constitutive_2d, ONLY : mu , xi , tau , mu_ref , visc_par , T_ref , rho
+  USE constitutive_2d, ONLY : mu , xi , tau , nu_ref , visc_par , T_ref
 
   IMPLICIT NONE
 
@@ -105,16 +105,16 @@ MODULE inpout_2d
   LOGICAL :: output_cons_flag
 
   ! -- Variables for the namelists WEST_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcW , u_bcW , v_bcW , T_bcW
+  TYPE(bc) :: hB_bcW , u_bcW , v_bcW ,  hu_bcW , hv_bcW , T_bcW
 
   ! -- Variables for the namelists EAST_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcE , u_bcE , v_bcE , T_bcE
+  TYPE(bc) :: hB_bcE , u_bcE , v_bcE , hu_bcE , hv_bcE , T_bcE
 
   ! -- Variables for the namelists SOUTH_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcS , u_bcS , v_bcS , T_bcS
+  TYPE(bc) :: hB_bcS , u_bcS , v_bcS , hu_bcS , hv_bcS , T_bcS
 
   ! -- Variables for the namelists NORTH_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcN , u_bcN , v_bcN , T_bcN
+  TYPE(bc) :: hB_bcN , u_bcN , v_bcN , hu_bcN , hv_bcN , T_bcN
 
 
   ! parameters to read a dem file
@@ -141,27 +141,31 @@ MODULE inpout_2d
 
   NAMELIST / right_state / hB_E , u_E , v_E , T_E
 
-  NAMELIST / west_boundary_conditions / hB_bcW , u_bcW , v_bcW , T_bcW
+  NAMELIST / west_boundary_conditions / hB_bcW , u_bcW , v_bcW , hu_bcW ,       &
+       hv_bcW , T_bcW
 
-  NAMELIST / east_boundary_conditions / hB_bcE , u_bcE , v_bcE , T_bcE
+  NAMELIST / east_boundary_conditions / hB_bcE , u_bcE , v_bcE , hu_bcE ,       &
+       v_bcE , T_bcE
 
-  NAMELIST / south_boundary_conditions / hB_bcS , u_bcS , v_bcS , T_bcS
+  NAMELIST / south_boundary_conditions / hB_bcS , u_bcS , v_bcS , hu_bcS ,      &
+       hv_bcS , T_bcS
 
-  NAMELIST / north_boundary_conditions / hB_bcN , u_bcN , v_bcN , T_bcN
+  NAMELIST / north_boundary_conditions / hB_bcN , u_bcN , v_bcN , hu_bcN ,      &
+       hv_bcN , T_bcN
 
   NAMELIST / numeric_parameters / solver_scheme, max_dt , cfl, limiter , theta, &
-       reconstr_coeff , interfaces_relaxation , n_RK   
+       reconstr_variables , reconstr_coeff , interfaces_relaxation , n_RK   
 
   NAMELIST / expl_terms_parameters / grav , x_source , y_source , r_source ,    &
-       vel_source , T_source
+       vfr_source , T_source
  
 
   NAMELIST / temperature_parameters / emissivity ,  atm_heat_transf_coeff ,     &
        thermal_conductivity , exp_area_fract , c_p , enne , emme , T_env ,      &
-       T_ground
+       T_ground , rho
 
-  NAMELIST / rheology_parameters / rheology_model , mu , xi , tau , mu_ref ,    &
-       visc_par , T_ref , rho
+  NAMELIST / rheology_parameters / rheology_model , mu , xi , tau , nu_ref ,    &
+       visc_par , T_ref
 
 
 CONTAINS
@@ -236,7 +240,8 @@ CONTAINS
     hB_bcW%value = 0.d0 
 
     u_bcW%flag = 1 
-    u_bcW%value = 0.d0 
+    u_bcW%value = 0.d0
+    
     v_bcW%flag = 1 
     v_bcW%value = 0.d0 
 
@@ -245,7 +250,8 @@ CONTAINS
     hB_bcE%value = 0.d0 
 
     u_bcE%flag = 1 
-    u_bcE%value = 0.d0 
+    u_bcE%value = 0.d0
+    
     v_bcE%flag = 1 
     v_bcE%value = 0.d0 
 
@@ -254,7 +260,8 @@ CONTAINS
     hB_bcS%value = 0.d0 
 
     u_bcS%flag = 1 
-    u_bcS%value = 0.d0 
+    u_bcS%value = 0.d0
+    
     v_bcS%flag = 1 
     v_bcS%value = 0.d0 
 
@@ -263,7 +270,8 @@ CONTAINS
     hB_bcN%value = 0.d0 
 
     u_bcN%flag = 1 
-    u_bcN%value = 0.d0 
+    u_bcN%value = 0.d0
+    
     v_bcN%flag = 1 
     v_bcN%value = 0.d0 
 
@@ -274,6 +282,7 @@ CONTAINS
     cfl = 0.24
     limiter(1:n_vars) = 0
     theta=1.0
+    reconstr_variables = 'phys'
     reconstr_coeff = 1.0
 
     !-- Inizialization of the Variables for the namelist EXPL_TERMS_PARAMETERS
@@ -281,7 +290,7 @@ CONTAINS
     x_source = 0.D0
     y_source = 0.D0
     r_source = 0.D0
-    vel_source = 0.D0
+    vfr_source = 0.D0
     T_source = 0.D0
 
     !-- Inizialization of the Variables for the namelist TEMPERATURE_PARAMETERS
@@ -289,23 +298,21 @@ CONTAINS
     emissivity = 0.0D0                 ! no radiation to atmosphere
     atm_heat_transf_coeff = 0.0D0      ! no convection to atmosphere
     thermal_conductivity = 0.0D0       ! no conduction to ground
-    mu_ref = 0.0D0                     ! no viscous heating
     enne = 4.0D0
     emme = 12.D0
     T_env = 300.0D0
     T_ground = 1200.0D0
     c_p = 1200.D0
+    rho = 0.D0
     
     !-- Inizialization of the Variables for the namelist RHEOLOGY_PARAMETERS
     rheology_model = 0
+    nu_ref = 0.0D0                     
     mu = 0.D0
     xi = 0.D0
     tau = 0.D0
-    rho = 0.D0
     T_ref = 0.D0
     visc_par = 0.0D0
-    mu_ref = 0.0D0
-
 
     !-------------- Check if input file exists ----------------------------------
     input_file = 'IMEX_SfloW2D.inp'
@@ -320,11 +327,11 @@ CONTAINS
        WRITE(input_unit, newrun_parameters )
        WRITE(input_unit, left_state )
        WRITE(input_unit, right_state )
+       WRITE(input_unit, numeric_parameters )
        WRITE(input_unit, west_boundary_conditions )
        WRITE(input_unit, east_boundary_conditions )
        WRITE(input_unit, south_boundary_conditions )
        WRITE(input_unit, north_boundary_conditions )
-       WRITE(input_unit, numeric_parameters )
        WRITE(input_unit, expl_terms_parameters )
 
        n_topography_profile_x = 2
@@ -599,106 +606,6 @@ CONTAINS
 
     END IF
 
-
-    ! ------- READ boundary_conditions NAMELISTS --------------------------------
-
-    IF ( COMP_CELLS_X .GT. 1 ) THEN
-    
-       ! West boundary conditions
-       READ(input_unit,west_boundary_conditions,IOSTAT=ios)
-       
-       IF ( ios .NE. 0 ) THEN
-          
-          WRITE(*,*) 'IOSTAT=',ios
-          WRITE(*,*) 'ERROR: problem with namelist WEST_BOUNDARY_CONDITIONS'
-          WRITE(*,*) 'Please check the input file'
-          STOP
-          
-       ELSE
-          
-          REWIND(input_unit)
-          
-       END IF
-       
-       bcW(1) = hB_bcW 
-       bcW(2) = u_bcW 
-       bcW(3) = v_bcW 
-       
-       ! East boundary conditions
-       READ(input_unit,east_boundary_conditions,IOSTAT=ios)
-       
-       IF ( ios .NE. 0 ) THEN
-          
-          WRITE(*,*) 'IOSTAT=',ios
-          WRITE(*,*) 'ERROR: problem with namelist EAST_BOUNDARY_CONDITIONS'
-          WRITE(*,*) 'Please check the input file'
-          STOP
-          
-       ELSE
-          
-          REWIND(input_unit)
-          
-       END IF
-       
-       bcE(1) = hB_bcE 
-       bcE(2) = u_bcE 
-       bcE(3) = v_bcE 
-
-    END IF
-
-    IF ( comp_cells_y .GT. 1 ) THEN
-    
-       ! South boundary conditions
-       READ(input_unit,south_boundary_conditions,IOSTAT=ios)
-       
-       IF ( ios .NE. 0 ) THEN
-          
-          WRITE(*,*) 'IOSTAT=',ios
-          WRITE(*,*) 'ERROR: problem with namelist SOUTH_BOUNDARY_CONDITIONS'
-          WRITE(*,*) 'Please check the input file'
-          STOP
-          
-       ELSE
-          
-          REWIND(input_unit)
-          
-       END IF
-       
-       bcS(1) = hB_bcS 
-       bcS(2) = u_bcS 
-       bcS(3) = v_bcS 
-       
-       ! North boundary conditions
-       READ(input_unit,north_boundary_conditions,IOSTAT=ios)
-       
-       IF ( ios .NE. 0 ) THEN
-          
-          WRITE(*,*) 'IOSTAT=',ios
-          WRITE(*,*) 'ERROR: problem with namelist NORTH_BOUNDARY_CONDITIONS'
-          WRITE(*,*) 'Please check the input file'
-          STOP
-          
-       ELSE
-          
-          REWIND(input_unit)
-          
-       END IF
-       
-       bcN(1) = hB_bcN 
-       bcN(2) = u_bcN 
-       bcN(3) = v_bcN 
-
-    END IF
-    
-    IF ( temperature_flag ) THEN
-       
-       bcW(4) = T_bcW
-       bcE(4) = T_bcE
-       bcS(4) = T_bcS
-       bcN(4) = T_bcN
-       
-    END IF
-    
     ! ------- READ numeric_parameters NAMELIST ----------------------------------
 
     READ(input_unit,numeric_parameters)
@@ -762,6 +669,19 @@ CONTAINS
 
     END IF
 
+    IF ( reconstr_variables .EQ. 'phys' ) THEN
+
+       WRITE(*,*) 'Linear reconstruction and boundary conditions to variables:'
+       WRITE(*,*) 'h+B,u,v,T'
+       
+    ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+       WRITE(*,*) 'Linear reconstruction and boundary conditions to variables:'
+       WRITE(*,*) 'h+B,hu,hv,T'
+
+    END IF
+       
+       
     IF ( ( reconstr_coeff .GT. 1.0D0 ) .OR. ( reconstr_coeff .LT. 0.D0 ) ) THEN
 
        WRITE(*,*) 'WARNING: wrong value of reconstr_coeff ',reconstr_coeff
@@ -769,6 +689,146 @@ CONTAINS
        READ(*,*)
 
     END IF
+    
+    ! ------- READ boundary_conditions NAMELISTS --------------------------------
+
+    IF ( COMP_CELLS_X .GT. 1 ) THEN
+    
+       ! West boundary conditions
+       READ(input_unit,west_boundary_conditions,IOSTAT=ios)
+       
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist WEST_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+       
+       bcW(1) = hB_bcW
+
+       IF ( reconstr_variables .EQ. 'phys' ) THEN
+       
+          bcW(2) = u_bcW 
+          bcW(3) = v_bcW 
+
+       ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+          bcW(2) = hu_bcW 
+          bcW(3) = hv_bcW 
+          
+       END IF
+          
+       ! East boundary conditions
+       READ(input_unit,east_boundary_conditions,IOSTAT=ios)
+       
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist EAST_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+       
+       bcE(1) = hB_bcE 
+
+       IF ( reconstr_variables .EQ. 'phys' ) THEN
+
+          bcE(2) = u_bcE 
+          bcE(3) = v_bcE 
+
+       ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+          bcE(2) = hu_bcE 
+          bcE(3) = hv_bcE 
+
+       END IF
+          
+    END IF
+
+    IF ( comp_cells_y .GT. 1 ) THEN
+    
+       ! South boundary conditions
+       READ(input_unit,south_boundary_conditions,IOSTAT=ios)
+       
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist SOUTH_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+       
+       bcS(1) = hB_bcS 
+
+       IF ( reconstr_variables .EQ. 'phys' ) THEN
+
+          bcS(2) = u_bcS 
+          bcS(3) = v_bcS 
+
+       ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+          bcS(2) = hu_bcS 
+          bcS(3) = hv_bcS 
+
+       END IF
+                    
+       ! North boundary conditions
+       READ(input_unit,north_boundary_conditions,IOSTAT=ios)
+       
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist NORTH_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+       
+       bcN(1) = hB_bcN 
+
+       IF ( reconstr_variables .EQ. 'phys' ) THEN
+
+          bcN(2) = u_bcN 
+          bcN(3) = v_bcN 
+
+       ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+          
+          bcN(2) = hu_bcN 
+          bcN(3) = hv_bcN 
+  
+       END IF
+       
+    END IF
+    
+    IF ( temperature_flag ) THEN
+       
+       bcW(4) = T_bcW
+       bcE(4) = T_bcE
+       bcS(4) = T_bcS
+       bcN(4) = T_bcN
+       
+    END IF
+    
 
     ! ------- READ expl_terms_parameters NAMELIST -------------------------------
 
@@ -798,10 +858,10 @@ CONTAINS
 
        END IF
 
-       IF ( vel_source .EQ. 0.D0 ) THEN
+       IF ( vfr_source .EQ. 0.D0 ) THEN
 
           WRITE(*,*) 'ERROR: problem with namelist EXPL_TERMS_PARAMETERS'
-          WRITE(*,*) 'VEL_SOURCE =',vel_source
+          WRITE(*,*) 'VFR_SOURCE =',vfr_source
           WRITE(*,*) 'Please check the input file'
           STOP
 
@@ -857,6 +917,15 @@ CONTAINS
 
        END IF
 
+       IF ( rho .LE. 0.D0 ) THEN
+          
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'RHO =' , rho
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+       
     END IF
 
 
@@ -899,14 +968,12 @@ CONTAINS
              
           END IF
 
-          IF ( ( rho .NE. 0.D0 ) .OR. ( T_ref .NE. 0.D0 ) .OR.                  &
-               ( mu_ref .NE. 0.D0 ) .OR. ( visc_par .NE. 0.D0 ) .OR.            &
-               ( tau .NE. 0.D0 ) ) THEN
+          IF ( ( T_ref .NE. 0.D0 ) .OR. ( nu_ref .NE. 0.D0 ) .OR.               &
+               ( visc_par .NE. 0.D0 ) .OR. ( tau .NE. 0.D0 ) ) THEN
 
              WRITE(*,*) 'WARNING: parameters not used in RHEOLOGY_PARAMETERS'
-             IF ( rho .NE. 0.D0 ) WRITE(*,*) 'rho =',rho 
              IF ( T_ref .NE. 0.D0 ) WRITE(*,*) 'T_ref =',T_ref 
-             IF ( mu_ref .NE. 0.D0 ) WRITE(*,*) 'mu_ref =',mu_ref 
+             IF ( nu_ref .NE. 0.D0 ) WRITE(*,*) 'nu_ref =',nu_ref 
              IF ( visc_par .NE. 0.D0 ) WRITE(*,*) 'visc_par =',visc_par
              IF ( tau .NE. 0.D0 ) WRITE(*,*) 'tau =',tau 
              WRITE(*,*) 'Press ENTER to continue'
@@ -926,14 +993,13 @@ CONTAINS
              
           END IF
           
-          IF ( ( rho .NE. 0.D0 ) .OR. ( T_ref .NE. 0.D0 ) .OR.                  &
-               ( mu_ref .NE. 0.D0 ) .OR. ( visc_par .NE. 0.D0 ) .OR.            &
-               ( mu .NE. 0.D0 ) .OR. ( xi .NE. 0.D0 ) ) THEN
+          IF ( ( T_ref .NE. 0.D0 ) .OR. ( nu_ref .NE. 0.D0 ) .OR.               &
+               ( visc_par .NE. 0.D0 ) .OR. ( mu .NE. 0.D0 ) .OR.                &
+               ( xi .NE. 0.D0 ) ) THEN
 
              WRITE(*,*) 'WARNING: parameters not used in RHEOLOGY_PARAMETERS'
-             IF ( rho .NE. 0.D0 ) WRITE(*,*) 'rho =',rho 
              IF ( T_ref .NE. 0.D0 ) WRITE(*,*) 'T_ref =',T_ref 
-             IF ( mu_ref .NE. 0.D0 ) WRITE(*,*) 'mu_ref =',mu_ref 
+             IF ( nu_ref .NE. 0.D0 ) WRITE(*,*) 'nu_ref =',nu_ref 
              IF ( visc_par .NE. 0.D0 ) WRITE(*,*) 'visc_par =',visc_par
              IF ( mu .NE. 0.D0 ) WRITE(*,*) 'mu =',mu 
              IF ( xi .NE. 0.D0 ) WRITE(*,*) 'xi =',xi
@@ -945,28 +1011,10 @@ CONTAINS
 
        ELSEIF ( rheology_model .EQ. 3 ) THEN
 
-          IF ( mu_ref .LE. 0.D0 ) THEN
+          IF ( nu_ref .LE. 0.D0 ) THEN
              
              WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
-             WRITE(*,*) 'MU_REF =' , mu_ref 
-             WRITE(*,*) 'Please check the input file'
-             STOP
-             
-          END IF
-
-          IF ( T_ref .LE. 0.D0 ) THEN
-             
-             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
-             WRITE(*,*) 'T_REF =' , T_ref 
-             WRITE(*,*) 'Please check the input file'
-             STOP
-             
-          END IF
-
-          IF ( rho .LE. 0.D0 ) THEN
-             
-             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
-             WRITE(*,*) 'RHO =' , rho
+             WRITE(*,*) 'NU_REF =' , nu_ref 
              WRITE(*,*) 'Please check the input file'
              STOP
              
@@ -985,7 +1033,18 @@ CONTAINS
              WRITE(*,*) 'VISC_PAR =' , visc_par
              WRITE(*,*) 'Press ENTER to continue'
              READ(*,*)
-   
+
+          ELSE
+
+             IF ( T_ref .LE. 0.D0 ) THEN
+                
+                WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+                WRITE(*,*) 'T_REF =' , T_ref 
+                WRITE(*,*) 'Please check the input file'
+                STOP
+                
+             END IF
+
           END IF
 
           IF ( ( mu .NE. 0.D0 ) .OR. ( xi .NE. 0.D0 ) .OR. ( tau .NE. 0.D0 ) )  &
@@ -1200,6 +1259,8 @@ CONTAINS
 
     END IF
 
+    WRITE(backup_unit, numeric_parameters )
+
     IF ( comp_cells_x .GT. 1 ) THEN
 
        WRITE(backup_unit,west_boundary_conditions)
@@ -1213,8 +1274,6 @@ CONTAINS
        WRITE(backup_unit,south_boundary_conditions)
 
     END IF
-
-    WRITE(backup_unit, numeric_parameters )
 
     WRITE(backup_unit, expl_terms_parameters )
 

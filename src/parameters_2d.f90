@@ -15,6 +15,8 @@ MODULE parameters_2d
 
   REAL*8 :: eps_sing               !< parameter for desingularization
 
+  CHARACTER(LEN=20) :: reconstr_variables
+  
   REAL*8 :: reconstr_coeff    !< Slope coefficient in the linear reconstruction
 
   !> Flag to add the relaxation terms after the linear reconstruction:\n
@@ -68,6 +70,7 @@ MODULE parameters_2d
   REAL*8 :: x_source
   REAL*8 :: y_source
   REAL*8 :: r_source
+  REAL*8 :: vfr_source
   REAL*8 :: vel_source
   REAL*8 :: T_source
   

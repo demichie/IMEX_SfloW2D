@@ -668,12 +668,23 @@ CONTAINS
 
              IF ( h_new .LT. 0.D0 ) THEN
 
-                WRITE(*,*) 'j,k,h',j,k,h_new,qp(1,j,k),B_cent(j,k)
-                WRITE(*,*) 'dt',dt
+                IF ( DABS(h_new) .LT. 1.D-10 ) THEN
 
-                WRITE(*,*) 
-                READ(*,*) 
+                   q_rk(1,j,k,i_RK) = B_cent(j,k)
+                   q_rk(2:n_vars,j,k,i_RK) = 0.D0
 
+                ELSE
+
+                   WRITE(*,*) 'j,k,h',j,k,h_new,qp(1,j,k),B_cent(j,k)
+                   WRITE(*,*) 'i_RK,dt',i_RK,dt
+                   WRITE(*,*) 'divFluxj(1,1:n_RK)',divFluxj(1,1:n_RK)
+                   WRITE(*,*) 'NHj(1,1:n_RK)',NHj(1,1:n_RK)
+                   WRITE(*,*) 'Expl_terms_j(1,1:n_RK)',Expl_terms_j(1,1:n_RK)
+                   WRITE(*,*) 
+                   READ(*,*) 
+
+                END IF
+                   
              END IF
 
              ! store the non-hyperbolic term for the explicit computations
@@ -761,13 +772,33 @@ CONTAINS
 
           q(1:n_vars,j,k) = q0(1:n_vars,j,k) - dt * residual_term(1:n_vars,j,k)
 
-          IF ( verbose_level .GE. 1 ) THEN
+          IF ( q(1,j,k) .LT. B_cent(j,k) ) THEN
 
-             CALL qc_to_qp(q(1:n_vars,j,k) , B_cent(j,k) , qp(1:n_vars,j,k))
+             IF ( DABS( q(1,j,k)-B_cent(j,k) ) .LT. 1.D-10 ) THEN
+                
+                q(1,j,k) = B_cent(j,k)
+                q(2:n_vars,j,k) = 0.D0
+                
+             ELSE
 
-             WRITE(*,*) 'after imex_RK_solver: qc',q(1:n_vars,j,k)
-             WRITE(*,*) 'after imex_RK_solver: qp',qp(1:n_vars,j,k)
-             READ(*,*)
+                
+                WRITE(*,*) 'j,k',j,k
+                
+                WRITE(*,*) 'before imex_RK_solver: qc',q0(1:n_vars,j,k)
+                CALL qc_to_qp(q0(1:n_vars,j,k) , B_cent(j,k) , qp(1:n_vars,j,k))
+                WRITE(*,*) 'before imex_RK_solver: qp',qp(1:n_vars,j,k)
+                
+                WRITE(*,*) 'divFlux',divFlux(1:n_eqns,j,k,1:n_RK)    
+                WRITE(*,*) 'expl_terms',expl_terms(1:n_eqns,j,k,1:n_RK)
+                WRITE(*,*) 'NH',NH(1:n_eqns,j,k,1:n_RK)
+               
+                CALL qc_to_qp(q(1:n_vars,j,k) , B_cent(j,k) , qp(1:n_vars,j,k))
+                
+                WRITE(*,*) 'after imex_RK_solver: qc',q(1:n_vars,j,k)
+                WRITE(*,*) 'after imex_RK_solver: qp',qp(1:n_vars,j,k)
+                READ(*,*)
+                
+             END IF
 
           END IF
 
@@ -1573,7 +1604,7 @@ CONTAINS
 
           h_new = q_expl(1,j,k) - dt * divFlux(1,j,k) - B_cent(j,k)
 
-          ! IF ( h_new .LT. 0.D0 ) THEN
+          ! IF ( h_new .NE. 0.D0 ) THEN
           IF ( j .EQ. 0 ) THEN
 
              WRITE(*,*) 'j,k,h,divF',j,k,h_new, divFlux(1,j,k)
@@ -1672,7 +1703,7 @@ CONTAINS
 
              ENDDO eqns_loop
 
-             IF ( j .EQ. 0 ) THEN
+             IF ( ( j .EQ. 0 ) .AND. ( k .EQ. 3 ) ) THEN
 
                 WRITE(*,*) 'eval_flux_KT',j,k
                 WRITE(*,*) 'q_interfaceL',q_interfaceL(1:n_vars,j,k)
@@ -1682,7 +1713,6 @@ CONTAINS
                 WRITE(*,*) 'H_interface',H_interface_x(:,j,k)
 
              END IF
-
 
           END DO
 
@@ -1723,6 +1753,19 @@ CONTAINS
 
              END DO
 
+             IF ( ( j .EQ. 0 ) .AND. ( k .EQ. 3 ) ) THEN
+
+                WRITE(*,*) 'eval_flux_KT',j,k
+                WRITE(*,*) 'q_interfaceB',q_interfaceB(1:n_vars,j,k),B_stag_y(j,k)
+                WRITE(*,*) 'fluxB',fluxB
+                WRITE(*,*) 'q_interfaceT',q_interfaceT(1:n_vars,j,k),B_stag_y(j,k)
+                WRITE(*,*) 'fluxT',fluxT
+                WRITE(*,*) 'H_interface_y',H_interface_y(:,j,k)
+                WRITE(*,*) 'flux_avg_y',flux_avg_y(:) 
+
+             END IF
+
+             
           ENDDO
 
        END DO
@@ -1809,8 +1852,8 @@ CONTAINS
   !> \brief Linear reconstruction
   !
   !> In this subroutine a linear reconstruction with slope limiters is
-  !> applied to a set of physical variables describing the state of the
-  !> system (\f$\alpha_1, p_1, p_2, \rho u, w, T \f$).
+  !> applied to a set of variables describing the state of the system, according
+  !> to the input parameter reconstr_variables.
   !> @author 
   !> Mattia de' Michieli Vitturi
   !> \date 15/08/2011
@@ -1820,28 +1863,30 @@ CONTAINS
 
     ! External procedures
     USE constitutive_2d, ONLY : qc_to_qp , qp_to_qc
+    USE constitutive_2d, ONLY : qrec_to_qc
     USE parameters_2d, ONLY : limiter
 
     ! External variables
     USE geometry_2d, ONLY : x_comp , x_stag , y_comp , y_stag , dx , dx2 , dy , &
          dy2
 
-    USE parameters_2d, ONLY : reconstr_coeff
+    USE parameters_2d, ONLY : reconstr_variables , reconstr_coeff
 
     IMPLICIT NONE
 
     REAL*8 :: qc(n_vars)      !< conservative variables
-    REAL*8 :: qpW(n_vars)     !< physical variables at the west edge of the cells
-    REAL*8 :: qpE(n_vars)     !< physical variables at the east edge of the cells
-    REAL*8 :: qpS(n_vars)     !< physical variables at the south edge of the cells
-    REAL*8 :: qpN(n_vars)     !< physical variables at the north edge of the cells
-    REAL*8 :: qp_bdry(n_vars) !< physical variables outside the domain
+    REAL*8 :: qrec(n_vars,comp_cells_x,comp_cells_y) 
+    REAL*8 :: qrecW(n_vars)     !< recons var at the west edge of the cells
+    REAL*8 :: qrecE(n_vars)     !< recons var at the east edge of the cells
+    REAL*8 :: qrecS(n_vars)     !< recons var at the south edge of the cells
+    REAL*8 :: qrecN(n_vars)     !< recons var at the north edge of the cells
+    REAL*8 :: qrec_bdry(n_vars) !< recons variables outside the domain
 
-    REAL*8 :: qp_stencil(3)   !< physical variables stencil for the limiter
+    REAL*8 :: qrec_stencil(3)   !< recons variables stencil for the limiter
     REAL*8 :: x_stencil(3)    !< grid stencil for the limiter
     REAL*8 :: y_stencil(3)    !< grid stencil for the limiter
-    REAL*8 :: qp_prime_x      !< physical variables slope
-    REAL*8 :: qp_prime_y      !< physical variables slope
+    REAL*8 :: qrec_prime_x      !< recons variables slope
+    REAL*8 :: qrec_prime_y      !< recons variables slope
 
     INTEGER :: j,k            !< loop counter (cells)
     INTEGER :: i              !< loop counter (variables)
@@ -1854,8 +1899,16 @@ CONTAINS
 
           qc = q(1:n_vars,j,k)
 
-          CALL qc_to_qp( qc , B_cent(j,k) , qp(1:n_vars,j,k) )
+          IF ( reconstr_variables .EQ. 'phys' ) THEN
+          
+             CALL qc_to_qp( qc , B_cent(j,k) , qrec(1:n_vars,j,k) )
 
+          ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+             qrec(1:n_vars,j,k) = qc
+             
+          END IF
+             
        END DO
 
     ENDDO
@@ -1878,20 +1931,19 @@ CONTAINS
                    x_stencil(1) = x_stag(1)
                    x_stencil(2:3) = x_comp(1:2)
 
-                   qp_stencil(1) = bcW(i)%value
-                   qp_stencil(2:3) = qp(i,1:2,k)
+                   qrec_stencil(1) = bcW(i)%value
+                   qrec_stencil(2:3) = qrec(i,1:2,k)
 
-                   CALL limit( qp_stencil , x_stencil , limiter(i) , qp_prime_x ) 
-
-                   ! WRITE(*,*) 'qp_stencil',j,k,i,qp_stencil,qp_prime_x
+                   CALL limit( qrec_stencil , x_stencil , limiter(i) ,          &
+                        qrec_prime_x ) 
 
                 ELSEIF ( bcW(i)%flag .EQ. 1 ) THEN
 
-                   qp_prime_x = bcW(i)%value
+                   qrec_prime_x = bcW(i)%value
 
                 ELSEIF ( bcW(i)%flag .EQ. 2 ) THEN
 
-                   qp_prime_x = ( qp(i,2,k) - qp(i,1,k) ) / dx
+                   qrec_prime_x = ( qrec(i,2,k) - qrec(i,1,k) ) / dx
 
                 END IF
 
@@ -1900,22 +1952,23 @@ CONTAINS
 
                 IF ( bcE(i)%flag .EQ. 0 ) THEN
 
-                   qp_stencil(3) = bcE(i)%value
-                   qp_stencil(1:2) = qp(i,comp_cells_x-1:comp_cells_x,k)
+                   qrec_stencil(3) = bcE(i)%value
+                   qrec_stencil(1:2) = qrec(i,comp_cells_x-1:comp_cells_x,k)
 
                    x_stencil(3) = x_stag(comp_interfaces_x)
                    x_stencil(1:2) = x_comp(comp_cells_x-1:comp_cells_x)
 
-                   CALL limit( qp_stencil , x_stencil , limiter(i) , qp_prime_x ) 
+                   CALL limit( qrec_stencil , x_stencil , limiter(i) ,          &
+                        qrec_prime_x ) 
 
                 ELSEIF ( bcE(i)%flag .EQ. 1 ) THEN
 
-                   qp_prime_x = bcE(i)%value
+                   qrec_prime_x = bcE(i)%value
 
                 ELSEIF ( bcE(i)%flag .EQ. 2 ) THEN
 
-                   qp_prime_x = ( qp(i,comp_cells_x,k) - qp(i,comp_cells_x-1,k) ) &
-                        / dx
+                   qrec_prime_x = ( qrec(i,comp_cells_x,k) -                    &
+                        qrec(i,comp_cells_x-1,k) ) / dx
 
                 END IF
 
@@ -1923,116 +1976,120 @@ CONTAINS
              ELSE
 
                 x_stencil(1:3) = x_comp(j-1:j+1)
-                qp_stencil = qp(i,j-1:j+1,k)
+                qrec_stencil = qrec(i,j-1:j+1,k)
 
-                CALL limit( qp_stencil , x_stencil , limiter(i) , qp_prime_x ) 
+                CALL limit( qrec_stencil , x_stencil , limiter(i) ,             &
+                     qrec_prime_x )
 
              ENDIF
 
-             ! y direction
+             ! y-direction
 
-             ! south boundary
+             ! South boundary
              IF (k.EQ.1) THEN
 
                 IF ( bcS(i)%flag .EQ. 0 ) THEN
 
-                   qp_stencil(1) = bcS(i)%value
-                   qp_stencil(2:3) = qp(i,j,1:2)
+                   qrec_stencil(1) = bcS(i)%value
+                   qrec_stencil(2:3) = qrec(i,j,1:2)
 
                    y_stencil(1) = y_stag(1)
                    y_stencil(2:3) = y_comp(1:2)
 
-                   CALL limit( qp_stencil , y_stencil , limiter(i) , qp_prime_y ) 
+                   CALL limit( qrec_stencil , y_stencil , limiter(i) ,          &
+                        qrec_prime_y ) 
 
                 ELSEIF ( bcS(i)%flag .EQ. 1 ) THEN
 
-                   qp_prime_y = bcS(i)%value
+                   qrec_prime_y = bcS(i)%value
 
                 ELSEIF ( bcS(i)%flag .EQ. 2 ) THEN
 
-                   qp_prime_y = ( qp(i,j,2) - qp(i,j,1) ) / dy 
+                   qrec_prime_y = ( qrec(i,j,2) - qrec(i,j,1) ) / dy 
 
                 END IF
 
-                ! north boundary
-             ELSEIF (k.EQ.comp_cells_y) THEN
+                ! North boundary
+             ELSEIF ( k .EQ. comp_cells_y ) THEN
 
                 IF ( bcN(i)%flag .EQ. 0 ) THEN
 
-                   qp_stencil(3) = bcN(i)%value
-                   qp_stencil(1:2) = qp(i,j,comp_cells_y-1:comp_cells_y)
+                   qrec_stencil(3) = bcN(i)%value
+                   qrec_stencil(1:2) = qrec(i,j,comp_cells_y-1:comp_cells_y)
 
                    y_stencil(3) = y_stag(comp_interfaces_y)
                    y_stencil(1:2) = y_comp(comp_cells_y-1:comp_cells_y)
 
-                   CALL limit( qp_stencil , y_stencil , limiter(i) , qp_prime_y ) 
+                   CALL limit( qrec_stencil , y_stencil , limiter(i) ,          &
+                        qrec_prime_y ) 
 
                 ELSEIF ( bcN(i)%flag .EQ. 1 ) THEN
 
-                   qp_prime_y = bcN(i)%value
+                   qrec_prime_y = bcN(i)%value
 
                 ELSEIF ( bcN(i)%flag .EQ. 2 ) THEN
 
-                   qp_prime_y = ( qp(i,j,comp_cells_y)-qp(i,j,comp_cells_y-1) ) &
-                        / dy 
+                   qrec_prime_y = ( qrec(i,j,comp_cells_y) -                    &
+                        qrec(i,j,comp_cells_y-1) ) / dy 
 
                 END IF
 
-                ! internal y cells
+                ! Internal y cells
              ELSE
 
                 y_stencil(1:3) = y_comp(k-1:k+1)
-                qp_stencil = qp(i,j,k-1:k+1)
+                qrec_stencil = qrec(i,j,k-1:k+1)
 
-                CALL limit( qp_stencil , y_stencil , limiter(i) , qp_prime_y )
+                CALL limit( qrec_stencil , y_stencil , limiter(i) ,             &
+                     qrec_prime_y )
 
              ENDIF
 
-             qpW(i) = qp(i,j,k) - reconstr_coeff * dx2 * qp_prime_x
-             qpE(i) = qp(i,j,k) + reconstr_coeff * dx2 * qp_prime_x
-             qpS(i) = qp(i,j,k) - reconstr_coeff * dy2 * qp_prime_y
-             qpN(i) = qp(i,j,k) + reconstr_coeff * dy2 * qp_prime_y
+             qrecW(i) = qrec(i,j,k) - reconstr_coeff * dx2 * qrec_prime_x
+             qrecE(i) = qrec(i,j,k) + reconstr_coeff * dx2 * qrec_prime_x
+             qrecS(i) = qrec(i,j,k) - reconstr_coeff * dy2 * qrec_prime_y
+             qrecN(i) = qrec(i,j,k) + reconstr_coeff * dy2 * qrec_prime_y
 
              ! positivity preserving reconstruction for h
              IF ( i .EQ. 1 ) THEN
 
-                IF ( qpE(i) .LT. B_stag_x(j+1,k) ) THEN
+                IF ( qrecE(i) .LT. B_stag_x(j+1,k) ) THEN
 
-                   qp_prime_x=(B_stag_x(j+1,k)-qp(i,j,k))/dx2
+                   qrec_prime_x = ( B_stag_x(j+1,k) - qrec(i,j,k) ) / dx2
 
-                   qpW(i) = qp(i,j,k) - reconstr_coeff * dx2 * qp_prime_x
+                   qrecW(i) = qrec(i,j,k) - reconstr_coeff * dx2 * qrec_prime_x
 
-                   qpE(i) = qp(i,j,k) + reconstr_coeff * dx2 * qp_prime_x
-
-                ENDIF
-
-                IF ( qpW(i) .LT. B_stag_x(j,k) ) THEN
-
-                   qp_prime_x=(qp(i,j,k)-B_stag_x(j,k))/dx2
-
-                   qpW(i) = qp(i,j,k) - reconstr_coeff * dx2 * qp_prime_x
-
-                   qpE(i) = qp(i,j,k) + reconstr_coeff * dx2 * qp_prime_x
+                   qrecE(i) = qrec(i,j,k) + reconstr_coeff * dx2 * qrec_prime_x
 
                 ENDIF
 
-                IF ( qpN(i) .LT. B_stag_y(j,k+1) ) THEN
+                IF ( qrecW(i) .LT. B_stag_x(j,k) ) THEN
 
-                   qp_prime_y=(B_stag_y(j,k+1)-qp(i,j,k))/dy2
+                   qrec_prime_x = ( qrec(i,j,k) - B_stag_x(j,k) ) / dx2
 
-                   qpS(i) = qp(i,j,k) - reconstr_coeff * dy2 * qp_prime_y
+                   qrecW(i) = qrec(i,j,k) - reconstr_coeff * dx2 * qrec_prime_x
 
-                   qpN(i) = qp(i,j,k) + reconstr_coeff * dy2 * qp_prime_y
+                   qrecE(i) = qrec(i,j,k) + reconstr_coeff * dx2 * qrec_prime_x
 
                 ENDIF
 
-                IF ( qpS(i) .LT. B_stag_y(j,k) ) THEN
+                IF ( qrecN(i) .LT. B_stag_y(j,k+1) ) THEN
 
-                   qp_prime_y=(qp(i,j,k)-B_stag_y(j,k))/dy2
+                   qrec_prime_y = ( B_stag_y(j,k+1) - qrec(i,j,k) ) / dy2
 
-                   qpS(i) = qp(i,j,k) - reconstr_coeff * dy2 * qp_prime_y
+                   qrecS(i) = qrec(i,j,k) - reconstr_coeff * dy2 * qrec_prime_y
 
-                   qpN(i) = qp(i,j,k) + reconstr_coeff * dy2 * qp_prime_y
+                   qrecN(i) = qrec(i,j,k) + reconstr_coeff * dy2 * qrec_prime_y
+
+                ENDIF
+
+                IF ( qrecS(i) .LT. B_stag_y(j,k) ) THEN
+
+                   qrec_prime_y = ( qrec(i,j,k) - B_stag_y(j,k) ) / dy2
+
+                   qrecS(i) = qrec(i,j,k) - reconstr_coeff * dy2 * qrec_prime_y
+
+                   qrecN(i) = qrec(i,j,k) + reconstr_coeff * dy2 * qrec_prime_y
 
                 ENDIF
 
@@ -2041,41 +2098,60 @@ CONTAINS
           ENDDO vars_loop
 
 
-          ! Convert back from physical to conservative variables
-          CALL qp_to_qc( qpW , B_stag_x(j,k) , q_interfaceR(:,j,k) )
-          CALL qp_to_qc( qpE , B_stag_x(j+1,k) , q_interfaceL(:,j+1,k) )
-          CALL qp_to_qc( qpS , B_stag_y(j,k) , q_interfaceT(:,j,k) )
-          CALL qp_to_qc( qpN , B_stag_y(j,k+1) , q_interfaceB(:,j,k+1) )
+          IF ( reconstr_variables .EQ. 'phys' ) THEN
+          
+             ! Convert back from physical to conservative variables
+             CALL qp_to_qc( qrecW , B_stag_x(j,k) , q_interfaceR(:,j,k) )
+             CALL qp_to_qc( qrecE , B_stag_x(j+1,k) , q_interfaceL(:,j+1,k) )
+             CALL qp_to_qc( qrecS , B_stag_y(j,k) , q_interfaceT(:,j,k) )
+             CALL qp_to_qc( qrecN , B_stag_y(j,k+1) , q_interfaceB(:,j,k+1) )
 
+          ELSE IF ( reconstr_variables .EQ. 'cons' ) THEN
+             
+             CALL qrec_to_qc( qrecW , B_stag_x(j,k) , q_interfaceR(:,j,k) )
+             CALL qrec_to_qc( qrecE , B_stag_x(j+1,k) , q_interfaceL(:,j+1,k) )
+             CALL qrec_to_qc( qrecS , B_stag_y(j,k) , q_interfaceT(:,j,k) )
+             CALL qrec_to_qc( qrecN , B_stag_y(j,k+1) , q_interfaceB(:,j,k+1) )
 
+          END IF
+          
           IF ( j.EQ.0 ) THEN
 
-             WRITE(*,*) 'qpW',qpW
-             WRITE(*,*) 'qpE',qpE
+             WRITE(*,*) 'qrecW',qrecW
+             WRITE(*,*) 'qrecE',qrecE
 
           END IF
 
           ! boundary conditions
 
           ! South q_interfaceB(:,j,1)
-          IF(k.EQ.1)THEN
+          IF ( k .EQ. 1 ) THEN
 
              DO i=1,n_vars
 
                 IF ( bcS(i)%flag .EQ. 0 ) THEN
 
-                   qp_bdry(i) = bcS(i)%value 
+                   qrec_bdry(i) = bcS(i)%value 
 
                 ELSE
 
-                   qp_bdry(i) = qpS(i)
+                   qrec_bdry(i) = qrecS(i)
 
                 END IF
 
              ENDDO
 
-             CALL qp_to_qc( qp_bdry ,  B_stag_y(j,1) ,  q_interfaceB(:,j,1) )
+             IF ( reconstr_variables .EQ. 'phys' ) THEN
+             
+                CALL qp_to_qc( qrec_bdry , B_stag_y(j,1) , q_interfaceB(:,j,1) )
 
+             ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+                CALL qrec_to_qc( qrec_bdry , B_stag_y(j,1) ,                    &
+                     q_interfaceB(:,j,1) )
+
+             END IF
+                
           ENDIF
 
           ! North qT(i,j,comp_interfaces_y)
@@ -2085,19 +2161,28 @@ CONTAINS
 
                 IF ( bcN(i)%flag .EQ. 0 ) THEN
 
-                   qp_bdry(i) = bcN(i)%value 
+                   qrec_bdry(i) = bcN(i)%value 
 
                 ELSE
 
-                   qp_bdry(i) = qpN(i)
+                   qrec_bdry(i) = qrecN(i)
 
                 END IF
 
              ENDDO
 
-             CALL qp_to_qc( qp_bdry ,  B_stag_y(j,comp_interfaces_y) ,          &
-                  q_interfaceT(:,j,comp_interfaces_y) )
+             IF ( reconstr_variables .EQ. 'phys' ) THEN
 
+                CALL qp_to_qc( qrec_bdry , B_stag_y(j,comp_interfaces_y) ,      &
+                     q_interfaceT(:,j,comp_interfaces_y) )
+
+             ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+                CALL qrec_to_qc( qrec_bdry , B_stag_y(j,comp_interfaces_y) ,    &
+                     q_interfaceT(:,j,comp_interfaces_y) )
+
+             END IF
+                
           ENDIF
 
           ! West q_interfaceL(:,1,k)
@@ -2107,20 +2192,29 @@ CONTAINS
 
                 IF ( bcW(i)%flag .EQ. 0 ) THEN
 
-                   qp_bdry(i) = bcW(i)%value 
+                   qrec_bdry(i) = bcW(i)%value 
 
                 ELSE
 
-                   qp_bdry(i) = qpW(i)
+                   qrec_bdry(i) = qrecW(i)
 
                 END IF
 
              ENDDO
-
-             CALL qp_to_qc( qp_bdry ,  B_stag_x(1,k) ,  q_interfaceL(:,1,k) )
-
+             
+             IF ( reconstr_variables .EQ. 'phys' ) THEN
+                
+                CALL qp_to_qc( qrec_bdry , B_stag_x(1,k) , q_interfaceL(:,1,k) )
+                
+             ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+                
+                CALL qrec_to_qc( qrec_bdry , B_stag_x(1,k) ,                    &
+                     q_interfaceL(:,1,k) )
+                
+             END IF
+             
              q_interfaceR(:,1,k) = q_interfaceL(:,1,k)
-
+             
           ENDIF
 
           ! East q_interfaceR(:,comp_interfaces_x,k)
@@ -2130,19 +2224,28 @@ CONTAINS
 
                 IF ( bcE(i)%flag .EQ. 0 ) THEN
 
-                   qp_bdry(i) = bcE(i)%value 
+                   qrec_bdry(i) = bcE(i)%value 
 
                 ELSE
 
-                   qp_bdry(i) = qpE(i)
+                   qrec_bdry(i) = qrecE(i)
 
                 END IF
 
              ENDDO
 
-             CALL qp_to_qc( qp_bdry ,  B_stag_x(comp_interfaces_x,k) ,          &
-                  q_interfaceR(:,comp_interfaces_x,k) )
+             IF ( reconstr_variables .EQ. 'phys' ) THEN
 
+                CALL qp_to_qc( qrec_bdry , B_stag_x(comp_interfaces_x,k) ,      &
+                     q_interfaceR(:,comp_interfaces_x,k) )
+
+             ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+                CALL qrec_to_qc( qrec_bdry , B_stag_x(comp_interfaces_x,k) ,    &
+                     q_interfaceR(:,comp_interfaces_x,k) )
+                
+             END IF
+                
              q_interfaceL(:,comp_interfaces_x,k) =                              &
                   q_interfaceR(:,comp_interfaces_x,k)
 

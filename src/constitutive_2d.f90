@@ -45,9 +45,6 @@ MODULE constitutive_2d
   !> reference temperature [K]
   REAL*8 :: T_ref
 
-  !> reference dynamic viscosity [Pa s]
-  REAL*8 :: mu_ref
-
   !> reference kinematic viscosity [m2/s]
   REAL*8 :: nu_ref
 
@@ -439,6 +436,36 @@ CONTAINS
   END SUBROUTINE qp2_to_qc
 
 
+  SUBROUTINE qrec_to_qc(qrec,B,qc)
+    
+    IMPLICIT none
+    
+    REAL*8, INTENT(IN) :: qrec(n_vars)
+    REAL*8, INTENT(IN) :: B
+    REAL*8, INTENT(OUT) :: qc(n_vars)
+
+    REAL*8 :: r_hB      !> topography + height 
+    REAL*8 :: r_u       !> velocity
+    REAL*8 :: r_v       !> velocity
+    REAL*8 :: r_T       !> temperature
+
+    ! Desingularization
+    CALL phys_var(B,r_qj = qrec)
+          
+    r_hB = REAL(h) + B
+    r_u = REAL(u)
+    r_v = REAL(v)
+
+    IF ( temperature_flag ) r_T = REAL(T)
+
+    qc(1) = r_hB
+    qc(2) = REAL(h) * r_u
+    qc(3) = REAL(h) * r_v
+    IF ( temperature_flag ) qc(4) = REAL(h) * r_T 
+    
+  END SUBROUTINE qrec_to_qc
+
+
   !******************************************************************************
   !> \brief Hyperbolic Fluxes
   !
@@ -540,9 +567,9 @@ CONTAINS
 
        ELSE
 
-          flux(2) = 0.0
+          flux(2) = 0.D0
 
-          flux(3) = 0.0
+          flux(3) = 0.D0
 
           IF ( temperature_flag ) flux(4) = 0.D0
 
@@ -700,8 +727,6 @@ CONTAINS
        ! Temperature dependent rheology
        ELSEIF ( rheology_model .EQ. 3 ) THEN
 
-          nu_ref = mu_ref / rho
-
           IF ( REAL(h) .GT. h_threshold ) THEN
     
              ! Equation 6 from Costa & Macedonio, 2005
@@ -710,10 +735,11 @@ CONTAINS
           ELSE
 
              ! Equation 6 from Costa & Macedonio, 2005
-             gamma = 3.D0 * nu_ref / h_threshold * CDEXP( - visc_par * ( T - T_ref ) )
+             gamma = 3.D0 * nu_ref / h_threshold * CDEXP( - visc_par            &
+                  * ( T - T_ref ) )
              
           END IF
-   
+          
           IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
           
              ! Last R.H.S. term in equation 2 from Costa & Macedonio, 2005
@@ -862,23 +888,26 @@ CONTAINS
     
        expl_term(4) = - source_xy * vel_source * T_source
 
-       ! Equation 10 from Costa & Macedonio, 2005
-
-       IF ( REAL(h) .GT. 0.D0 ) THEN
-
-          visc_heat_coeff = emme * mu_ref / ( rho * c_p * h ) 
-
-       ELSE
-
-          visc_heat_coeff = 0.D0
+       IF ( rheology_model .EQ. 3 ) THEN
+              
+          IF ( REAL(h) .GT. 0.D0 ) THEN
+             
+             ! Equation 10 from Costa & Macedonio, 2005
+             visc_heat_coeff = emme * nu_ref / ( c_p * REAL(h) ) 
+             
+          ELSE
+             
+             visc_heat_coeff = 0.D0
+             
+          END IF
+          
+          ! Viscous heating
+          ! Last R.H.S. term in equation 4 from Costa & Macedonio, 2005
+          expl_term(4) = expl_term(4) - visc_heat_coeff * ( REAL(u)**2          &
+               + REAL(v)**2 ) * DEXP( - visc_par * ( REAL(T) - T_ref ) ) 
 
        END IF
-
-       ! Viscous heating
-       ! Last R.H.S. term in equation 4 from Costa & Macedonio, 2005
-       expl_term(4) = expl_term(4) - visc_heat_coeff * ( u**2+v**2 )  &
-            * CDEXP( - visc_par * ( T - T_ref ) ) 
-       
+          
     END IF
            
   END SUBROUTINE eval_expl_terms
