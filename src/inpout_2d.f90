@@ -387,6 +387,58 @@ CONTAINS
     ! output file index
     output_idx = 0
 
+
+    ! Initialize values for checks during input reading
+    hB_bcW%flag = -1 
+    u_bcW%flag = -1 
+    v_bcW%flag = -1 
+    hu_bcW%flag = -1 
+    hv_bcW%flag = -1 
+    T_bcW%flag = -1 
+
+    hB_bcE%flag = -1 
+    u_bcE%flag = -1 
+    v_bcE%flag = -1 
+    hu_bcE%flag = -1 
+    hv_bcE%flag = -1 
+    T_bcE%flag = -1 
+
+    hB_bcS%flag = -1 
+    u_bcS%flag = -1 
+    v_bcS%flag = -1 
+    hu_bcS%flag = -1 
+    hv_bcS%flag = -1 
+    T_bcS%flag = -1 
+
+    hB_bcN%flag = -1 
+    u_bcN%flag = -1 
+    v_bcN%flag = -1 
+    hu_bcN%flag = -1 
+    hv_bcN%flag = -1 
+    T_bcN%flag = -1 
+
+
+    rheology_model = -1
+    mu = -1
+    xi = -1
+    tau = -1
+    nu_ref = -1
+    visc_par = -1
+    T_ref = -1
+
+    exp_area_fract = -1.D0
+    emissivity = -1.D0             
+    atm_heat_transf_coeff = -1.D0
+    thermal_conductivity = -1.D0  
+    enne = -1.D0
+    emme = -1.D0
+    T_env = -1.D0
+    T_ground = -1.D0
+    c_p = -1.D0
+    rho = -1.D0
+
+
+
   END SUBROUTINE init_param
 
   !******************************************************************************
@@ -694,7 +746,8 @@ CONTAINS
 
     IF ( COMP_CELLS_X .GT. 1 ) THEN
     
-       ! West boundary conditions
+       ! --------- West boundary conditions -------------------------------------
+
        READ(input_unit,west_boundary_conditions,IOSTAT=ios)
        
        IF ( ios .NE. 0 ) THEN
@@ -710,6 +763,52 @@ CONTAINS
           
        END IF
        
+       IF ( ( hB_bcW%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist WEST_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for h+B not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( reconstr_variables .EQ. 'phys' ) THEN
+
+          IF ( ( u_bcW%flag .EQ. -1 ) .OR. ( v_bcW%flag .EQ. -1 )               &
+               .OR. ( hu_bcW%flag .NE. -1 ) .OR. ( hv_bcW%flag .NE. -1 ) ) THEN 
+             
+             WRITE(*,*) 'ERROR: problem with namelist WEST_BOUNDARY_CONDITIONS'
+             WRITE(*,*) 'B.C. for velocities not set properly'             
+             WRITE(*,*) 'Please check the input file'
+             STOP
+
+          END IF
+
+       ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+          IF ( ( u_bcW%flag .NE. -1 ) .OR. ( v_bcW%flag .NE. -1 )               &
+               .OR. ( hu_bcW%flag .EQ. -1 ) .OR. ( hv_bcW%flag .EQ. -1 ) ) THEN 
+
+             WRITE(*,*) 'ERROR: problem with namelist WEST_BOUNDARY_CONDITIONS'
+             WRITE(*,*) 'B.C. for velocities not set properly'             
+             WRITE(*,*) 'Please check the input file'
+             STOP
+
+          END IF
+
+       END IF
+       
+       IF ( ( temperature_flag ) .AND. ( T_bcW%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist WEST_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for temperature not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+
+       ! set the approriate boundary ocnditions
        bcW(1) = hB_bcW
 
        IF ( reconstr_variables .EQ. 'phys' ) THEN
@@ -724,7 +823,8 @@ CONTAINS
           
        END IF
           
-       ! East boundary conditions
+       ! ------------- East boundary conditions --------------------------------
+
        READ(input_unit,east_boundary_conditions,IOSTAT=ios)
        
        IF ( ios .NE. 0 ) THEN
@@ -739,7 +839,52 @@ CONTAINS
           REWIND(input_unit)
           
        END IF
+   
+
+       IF ( ( hB_bcE%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist EAST_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for h+B not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( reconstr_variables .EQ. 'phys' ) THEN
+
+          IF ( ( u_bcE%flag .EQ. -1 ) .OR. ( v_bcE%flag .EQ. -1 )               &
+               .OR. ( hu_bcE%flag .NE. -1 ) .OR. ( hv_bcE%flag .NE. -1 ) ) THEN 
+             
+             WRITE(*,*) 'ERROR: problem with namelist EAST_BOUNDARY_CONDITIONS'
+             WRITE(*,*) 'B.C. for velocities not set properly'             
+             WRITE(*,*) 'Please check the input file'
+             STOP
+
+          END IF
+
+       ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+          IF ( ( u_bcE%flag .NE. -1 ) .OR. ( v_bcE%flag .NE. -1 )               &
+               .OR. ( hu_bcE%flag .EQ. -1 ) .OR. ( hv_bcE%flag .EQ. -1 ) ) THEN 
+
+             WRITE(*,*) 'ERROR: problem with namelist EAST_BOUNDARY_CONDITIONS'
+             WRITE(*,*) 'B.C. for velocities not set properly'             
+             WRITE(*,*) 'Please check the input file'
+             STOP
+
+          END IF
+
+       END IF
        
+       IF ( ( temperature_flag ) .AND. ( T_bcE%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist EAST_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for temperature not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+    
        bcE(1) = hB_bcE 
 
        IF ( reconstr_variables .EQ. 'phys' ) THEN
@@ -758,7 +903,8 @@ CONTAINS
 
     IF ( comp_cells_y .GT. 1 ) THEN
     
-       ! South boundary conditions
+       ! --------------- South boundary conditions ------------------------------
+
        READ(input_unit,south_boundary_conditions,IOSTAT=ios)
        
        IF ( ios .NE. 0 ) THEN
@@ -773,7 +919,53 @@ CONTAINS
           REWIND(input_unit)
           
        END IF
+      
+
+       IF ( ( hB_bcS%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist SOUTH_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for h+B not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( reconstr_variables .EQ. 'phys' ) THEN
+
+          IF ( ( u_bcS%flag .EQ. -1 ) .OR. ( v_bcS%flag .EQ. -1 )               &
+               .OR. ( hu_bcS%flag .NE. -1 ) .OR. ( hv_bcS%flag .NE. -1 ) ) THEN 
+             
+             WRITE(*,*) 'ERROR: problem with namelist SOUTH_BOUNDARY_CONDITIONS'
+             WRITE(*,*) 'B.C. for velocities not set properly'             
+             WRITE(*,*) 'Please check the input file'
+             STOP
+
+          END IF
+
+       ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+          IF ( ( u_bcS%flag .NE. -1 ) .OR. ( v_bcS%flag .NE. -1 )               &
+               .OR. ( hu_bcS%flag .EQ. -1 ) .OR. ( hv_bcS%flag .EQ. -1 ) ) THEN 
+
+             WRITE(*,*) 'ERROR: problem with namelist SOUTH_BOUNDARY_CONDITIONS'
+             WRITE(*,*) 'B.C. for velocities not set properly'             
+             WRITE(*,*) 'Please check the input file'
+             STOP
+
+          END IF
+
+       END IF
        
+       IF ( ( temperature_flag ) .AND. ( T_bcS%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist SOUTH_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for temperature not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+ 
        bcS(1) = hB_bcS 
 
        IF ( reconstr_variables .EQ. 'phys' ) THEN
@@ -788,7 +980,8 @@ CONTAINS
 
        END IF
                     
-       ! North boundary conditions
+       ! ---------------- North boundary conditions ----------------------------
+
        READ(input_unit,north_boundary_conditions,IOSTAT=ios)
        
        IF ( ios .NE. 0 ) THEN
@@ -803,6 +996,51 @@ CONTAINS
           REWIND(input_unit)
           
        END IF
+
+       IF ( ( hB_bcN%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist NORTH_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for h+B not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( reconstr_variables .EQ. 'phys' ) THEN
+
+          IF ( ( u_bcN%flag .EQ. -1 ) .OR. ( v_bcN%flag .EQ. -1 )               &
+               .OR. ( hu_bcN%flag .NE. -1 ) .OR. ( hv_bcN%flag .NE. -1 ) ) THEN 
+             
+             WRITE(*,*) 'ERROR: problem with namelist NORTH_BOUNDARY_CONDITIONS'
+             WRITE(*,*) 'B.C. for velocities not set properly'             
+             WRITE(*,*) 'Please check the input file'
+             STOP
+
+          END IF
+
+       ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
+
+          IF ( ( u_bcN%flag .NE. -1 ) .OR. ( v_bcN%flag .NE. -1 )               &
+               .OR. ( hu_bcN%flag .EQ. -1 ) .OR. ( hv_bcN%flag .EQ. -1 ) ) THEN 
+
+             WRITE(*,*) 'ERROR: problem with namelist NORTH_BOUNDARY_CONDITIONS'
+             WRITE(*,*) 'B.C. for velocities not set properly'             
+             WRITE(*,*) 'Please check the input file'
+             STOP
+
+          END IF
+
+       END IF
+       
+       IF ( ( temperature_flag ) .AND. ( T_bcN%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist NORTH_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for temperature not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
        
        bcN(1) = hB_bcN 
 
@@ -896,7 +1134,98 @@ CONTAINS
           REWIND(input_unit)
           
        END IF
-       
+      
+       IF ( exp_area_fract .EQ. -1.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'EXP_AREA_FRACT value not properly set'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( emissivity .EQ. -1.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'EMISSIVITY value not properly set'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( atm_heat_transf_coeff .EQ. -1.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'ATM_HEAT_TRANSF_COEFF value not properly set'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( thermal_conductivity .EQ. -1.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'THERMAL CONDUCTIVITY value not properly set'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( enne .EQ. -1.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'ENNE value not properly set'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( emme .EQ. -1.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'EMME value not properly set'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( T_env .EQ. -1.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'T_ENV value not properly set'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( T_ground .EQ. -1.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'T_GROUND value not properly set'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( c_p .EQ. -1.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'C_P value not properly set'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+       IF ( rho .EQ. -1.D0 ) THEN
+
+          WRITE(*,*) 'ERROR: problem with namelist TEMPERATURE_PARAMETERS'
+          WRITE(*,*) 'RHO value not properly set'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
+ 
        IF ( emissivity .EQ. 0.D0 ) THEN
 
           WRITE(*,*) 'No radiative term: emissivity =',emissivity
@@ -958,7 +1287,7 @@ CONTAINS
           
        ELSEIF ( rheology_model .EQ. 1 ) THEN
 
-          IF ( ( mu .EQ. 0.D0 ) .AND. ( xi .EQ. 0.D0 ) ) THEN
+          IF ( ( mu .EQ. -1.D0 ) .AND. ( xi .EQ. -1.D0 ) ) THEN
 
              WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
              WRITE(*,*) 'RHEOLOGY_MODEL =' , rheology_model
@@ -968,22 +1297,22 @@ CONTAINS
              
           END IF
 
-          IF ( ( T_ref .NE. 0.D0 ) .OR. ( nu_ref .NE. 0.D0 ) .OR.               &
-               ( visc_par .NE. 0.D0 ) .OR. ( tau .NE. 0.D0 ) ) THEN
+          IF ( ( T_ref .NE. -1.D0 ) .OR. ( nu_ref .NE. -1.D0 ) .OR.               &
+               ( visc_par .NE. -1.D0 ) .OR. ( tau .NE. -1.D0 ) ) THEN
 
              WRITE(*,*) 'WARNING: parameters not used in RHEOLOGY_PARAMETERS'
-             IF ( T_ref .NE. 0.D0 ) WRITE(*,*) 'T_ref =',T_ref 
-             IF ( nu_ref .NE. 0.D0 ) WRITE(*,*) 'nu_ref =',nu_ref 
-             IF ( visc_par .NE. 0.D0 ) WRITE(*,*) 'visc_par =',visc_par
-             IF ( tau .NE. 0.D0 ) WRITE(*,*) 'tau =',tau 
+             IF ( T_ref .NE. -1.D0 ) WRITE(*,*) 'T_ref =',T_ref 
+             IF ( nu_ref .NE. -1.D0 ) WRITE(*,*) 'nu_ref =',nu_ref 
+             IF ( visc_par .NE. -1.D0 ) WRITE(*,*) 'visc_par =',visc_par
+             IF ( tau .NE. -1.D0 ) WRITE(*,*) 'tau =',tau 
              WRITE(*,*) 'Press ENTER to continue'
              READ(*,*)
 
           END IF
 
-       ELSEIF ( rheology_model .EQ. 1 ) THEN
+       ELSEIF ( rheology_model .EQ. 2 ) THEN
 
-          IF ( tau .EQ. 0.D0 )  THEN
+          IF ( tau .EQ. -1.D0 )  THEN
 
              WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
              WRITE(*,*) 'RHEOLOGY_MODEL =' , rheology_model
@@ -993,16 +1322,16 @@ CONTAINS
              
           END IF
           
-          IF ( ( T_ref .NE. 0.D0 ) .OR. ( nu_ref .NE. 0.D0 ) .OR.               &
-               ( visc_par .NE. 0.D0 ) .OR. ( mu .NE. 0.D0 ) .OR.                &
-               ( xi .NE. 0.D0 ) ) THEN
+          IF ( ( T_ref .NE. -1.D0 ) .OR. ( nu_ref .NE. -1.D0 ) .OR.               &
+               ( visc_par .NE. -1.D0 ) .OR. ( mu .NE. -1.D0 ) .OR.                &
+               ( xi .NE. -1.D0 ) ) THEN
 
              WRITE(*,*) 'WARNING: parameters not used in RHEOLOGY_PARAMETERS'
-             IF ( T_ref .NE. 0.D0 ) WRITE(*,*) 'T_ref =',T_ref 
-             IF ( nu_ref .NE. 0.D0 ) WRITE(*,*) 'nu_ref =',nu_ref 
-             IF ( visc_par .NE. 0.D0 ) WRITE(*,*) 'visc_par =',visc_par
-             IF ( mu .NE. 0.D0 ) WRITE(*,*) 'mu =',mu 
-             IF ( xi .NE. 0.D0 ) WRITE(*,*) 'xi =',xi
+             IF ( T_ref .NE. -1.D0 ) WRITE(*,*) 'T_ref =',T_ref 
+             IF ( nu_ref .NE. -1.D0 ) WRITE(*,*) 'nu_ref =',nu_ref 
+             IF ( visc_par .NE. -1.D0 ) WRITE(*,*) 'visc_par =',visc_par
+             IF ( mu .NE. -1.D0 ) WRITE(*,*) 'mu =',mu 
+             IF ( xi .NE. -1.D0 ) WRITE(*,*) 'xi =',xi
              WRITE(*,*) 'Press ENTER to continue'
              READ(*,*)
 
@@ -1011,7 +1340,7 @@ CONTAINS
 
        ELSEIF ( rheology_model .EQ. 3 ) THEN
 
-          IF ( nu_ref .LE. 0.D0 ) THEN
+          IF ( nu_ref .EQ. -1.D0 ) THEN
              
              WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
              WRITE(*,*) 'NU_REF =' , nu_ref 
@@ -1020,7 +1349,7 @@ CONTAINS
              
           END IF
 
-          IF ( visc_par .LT. 0.D0 ) THEN
+          IF ( visc_par .EQ. -1.D0 ) THEN
              
              WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
              WRITE(*,*) 'VISC_PAR =' , visc_par
@@ -1036,7 +1365,7 @@ CONTAINS
 
           ELSE
 
-             IF ( T_ref .LE. 0.D0 ) THEN
+             IF ( T_ref .EQ. -1.D0 ) THEN
                 
                 WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
                 WRITE(*,*) 'T_REF =' , T_ref 
@@ -1047,13 +1376,13 @@ CONTAINS
 
           END IF
 
-          IF ( ( mu .NE. 0.D0 ) .OR. ( xi .NE. 0.D0 ) .OR. ( tau .NE. 0.D0 ) )  &
+          IF ( ( mu .NE. -1.D0 ) .OR. ( xi .NE. -1.D0 ) .OR. ( tau .NE. -1.D0 ) )  &
                THEN
 
              WRITE(*,*) 'WARNING: parameters not used in RHEOLOGY_PARAMETERS'
-             IF ( mu .NE. 0.D0 ) WRITE(*,*) 'mu =',mu 
-             IF ( xi .NE. 0.D0 ) WRITE(*,*) 'xi =',xi
-             IF ( tau .NE. 0.D0 ) WRITE(*,*) 'tau =',tau 
+             IF ( mu .NE. -1.D0 ) WRITE(*,*) 'mu =',mu 
+             IF ( xi .NE. -1.D0 ) WRITE(*,*) 'xi =',xi
+             IF ( tau .NE. -1.D0 ) WRITE(*,*) 'tau =',tau 
              WRITE(*,*) 'Press ENTER to continue'
              READ(*,*)
 
