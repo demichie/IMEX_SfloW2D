@@ -434,21 +434,51 @@ CONTAINS
 
     INTEGER :: ix , iy
     REAL*8 :: alfa_x , alfa_y
+
+    IF ( size(x1,1) .GT. 1 ) THEN
+
+       ix = FLOOR( ( x2 - x1(1,1) ) / ( x1(2,1) - x1(1,1) ) ) + 1
+       ix = MIN( ix , SIZE(x1,1)-1 )
+       alfa_x = ( x1(ix+1,1) - x2 ) / (  x1(ix+1,1) - x1(ix,1) )
+
+    ELSE
+
+       ix = 1
+       alfa_x = 0.D0
+       
+    END IF
+       
+    IF ( size(x1,2) .GT. 1 ) THEN
+
+       iy = FLOOR( ( y2 - y1(1,1) ) / ( y1(1,2) - y1(1,1) ) ) + 1
+       iy = MIN( iy , SIZE(x1,2)-1 )
+       alfa_y = ( y1(1,iy+1) - y2 ) / (  y1(1,iy+1) - y1(1,iy) )
     
-    ix = FLOOR( ( x2 - x1(1,1) ) / ( x1(2,1) - x1(1,1) ) ) + 1
-    iy = FLOOR( ( y2 - y1(1,1) ) / ( y1(1,2) - y1(1,1) ) ) + 1
+    ELSE
 
-    ix = MIN( ix , SIZE(x1,1)-1 )
-    iy = MIN( iy , SIZE(x1,2)-1 )
-
-    alfa_x = ( x1(ix+1,1) - x2 ) / (  x1(ix+1,1) - x1(ix,1) )
-    alfa_y = ( y1(1,iy+1) - y2 ) / (  y1(1,iy+1) - y1(1,iy) )
+       iy = 1
+       alfa_y = 0.D0
+       
+    END IF
+       
+    IF ( size(x1,1) .EQ. 1 ) THEN
+       
+       f2 = alfa_y * f1(ix,iy) + ( 1.D0 - alfa_y ) * f1(ix,iy+1)
+       
+    ELSEIF ( size(x1,2) .EQ. 1 ) THEN
+       
+       f2 = alfa_x * f1(ix,iy)  + ( 1.D0 - alfa_x ) * f1(ix+1,iy)
+       
+    ELSE
+       
+       f2 = alfa_x * ( alfa_y * f1(ix,iy) + ( 1.D0 - alfa_y ) * f1(ix,iy+1) )   &
+            + ( 1.D0 - alfa_x ) *  ( alfa_y * f1(ix+1,iy) + ( 1.D0 - alfa_y )   &
+            * f1(ix+1,iy+1) )
+       
+    END IF
     
-    f2 = alfa_x * ( alfa_y * f1(ix,iy) + ( 1.D0 - alfa_y ) * f1(ix,iy+1) )      &
-         + ( 1.D0 - alfa_x ) *  ( alfa_y * f1(ix+1,iy) + ( 1.D0 - alfa_y )      &
-         * f1(ix+1,iy+1) )
-
   END SUBROUTINE interp_2d_scalar
+
 
 
   !------------------------------------------------------------------------------
