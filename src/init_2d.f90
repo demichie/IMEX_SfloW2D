@@ -263,7 +263,7 @@ CONTAINS
     INTEGER, ALLOCATABLE :: check_subgrid(:)
 
     INTEGER n_points , n_points2
-    
+    REAL*8 :: source_area
     
     n_points = 200
     n_points2 = n_points**2
@@ -311,15 +311,15 @@ CONTAINS
 
     ENDDO
 
-    WRITE(*,*) 'Source area =',dx*dy*SUM(source_xy),' Error =',ABS( 1.D0 -      &
+    source_area = dx*dy*SUM(source_xy)
+    
+    WRITE(*,*) 'Source area =',source_area,' Error =',ABS( 1.D0 -      &
          dx*dy*SUM(source_xy) / ( 4.D0*ATAN(1.D0)*r_source**2 ) )
 
-    vel_source = vfr_source / dx*dy*SUM(source_xy)
+    vel_source = vfr_source / source_area
 
     WRITE(*,*) 'Vel source =',vel_source
-    
-    READ(*,*)
-    
+        
   END SUBROUTINE init_source
   
   !******************************************************************************

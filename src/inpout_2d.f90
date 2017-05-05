@@ -137,7 +137,7 @@ MODULE inpout_2d
   NAMELIST / initial_conditions /  released_volume , x_release , y_release ,    &
        velocity_mod_release , velocity_ang_release , T_init , T_ambient
 
-  NAMELIST / left_state / hB_W , u_W , v_W , T_W
+  NAMELIST / left_state / riemann_interface , hB_W , u_W , v_W , T_W
 
   NAMELIST / right_state / hB_E , u_E , v_E , T_E
 
@@ -221,9 +221,9 @@ CONTAINS
     source_flag = .FALSE.
     rheology_flag = .FALSE.
     riemann_flag=.TRUE.
-    riemann_interface = 0.5D0
 
     !-- Inizialization of the Variables for the namelist left_state
+    riemann_interface = 0.5D0
     hB_W = 2.222D0
     u_W = 0.8246D0
     v_W = 0.D0
