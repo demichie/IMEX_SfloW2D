@@ -388,7 +388,7 @@ CONTAINS
     output_idx = 0
 
 
-    ! Initialize values for checks during input reading
+    ! -------------- Initialize values for checks during input reading ----------
     hB_bcW%flag = -1 
     u_bcW%flag = -1 
     v_bcW%flag = -1 
@@ -437,6 +437,7 @@ CONTAINS
     c_p = -1.D0
     rho = -1.D0
 
+    grav = -1.D0
 
 
   END SUBROUTINE init_param
@@ -1085,6 +1086,15 @@ CONTAINS
        
     END IF
 
+    IF ( grav .EQ. -1.D0 ) THEN
+       
+       WRITE(*,*) 'ERROR: problem with namelist EXPL_TERMS_PARAMETERS'
+       WRITE(*,*) 'R_SOURCE not set properly'
+       WRITE(*,*) 'Please check the input file'
+       STOP
+       
+    END IF
+    
     IF ( source_flag ) THEN
 
        IF ( r_source .EQ. 0.D0 ) THEN
@@ -1099,7 +1109,7 @@ CONTAINS
        IF ( vfr_source .EQ. 0.D0 ) THEN
 
           WRITE(*,*) 'ERROR: problem with namelist EXPL_TERMS_PARAMETERS'
-          WRITE(*,*) 'VFR_SOURCE =',vfr_source
+          WRITE(*,*) 'VFR_SOURCE not set properly'
           WRITE(*,*) 'Please check the input file'
           STOP
 
