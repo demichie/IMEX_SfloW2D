@@ -1710,6 +1710,115 @@ CONTAINS
   END SUBROUTINE read_param
 
 
+
+  !******************************************************************************
+  !> \brief Read the input file
+  !
+  !> This subroutine read the input parameters from the file 
+  !> "two_phases.inp" and write a backup file of the input parameters 
+  !> with name "run_name.bak", where run_name is read from the input
+  !> file.
+  !
+  !> \date 07/10/2016
+  !> @author 
+  !> Mattia de' Michieli Vitturi
+  !
+  !******************************************************************************
+
+  SUBROUTINE update_param
+
+    IMPLICIT none
+
+    INTEGER :: ios
+
+    CHARACTER(LEN=40) :: run_name_org
+    LOGICAL :: restart_org
+    LOGICAL :: topography_demfile_org
+    REAL*8 :: t_start_org
+    REAL*8 :: t_end_org
+    REAL*8 :: dt_output_org
+    LOGICAL :: output_cons_flag_org
+    LOGICAL :: output_phys_flag_org
+    LOGICAL :: output_esri_flag_org
+    INTEGER :: verbose_level_org
+    
+    run_name_org = run_name
+    restart_org = restart
+    topography_demfile_org = topography_demfile
+    t_start_org = t_start
+    t_end_org = t_end
+    dt_output_org = dt_output
+    output_cons_flag_org = output_cons_flag
+    output_phys_flag_org = output_phys_flag
+    output_esri_flag_org = output_esri_flag
+    verbose_level_org = verbose_level
+
+
+    OPEN(input_unit,FILE=input_file,STATUS='old')
+  
+    ! ------- READ run_parameters NAMELIST -----------------------------------
+    READ(input_unit, run_parameters,IOSTAT=ios )
+
+    IF ( ios .NE. 0 ) THEN
+
+       WRITE(*,*) 'IOSTAT=',ios
+       WRITE(*,*) 'ERROR: problem with namelist RUN_PARAMETERS'
+       WRITE(*,*) 'Please check the input file'
+       STOP
+
+    ELSE
+
+       REWIND(input_unit)
+
+    END IF
+
+    CLOSE(input_unit)
+
+    IF ( t_end_org .NE. t_end ) THEN
+
+       WRITE(*,*) 'Modified input file: t_end =',t_end
+
+    END IF
+
+    IF ( dt_output_org .NE. dt_output ) THEN
+
+       WRITE(*,*) 'Modified input file: dt_output =',dt_output
+
+    END IF
+       
+    IF ( output_cons_flag_org .NEQV. output_cons_flag ) THEN
+
+       WRITE(*,*)  'Modified input file: output_cons_flag =',output_cons_flag
+
+    END IF
+
+    IF ( output_phys_flag_org .NEQV. output_phys_flag ) THEN
+
+       WRITE(*,*)  'Modified input file: output_phys_flag =',output_phys_flag
+
+    END IF
+
+    IF ( output_esri_flag_org .NEQV. output_esri_flag ) THEN
+
+       WRITE(*,*)  'Modified input file: output_esri_flag =',output_esri_flag
+
+    END IF
+
+    IF ( verbose_level_org .NE. verbose_level ) THEN
+
+       WRITE(*,*)  'Modified input file: verbose_level =',verbose_level
+
+    END IF
+
+    run_name_org = run_name
+    restart_org = restart
+    topography_demfile_org = topography_demfile
+    t_start_org = t_start
+
+
+  END SUBROUTINE update_param
+
+
   !******************************************************************************
   !> \brief Read the solution from the restart unit
   !

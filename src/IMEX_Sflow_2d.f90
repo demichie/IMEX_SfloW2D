@@ -38,6 +38,7 @@ PROGRAM IMEX_SfloW_2d
 
   USE inpout_2d, ONLY : init_param
   USE inpout_2d, ONLY : read_param
+  USE inpout_2d, ONLY : update_param
   USE inpout_2d, ONLY : output_solution
   USE inpout_2d, ONLY : read_solution
   USE inpout_2d, ONLY : close_units
@@ -124,6 +125,8 @@ PROGRAM IMEX_SfloW_2d
   CALL output_solution(t)
 
   DO WHILE ( t .LT. t_end )
+
+     CALL update_param
 
      ! CALL check_solve
      ! WRITE(*,*) 'cells to solve:',COUNT(solve_mask)
