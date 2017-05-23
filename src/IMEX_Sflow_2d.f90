@@ -128,8 +128,8 @@ PROGRAM IMEX_SfloW_2d
      ! CALL check_solve
      ! WRITE(*,*) 'cells to solve:',COUNT(solve_mask)
 
-     CALL timestep
-     !CALL timestep2
+     ! CALL timestep
+     CALL timestep2
 
      IF ( t+dt .GT. t_end ) dt = t_end - t
      IF ( t+dt .GT. t_output ) dt = t_output - t

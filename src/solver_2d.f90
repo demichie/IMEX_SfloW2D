@@ -546,11 +546,20 @@ CONTAINS
 
           DO k = 1,comp_cells_y
 
-             dt_interface_x = cfl * dx / MAX( MAXVAL(a_interface_x_max(:,j,k))  &
-                  , MAXVAL(a_interface_y_max(:,j+1,k)) )
+             IF ( ( j .EQ. -200 ) .OR. ( j .EQ. -201 ) ) THEN
 
-             dt_interface_y = cfl * dy/MAX( MAXVAL(a_interface_x_max(:,j,k+1))  &
-                  , MAXVAL(a_interface_y_max(:,j,k)) )
+                WRITE(*,*) 'a_interface,j',j
+                WRITE(*,*) MAXVAL(a_interface_x_max(:,j,k))
+                WRITE(*,*) MAXVAL(a_interface_x_max(:,j+1,k))
+
+             END IF
+
+
+             dt_interface_x = cfl * dx / MAX( MAXVAL(a_interface_x_max(:,j,k))  &
+                  , MAXVAL(a_interface_x_max(:,j+1,k)) )
+
+             dt_interface_y = cfl * dy / MAX( MAXVAL(a_interface_y_max(:,j,k))  &
+                  , MAXVAL(a_interface_y_max(:,j,k+1)) )
 
              dt_cfl = MIN( dt_interface_x , dt_interface_y )
 
@@ -583,6 +592,8 @@ CONTAINS
     USE constitutive_2d, ONLY : eval_nonhyperbolic_terms
 
     USE constitutive_2d, ONLY : qc_to_qp
+
+    USE geometry_2d, ONLY : dx , dy
 
     IMPLICIT NONE
 
@@ -676,36 +687,116 @@ CONTAINS
 
                    q_rk(1,j,k,i_RK) = B_cent(j,k)
                    q_rk(2:n_vars,j,k,i_RK) = 0.D0
-
+                   
                 ELSE
 
+                   IF ( i_RK .EQ. 1 ) THEN
+                      
+                      WRITE(*,*) 'q0', q0( 1 , j , k) 
+                      
+                   ELSE
+                      
+                      WRITE(*,*) 'q0', q_rk( 1 , j , k , MAX(1,i_RK-1) )
+                      
+                   END IF
+                   
+                   CALL qc_to_qp(  q_rk( 1:n_vars , j , k , MAX(1,i_RK-1) ) ,   &
+                        B_cent(j,k) , qp(1:n_vars,j,k) )
+
+                   WRITE(*,*) 'q1',q_guess(1)
+                   WRITE(*,*) 
                    WRITE(*,*) 'j,k,h',j,k,h_new,qp(1,j,k),B_cent(j,k)
+                   WRITE(*,*) 
                    WRITE(*,*) 'i_RK,dt',i_RK,dt
+                   WRITE(*,*) 
                    WRITE(*,*) 'divFluxj(1,1:n_RK)',divFluxj(1,1:n_RK)
                    WRITE(*,*) 'NHj(1,1:n_RK)',NHj(1,1:n_RK)
                    WRITE(*,*) 'Expl_terms_j(1,1:n_RK)',Expl_terms_j(1,1:n_RK)
                    WRITE(*,*) 
-                   READ(*,*) 
+                   
+                   
+                   WRITE(*,*) 'h^-_j-1/2',q_interfaceL(1,j,k) - B_stag_x(j,k)
+                   WRITE(*,*) 'h^+_j-1/2',q_interfaceR(1,j,k) - B_stag_x(j,k)
+                   WRITE(*,*) 'h^-_j+1/2',q_interfaceL(1,j+1,k) - B_stag_x(j+1,k)
+                   WRITE(*,*) 'h^+_j+1/2',q_interfaceR(1,j+1,k) - B_stag_x(j+1,k)
+                   
+                   WRITE(*,*)
+                   
+                   WRITE(*,*) 'hu^-_j-1/2',q_interfaceL(2,j,k)
+                   WRITE(*,*) 'hu^+_j-1/2',q_interfaceR(2,j,k)
+                   WRITE(*,*) 'hu^-_j+1/2',q_interfaceL(2,j+1,k)
+                   WRITE(*,*) 'hu^+_j+1/2',q_interfaceR(2,j+1,k)
+                   
+                   WRITE(*,*)
+                   WRITE(*,*) 'a^-_j-1/2',a_interface_xNeg(1,j,k)
+                   WRITE(*,*) 'a^+_j-1/2',a_interface_xPos(1,j,k)
+                   WRITE(*,*) 'a^-_j+1/2',a_interface_xNeg(1,j+1,k)
+                   WRITE(*,*) 'a^+_j+1/2',a_interface_xPos(1,j+1,k)
 
+                   WRITE(*,*)
+                   WRITE(*,*) 'lambda*a^-_j-1/2',dt/dx*ABS(a_interface_xNeg(1,j,k))
+                   WRITE(*,*) 'lambda*a^+_j-1/2',dt/dx*ABS(a_interface_xPos(1,j,k))
+                   WRITE(*,*) 'lambda*a^-_j+1/2',dt/dx*ABS(a_interface_xNeg(1,j+1,k))
+                   WRITE(*,*) 'lambda*a^-_j+1/2',dt/dx*ABS(a_interface_xPos(1,j+1,k))
+
+                   WRITE(*,*)
+                   
+                   WRITE(*,*) 'u^-_j-1/2', q_interfaceL(2,j,k) / & 
+                        ( q_interfaceL(1,j,k) - B_stag_x(j,k) )
+                   WRITE(*,*) 'u^+_j-1/2', q_interfaceR(2,j,k) / &
+                        ( q_interfaceR(1,j,k) - B_stag_x(j,k) )
+                   WRITE(*,*) 'u^-_j+1/2', q_interfaceL(2,j+1,k) / &
+                        ( q_interfaceL(1,j+1,k) - B_stag_x(j+1,k) )
+                   WRITE(*,*) 'u^+_j+1/2', q_interfaceR(2,j+1,k) / &
+                        ( q_interfaceR(1,j+1,k) - B_stag_x(j+1,k) )
+                   
+                   WRITE(*,*) 
+                   
+                   WRITE(*,*) 'lambda',dt/dx
+                   
+                   WRITE(*,*) 
+                   
+                   WRITE(*,*) ( a_interface_xPos(1,j,k) -  q_interfaceR(1,j,k) / &
+                        ( q_interfaceR(2,j,k) - B_stag_x(j,k) ) ) /              &
+                        (  a_interface_xPos(1,j,k) - a_interface_xNeg(1,j,k) )
+                   
+                   WRITE(*,*) (  q_interfaceL(1,j+1,k) / ( q_interfaceL(2,j+1,k) -   &
+                        B_stag_x(j+1,k) ) - a_interface_xNeg(1,j+1,k) ) /            &
+                        ( a_interface_xPos(1,j+1,k) - a_interface_xNeg(1,j+1,k) )
+                   
+                   WRITE(*,*) ( a_interface_xPos(1,j+1,k) -  q_interfaceR(1,j+1,k) / &
+                        ( q_interfaceR(2,j+1,k) - B_stag_x(j+1,k) ) ) /              &
+                        (  a_interface_xPos(1,j+1,k) - a_interface_xNeg(1,j+1,k) )
+                   
+                   WRITE(*,*) (  q_interfaceL(1,j,k) / ( q_interfaceL(2,j,k) -   &
+                        B_stag_x(j,k) ) - a_interface_xNeg(1,j,k) ) /            &
+                        ( a_interface_xPos(1,j,k) - a_interface_xNeg(1,j,k) )
+                                      
+                   WRITE(*,*) 
+                                      
+                   WRITE(*,*) dt/dx * q_interfaceR(1,j,k)
+                   
+                   READ(*,*) 
+                   
                 END IF
                    
              END IF
 
              ! store the non-hyperbolic term for the explicit computations
-             IF ( a_diag .EQ. 0.D0 ) THEN
+             !IF ( a_diag .EQ. 0.D0 ) THEN
 
                 CALL eval_nonhyperbolic_terms( B_cent(j,k) , B_prime_x(j,k) ,   &
                      B_prime_y(j,k) , grav_surf(j,k) ,                          &
                      r_qj = q_guess , r_nh_term_impl = NH(1:n_eqns,j,k,i_RK) ) 
 
-             ELSE
-
-                NH( 1:n_eqns , j , k , i_RK ) = 1.D0 / a_diag * ( ( q_guess -   &
-                     q0( 1:n_vars , j , k ) ) / dt +                            &
-                     ( MATMUL( divFluxj + Expl_terms_j , a_tilde)               &
-                     - MATMUL( NHj , a_dirk ) ) )
-
-             END IF
+             !ELSE
+                !
+                !NH( 1:n_eqns , j , k , i_RK ) = 1.D0 / a_diag * ( ( q_guess -   &
+                !     q0( 1:n_vars , j , k ) ) / dt +                            &
+                !     ( MATMUL( divFluxj + Expl_terms_j , a_tilde)               &
+                !     - MATMUL( NHj , a_dirk ) ) )
+                !
+             !END IF
 
              IF ( verbose_level .GE. 2 ) THEN
 
@@ -785,20 +876,81 @@ CONTAINS
                 
              ELSE
                 
-                WRITE(*,*) 'j,k',j,k
+                WRITE(*,*) 'j,k,n_RK',j,k,n_RK
+                WRITE(*,*) 'dt',dt
                 
                 WRITE(*,*) 'before imex_RK_solver: qc',q0(1:n_vars,j,k)
                 CALL qc_to_qp(q0(1:n_vars,j,k) , B_cent(j,k) , qp(1:n_vars,j,k))
                 WRITE(*,*) 'before imex_RK_solver: qp',qp(1:n_vars,j,k)
+                WRITE(*,*) 'h old',q0(1,j,k) - B_cent(j,k)
+
+
+                WRITE(*,*) 'h^-_j-1/2',q_interfaceL(1,j,k) - B_stag_x(j,k)
+                WRITE(*,*) 'h^+_j-1/2',q_interfaceR(1,j,k) - B_stag_x(j,k)
+                WRITE(*,*) 'h^-_j+1/2',q_interfaceL(1,j+1,k) - B_stag_x(j+1,k)
+                WRITE(*,*) 'h^+_j+1/2',q_interfaceR(1,j+1,k) - B_stag_x(j+1,k)
+
+                WRITE(*,*)
                 
-                WRITE(*,*) 'divFlux',divFlux(1:n_eqns,j,k,1:n_RK)    
-                WRITE(*,*) 'expl_terms',expl_terms(1:n_eqns,j,k,1:n_RK)
-                WRITE(*,*) 'NH',NH(1:n_eqns,j,k,1:n_RK)
+                WRITE(*,*) 'hu^-_j-1/2',q_interfaceL(2,j,k)
+                WRITE(*,*) 'hu^+_j-1/2',q_interfaceR(2,j,k)
+                WRITE(*,*) 'hu^-_j+1/2',q_interfaceL(2,j+1,k)
+                WRITE(*,*) 'hu^+_j+1/2',q_interfaceR(2,j+1,k)
+
+                WRITE(*,*)
+
+                WRITE(*,*) 'a^-_j-1/2',a_interface_xNeg(1,j,k)
+                WRITE(*,*) 'a^+_j-1/2',a_interface_xPos(1,j,k)
+                WRITE(*,*) 'a^-_j+1/2',a_interface_xNeg(1,j+1,k)
+                WRITE(*,*) 'a^+_j+1/2',a_interface_xPos(1,j+1,k)
+
+                WRITE(*,*)
+
+                WRITE(*,*) 'u^-_j-1/2', q_interfaceL(1,j,k) / & 
+                     ( q_interfaceL(2,j,k) - B_stag_x(j,k) )
+                WRITE(*,*) 'u^+_j-1/2', q_interfaceR(1,j,k) / &
+                     ( q_interfaceR(2,j,k) - B_stag_x(j,k) )
+                WRITE(*,*) 'u^-_j+1/2', q_interfaceL(1,j+1,k) / &
+                     ( q_interfaceL(2,j+1,k) - B_stag_x(j+1,k) )
+                WRITE(*,*) 'u^+_j+1/2', q_interfaceR(1,j+1,k) / &
+                     ( q_interfaceR(2,j+1,k) - B_stag_x(j+1,k) )
+
+                WRITE(*,*) 
+              
+                WRITE(*,*) 'lambda',dt/dx
+
+                WRITE(*,*) 
+
+                WRITE(*,*) ( a_interface_xPos(1,j,k) -  q_interfaceR(1,j,k) / &
+                     ( q_interfaceR(2,j,k) - B_stag_x(j,k) ) ) /              &
+                     (  a_interface_xPos(1,j,k) - a_interface_xNeg(1,j,k) )
+
+                WRITE(*,*) (  q_interfaceL(1,j+1,k) / ( q_interfaceL(2,j+1,k) -   &
+                     B_stag_x(j+1,k) ) - a_interface_xNeg(1,j+1,k) ) /            &
+                     ( a_interface_xPos(1,j+1,k) - a_interface_xNeg(1,j+1,k) )
+
+                WRITE(*,*) ( a_interface_xPos(1,j+1,k) -  q_interfaceR(1,j+1,k) / &
+                     ( q_interfaceR(2,j+1,k) - B_stag_x(j+1,k) ) ) /              &
+                     (  a_interface_xPos(1,j+1,k) - a_interface_xNeg(1,j+1,k) )
+
+                WRITE(*,*) (  q_interfaceL(1,j,k) / ( q_interfaceL(2,j,k) -   &
+                     B_stag_x(j,k) ) - a_interface_xNeg(1,j,k) ) /            &
+                     ( a_interface_xPos(1,j,k) - a_interface_xNeg(1,j,k) )
+
+
+                
+
+                WRITE(*,*) 
+  
+                WRITE(*,*) 'divFlux',divFlux(1,j,k,1:n_RK)    
+                WRITE(*,*) 'expl_terms',expl_terms(1,j,k,1:n_RK)
+                WRITE(*,*) 'NH',NH(1,j,k,1:n_RK)
                
                 CALL qc_to_qp(q(1:n_vars,j,k) , B_cent(j,k) , qp(1:n_vars,j,k))
                 
                 WRITE(*,*) 'after imex_RK_solver: qc',q(1:n_vars,j,k)
                 WRITE(*,*) 'after imex_RK_solver: qp',qp(1:n_vars,j,k)
+                WRITE(*,*) 'h new',q(1,j,k) - B_cent(j,k)
                 READ(*,*)
                 
              END IF
@@ -1721,16 +1873,16 @@ CONTAINS
 
              ENDDO eqns_loop
 
-             IF ( ( j .EQ. 0 ) .AND. ( k .EQ. 3 ) ) THEN
-
-                WRITE(*,*) 'eval_flux_KT',j,k
-                WRITE(*,*) 'q_interfaceL',q_interfaceL(1:n_vars,j,k)
-                WRITE(*,*) 'fluxL',fluxL
-                WRITE(*,*) 'q_interfaceR',q_interfaceR(1:n_vars,j,k)
-                WRITE(*,*) 'fluxR',fluxR
-                WRITE(*,*) 'H_interface',H_interface_x(:,j,k)
-
-             END IF
+             !IF ( ( j .EQ. 200 ) .OR. ( j .EQ. 201 ) ) THEN
+             !
+             !   WRITE(*,*) 'eval_flux_KT',j,k
+             !   WRITE(*,*) 'q_interfaceL',q_interfaceL(1:n_vars,j,k)
+             !   WRITE(*,*) 'fluxL',fluxL
+             !   WRITE(*,*) 'q_interfaceR',q_interfaceR(1:n_vars,j,k)
+             !   WRITE(*,*) 'fluxR',fluxR
+             !   WRITE(*,*) 'H_interface',H_interface_x(:,j,k)
+             !
+             !END IF
 
           END DO
 
@@ -1826,6 +1978,7 @@ CONTAINS
        IF ( a1(i) .EQ. a2(i) ) THEN
 
           w_avg(i) = 0.5D0 * ( w1(i) + w2(i) )
+          w_avg(i) = 0.D0
 
        ELSE
 
@@ -2007,27 +2160,65 @@ CONTAINS
 
                 ! positivity preserving reconstruction for h
                 IF ( i .EQ. 1 ) THEN
+               
+                
+                   IF ( j .EQ. -200 ) THEN
+                      
+                      WRITE(*,*) 'reconstruction: before correction'
                    
+                      WRITE(*,*) qrec_prime_x
+                      WRITE(*,*) qrec(1,j,k) - B_cent(j,k)
+                      WRITE(*,*) qrecW(1) - B_stag_x(j,k)
+                      WRITE(*,*) qrecE(1) - B_stag_x(j+1,k)
+                      WRITE(*,*) B_stag_x(j,k) , B_cent(j,k) , B_stag_x(j+1,k)  
+                   
+                   END IF
+       
                    IF ( qrecE(i) .LT. B_stag_x(j+1,k) ) THEN
                       
                       qrec_prime_x = ( B_stag_x(j+1,k) - qrec(i,j,k) ) / dx2
                       
-                      qrecW(i) = qrec(i,j,k) - reconstr_coeff * dx2 * qrec_prime_x
-                      
-                      qrecE(i) = qrec(i,j,k) + reconstr_coeff * dx2 * qrec_prime_x
-                      
+                      qrecE(i) = qrec(i,j,k) + dx2 * qrec_prime_x
+
+                      qrecW(i) = 2.D0 * qrec(i,j,k) - qrecE(i) 
+                                            
                    ENDIF
                    
+                
+                   IF ( j .EQ. -201) THEN
+                      
+                      WRITE(*,*) 'reconstruction: after 1st correction'
+                   
+                      WRITE(*,*) qrec_prime_x
+                      WRITE(*,*) qrec(1,j,k) - B_cent(j,k)
+                      WRITE(*,*) qrecW(1) - B_stag_x(j,k)
+                      WRITE(*,*) qrecE(1) - B_stag_x(j+1,k)
+                      WRITE(*,*) B_stag_x(j,k) , B_cent(j,k) , B_stag_x(j+1,k)  
+                   
+                   END IF
+
                    IF ( qrecW(i) .LT. B_stag_x(j,k) ) THEN
                       
                       qrec_prime_x = ( qrec(i,j,k) - B_stag_x(j,k) ) / dx2
                       
-                      qrecW(i) = qrec(i,j,k) - reconstr_coeff * dx2 * qrec_prime_x
+                      qrecW(i) = qrec(i,j,k) - dx2 * qrec_prime_x
                       
-                      qrecE(i) = qrec(i,j,k) + reconstr_coeff * dx2 * qrec_prime_x
+                      qrecE(i) = 2.D0 * qrec(i,j,k) - qrecW(i) 
                       
                    ENDIF
+                
+                   IF ( j .EQ. -200 ) THEN
+                      
+                      WRITE(*,*) 'reconstruction: after 2nd correction'
                    
+                      WRITE(*,*) qrec_prime_x
+                      WRITE(*,*) qrec(1,j,k) - B_cent(j,k)
+                      WRITE(*,*) qrecW(1) - B_stag_x(j,k)
+                      WRITE(*,*) qrecE(1) - B_stag_x(j+1,k)
+                      WRITE(*,*) B_stag_x(j,k) , B_cent(j,k) , B_stag_x(j+1,k)  
+                   
+                   END IF
+   
                 END IF
                 
              END IF
@@ -2105,9 +2296,9 @@ CONTAINS
                       
                       qrec_prime_y = ( B_stag_y(j,k+1) - qrec(i,j,k) ) / dy2
                       
-                      qrecS(i) = qrec(i,j,k) - reconstr_coeff * dy2 * qrec_prime_y
+                      qrecN(i) = qrec(i,j,k) + dy2 * qrec_prime_y
                       
-                      qrecN(i) = qrec(i,j,k) + reconstr_coeff * dy2 * qrec_prime_y
+                      qrecS(i) = 2.D0 * qrec(i,j,k) - qrecN(i) 
                       
                    ENDIF
                    
@@ -2115,9 +2306,9 @@ CONTAINS
                       
                       qrec_prime_y = ( qrec(i,j,k) - B_stag_y(j,k) ) / dy2
                       
-                      qrecS(i) = qrec(i,j,k) - reconstr_coeff * dy2 * qrec_prime_y
+                      qrecS(i) = qrec(i,j,k) - dy2 * qrec_prime_y
                       
-                      qrecN(i) = qrec(i,j,k) + reconstr_coeff * dy2 * qrec_prime_y
+                      qrecN(i) = 2.D0 * qrec(i,j,k) - qrecS(i)
                       
                    ENDIF
 
@@ -2452,9 +2643,15 @@ CONTAINS
 
     CASE ( 3 )
 
-       ! van_leer
+       ! generalized minmod
 
        slope_lim = minmod( c , theta * minmod( a , b ) )
+
+    CASE ( 4 )
+
+       ! monotonized central-difference (MC, LeVeque p.112)
+
+       slope_lim = minmod( c , 2.0 * minmod( a , b ) )
 
     END SELECT
 
