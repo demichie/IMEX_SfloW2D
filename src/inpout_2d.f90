@@ -724,13 +724,31 @@ CONTAINS
 
     IF ( reconstr_variables .EQ. 'phys' ) THEN
 
-       WRITE(*,*) 'Linear reconstruction and boundary conditions to variables:'
-       WRITE(*,*) 'h+B,u,v,T'
+       IF ( temperature_flag ) THEN
+
+          WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+          WRITE(*,*) 'h+B,u,v,T'
+
+       ELSE
+
+          WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+          WRITE(*,*) 'h+B,u,v'
+
+       END IF
        
     ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
 
-       WRITE(*,*) 'Linear reconstruction and boundary conditions to variables:'
-       WRITE(*,*) 'h+B,hu,hv,T'
+       IF ( temperature_flag ) THEN
+
+          WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+          WRITE(*,*) 'h+B,hu,hv,T'
+
+       ELSE
+
+          WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+          WRITE(*,*) 'h+B,hu,hv'
+
+       END IF
 
     END IF
        
