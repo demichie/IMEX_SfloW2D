@@ -122,8 +122,11 @@ MODULE inpout_2d
 
   REAL*8 :: xllcorner, yllcorner, cellsize
 
-
   LOGICAL :: write_first_q
+
+  INTEGER :: n_probes
+
+  REAL*8, ALLOCATABLE :: probes_coords(:,:)
 
   NAMELIST / run_parameters / run_name , restart , topography_demfile ,         &
        t_start , t_end , dt_output , output_cons_flag , output_esri_flag ,      &
@@ -1650,6 +1653,50 @@ CONTAINS
        CLOSE(2001)
 
     ENDIF
+
+
+
+    !------ search for check points --------------------------------------------
+
+    tend1 = .FALSE.
+    
+    WRITE(*,*) 'Searching for topography_profile'
+    
+    probes_search: DO
+       
+       READ(input_unit,*, END = 300 ) card
+       
+       IF( TRIM(card) == 'PROBES_COORDS' ) THEN
+          
+          EXIT probes_search
+          
+       END IF
+       
+    END DO probes_search
+    
+    
+    READ(input_unit,*) n_probes
+    
+    IF ( verbose_level .GE. 1 ) WRITE(*,*) 'n_probes' ,        &
+         n_probes
+    
+    ALLOCATE( probes_coords( 2 , n_probes ) )
+    
+    DO k = 1, n_probes
+       
+       READ(input_unit,*) probes_coords( 2 , k ) 
+       
+       IF ( verbose_level.GE.1 ) WRITE(*,*) k , probes_coords( 2 , k )  
+       
+    END DO
+    
+    GOTO 310
+300 tend1 = .TRUE.
+310 CONTINUE
+    
+
+    ! ----- end search for check points -----------------------------------------
+
 
     CLOSE( input_unit )
 
