@@ -64,7 +64,7 @@ MODULE inpout_2d
   CHARACTER(LEN=40) :: input_file         !< File with the run parameters
   CHARACTER(LEN=40) :: output_file        !< Name of the output files
   CHARACTER(LEN=40) :: restart_file       !< Name of the restart file 
-  CHARACTER(LEN=40) :: dakota_file        !< Name of the dakota file 
+  CHARACTER(LEN=40) :: probes_file        !< Name of the probes file 
   CHARACTER(LEN=40) :: output_file_2d     !< Name of the output files
   CHARACTER(LEN=40) :: output_esri_file   !< Name of the esri output files
 
@@ -72,7 +72,7 @@ MODULE inpout_2d
   INTEGER, PARAMETER :: backup_unit = 8   !< Backup input data unit
   INTEGER, PARAMETER :: output_unit = 9   !< Output data unit
   INTEGER, PARAMETER :: restart_unit = 10 !< Restart data unit
-  INTEGER, PARAMETER :: dakota_unit = 11  !< Dakota data unit
+  INTEGER, PARAMETER :: probes_unit = 11  !< Probes data unit
   INTEGER, PARAMETER :: output_unit_2d = 12  !< Output data 2D unit
   INTEGER, PARAMETER :: output_esri_unit = 13  !< Esri Output unit
   INTEGER, PARAMETER :: dem_esri_unit = 13  !< Computational grid Esri fmt unit
@@ -1661,7 +1661,9 @@ CONTAINS
     tend1 = .FALSE.
     
     WRITE(*,*) 'Searching for topography_profile'
-    
+   
+    n_probes = 0
+ 
     probes_search: DO
        
        READ(input_unit,*, END = 300 ) card
@@ -1677,16 +1679,15 @@ CONTAINS
     
     READ(input_unit,*) n_probes
     
-    IF ( verbose_level .GE. 1 ) WRITE(*,*) 'n_probes' ,        &
-         n_probes
+    WRITE(*,*) 'n_probes ',n_probes
     
     ALLOCATE( probes_coords( 2 , n_probes ) )
     
     DO k = 1, n_probes
        
-       READ(input_unit,*) probes_coords( 2 , k ) 
+       READ(input_unit,*) probes_coords( 1:2 , k ) 
        
-       IF ( verbose_level.GE.1 ) WRITE(*,*) k , probes_coords( 2 , k )  
+       IF ( verbose_level.GE.0 ) WRITE(*,*) k , probes_coords( 1:2 , k )  
        
     END DO
     
@@ -1766,9 +1767,25 @@ CONTAINS
           ENDDO
           
        END DO
-
+       
     END IF
-
+    
+    IF ( n_probes .GT. 0 ) THEN
+       
+       WRITE(backup_unit,*) '''PROBES_COORDS'''
+       WRITE(backup_unit,*) n_probes
+       
+       DO k = 1,n_probes
+          
+          WRITE(backup_unit,109) probes_coords(1:2,k)
+          
+109       FORMAT(2(1x,e14.7))
+          
+       END DO
+       
+    END IF
+    
+    
     CLOSE(backup_unit)
 
 
@@ -2266,6 +2283,8 @@ CONTAINS
 
     IF ( output_esri_flag ) CALL output_esri(output_idx)
 
+    IF ( n_probes .GT. 0 ) CALL output_probes(output_idx)
+
   END SUBROUTINE output_solution
 
   !******************************************************************************
@@ -2445,17 +2464,42 @@ CONTAINS
     RETURN
   END FUNCTION lettera
 
-  SUBROUTINE output_dakota
+  SUBROUTINE output_probes(output_idx)
+
+    USE geometry_2d, ONLY : x_comp , y_comp , B_cent 
+    USE solver_2d, ONLY : q
+
+    USE geometry_2d, ONLY : interp_2d_scalarB
 
     IMPLICIT NONE
 
-    dakota_file = 'IMEX_SfloW2D.out'
+    INTEGER, INTENT(IN) :: output_idx
 
-    OPEN(dakota_unit,FILE=dakota_file,status='unknown',form='formatted')
+    CHARACTER(LEN=4) :: idx_string
 
-    CLOSE(dakota_unit)
+    REAL*8 :: f2
 
-  END SUBROUTINE output_dakota
+    INTEGER :: k 
+
+    idx_string = lettera(output_idx-1)
+
+    !Save thickness
+    probes_file = TRIM(run_name)//'_'//idx_string//'.prb'
+
+    OPEN(probes_unit,FILE=probes_file,status='unknown',form='formatted')
+    
+    DO k=1,n_probes
+
+       CALL interp_2d_scalarB( x_comp , y_comp , q(1,:,:) - B_cent(:,:) ,       &
+            probes_coords(1,k) , probes_coords(2,k) , f2 )
+
+       WRITE(probes_unit,'(3e20.12)') probes_coords(1,k) , probes_coords(2,k) , f2
+
+    END DO
+
+    CLOSE(probes_unit)
+
+  END SUBROUTINE output_probes
 
 END MODULE inpout_2d
 

@@ -42,7 +42,6 @@ PROGRAM IMEX_SfloW_2d
   USE inpout_2d, ONLY : output_solution
   USE inpout_2d, ONLY : read_solution
   USE inpout_2d, ONLY : close_units
-  USE inpout_2d, ONLY : output_dakota
 
   USE solver_2d, ONLY : allocate_solver_variables
   USE solver_2d, ONLY : deallocate_solver_variables
@@ -144,11 +143,13 @@ PROGRAM IMEX_SfloW_2d
      WRITE(*,FMT="(A3,F10.4,A5,F9.5,A15,ES12.3)") 't =',t,'dt =',dt,             &
           ' total volume = ',dx*dy*(SUM(q(1,:,:)-B_cent(:,:)))
 
-     IF ( ( t .GE. t_output ) .OR. ( t .GE. t_end ) ) CALL output_solution(t)
+     IF ( ( t .GE. t_output ) .OR. ( t .GE. t_end ) ) THEN
+
+        CALL output_solution(t)
+
+     END IF
 
   END DO
-
-  ! CALL output_dakota
 
   CALL deallocate_solver_variables
 

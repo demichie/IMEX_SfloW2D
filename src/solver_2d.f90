@@ -593,7 +593,7 @@ CONTAINS
 
     USE constitutive_2d, ONLY : qc_to_qp
 
-    USE geometry_2d, ONLY : dx , dy
+    USE geometry_2d, ONLY : dx
 
     IMPLICIT NONE
 

@@ -34,7 +34,7 @@ MODULE geometry_2d
   !> Topography at the centers of the control volumes 
   REAL*8, ALLOCATABLE :: B_cent(:,:)
 
-  !> Topography slope (x‪ direction) at the centers of the control volumes 
+  !> Topography slope (x direction) at the centers of the control volumes 
   REAL*8, ALLOCATABLE :: B_prime_x(:,:)
 
   !> Topography slope (y direction) at the centers of the control volumes 
@@ -178,7 +178,7 @@ CONTAINS
           IF(k.EQ.comp_cells_y)THEN
 
              ! left-top vertex
-             B_ver(1,k+1)=topography_profile(3,1,n_topography_profile_y)
+             B_ver(1,k+1) = topography_profile(3,1,n_topography_profile_y)
 
           ELSE
 
@@ -479,6 +479,76 @@ CONTAINS
     
   END SUBROUTINE interp_2d_scalar
 
+
+  !---------------------------------------------------------------------------
+  !> Scalar interpolation (2D)
+  !
+  !> This subroutine interpolate the values of the  array f1, defined on the 
+  !> grid points (x1,y1), at the point (x2,y2). The value are saved in f2.
+  !> In this case x1 and y1 are 1d arrays.
+  !> \date OCTOBER 2016
+  !> \param    x1           original grid                (\b input)
+  !> \param    y1           original grid                (\b input)
+  !> \param    f1           original values              (\b input)
+  !> \param    x2           new point                    (\b output)
+  !> \param    y2           new point                    (\b output)
+  !> \param    f2           interpolated value           (\b output)
+  !---------------------------------------------------------------------------
+
+  SUBROUTINE interp_2d_scalarB(x1, y1, f1, x2, y2, f2)
+    IMPLICIT NONE
+
+    REAL*8, INTENT(IN), DIMENSION(:) :: x1, y1
+    REAL*8, INTENT(IN), DIMENSION(:,:) :: f1
+    REAL*8, INTENT(IN) :: x2, y2
+    REAL*8, INTENT(OUT) :: f2
+
+    INTEGER :: ix , iy
+    REAL*8 :: alfa_x , alfa_y
+
+    IF ( size(x1) .GT. 1 ) THEN
+
+       ix = FLOOR( ( x2 - x1(1) ) / ( x1(2) - x1(1) ) ) + 1
+       ix = MIN( ix , SIZE(x1)-1 )
+       alfa_x = ( x1(ix+1) - x2 ) / (  x1(ix+1) - x1(ix) )
+
+    ELSE
+
+       ix = 1
+       alfa_x = 0.D0
+       
+    END IF
+    
+    IF ( size(y1) .GT. 1 ) THEN
+
+       iy = FLOOR( ( y2 - y1(1) ) / ( y1(2) - y1(1) ) ) + 1
+       iy = MIN( iy , SIZE(x1)-1 )
+       alfa_y = ( y1(iy+1) - y2 ) / (  y1(iy+1) - y1(iy) )
+    
+    ELSE
+
+       iy = 1
+       alfa_y = 0.D0
+       
+    END IF
+       
+    IF ( size(x1) .EQ. 1 ) THEN
+       
+       f2 = alfa_y * f1(ix,iy) + ( 1.D0 - alfa_y ) * f1(ix,iy+1)
+       
+    ELSEIF ( size(y1) .EQ. 1 ) THEN
+       
+       f2 = alfa_x * f1(ix,iy)  + ( 1.D0 - alfa_x ) * f1(ix+1,iy)
+       
+    ELSE
+       
+       f2 = alfa_x * ( alfa_y * f1(ix,iy) + ( 1.D0 - alfa_y ) * f1(ix,iy+1) )   &
+            + ( 1.D0 - alfa_x ) *  ( alfa_y * f1(ix+1,iy) + ( 1.D0 - alfa_y )   &
+            * f1(ix+1,iy+1) )
+       
+    END IF
+    
+  END SUBROUTINE interp_2d_scalarB
 
 
   !------------------------------------------------------------------------------
