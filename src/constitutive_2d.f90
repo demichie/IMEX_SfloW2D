@@ -240,8 +240,8 @@ CONTAINS
 
     END IF
 
-    vel_min(1:n_eqns) = REAL(u_temp) - DSQRT( grav * REAL(h_temp) )
-    vel_max(1:n_eqns) = REAL(u_temp) + DSQRT( grav * REAL(h_temp) )
+    vel_min(1:n_eqns) = u_temp - DSQRT( grav * h_temp )
+    vel_max(1:n_eqns) = u_temp + DSQRT( grav * h_temp )
 
   END SUBROUTINE eval_local_speeds2_x
 
@@ -261,23 +261,23 @@ CONTAINS
     REAL*8, INTENT(IN)  :: Bj
     REAL*8, INTENT(OUT) :: vel_min(n_vars) , vel_max(n_vars)
 
-    REAL*8 :: h_temp , vel_temp
+    REAL*8 :: h_temp , v_temp
 
     h_temp = qj(1) - Bj
 
     IF ( h_temp .NE. 0.D0 ) THEN
 
-       vel_temp = qj(3) / h_temp
+       v_temp = qj(3) / h_temp
 
     ELSE
 
-       vel_temp = 0.D0
+       v_temp = 0.D0
 
     END IF
 
-    vel_min(1:n_eqns) = REAL(vel_temp) - DSQRT( grav * REAL(h_temp) )
-    vel_max(1:n_eqns) = REAL(vel_temp) + DSQRT( grav * REAL(h_temp) )
-
+    vel_min(1:n_eqns) = v_temp - DSQRT( grav * h_temp )
+    vel_max(1:n_eqns) = v_temp + DSQRT( grav * h_temp )
+    
   END SUBROUTINE eval_local_speeds2_y
 
 
@@ -747,6 +747,18 @@ CONTAINS
           
              ! Last R.H.S. term in equation 3 from Costa & Macedonio, 2005
              forces_term(3) = forces_term(3) - gamma * v
+
+          ENDIF
+
+       ELSEIF ( rheology_model .EQ. 4) THEN
+
+          tau = 1.D-3 / ( 1.D0 + 10.D0 * h ) * mod_vel
+          
+          IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
+          
+             forces_term(2) = forces_term(2) - tau * (u/mod_vel)
+          
+             forces_term(3) = forces_term(3) - tau * (v/mod_vel)
 
           ENDIF
           

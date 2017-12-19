@@ -1483,6 +1483,9 @@ CONTAINS
 
           END IF
 
+       ELSEIF ( rheology_model .EQ. 4 ) THEN
+
+          
        ELSE
 
              WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'

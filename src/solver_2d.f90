@@ -1977,7 +1977,6 @@ CONTAINS
 
        IF ( a1(i) .EQ. a2(i) ) THEN
 
-          w_avg(i) = 0.5D0 * ( w1(i) + w2(i) )
           w_avg(i) = 0.D0
 
        ELSE
