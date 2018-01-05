@@ -1,16 +1,19 @@
 var searchData=
 [
-  ['omega',['omega',['../namespacesolver__2d.html#a457b1b607df71cc689a004bc53b6a58b',1,'solver_2d']]],
-  ['omega_5ftilde',['omega_tilde',['../namespacesolver__2d.html#aabaea64a92bb4a584b32146984eade01',1,'solver_2d']]],
-  ['opt_5fsearch_5fnl',['opt_search_nl',['../namespacesolver__2d.html#a0446389f2d39ed020eaa64cc4645e53b',1,'solver_2d']]],
-  ['output_5fcons_5fflag',['output_cons_flag',['../namespaceinpout__2d.html#aa1d436b1474e42b86a2b21a13aac8edc',1,'inpout_2d']]],
-  ['output_5fesri_5ffile',['output_esri_file',['../namespaceinpout__2d.html#a61508935b2473ab12747b11915ff449d',1,'inpout_2d']]],
-  ['output_5fesri_5fflag',['output_esri_flag',['../namespaceinpout__2d.html#a8c0a164828f5dc765777067ddf55ab4c',1,'inpout_2d']]],
-  ['output_5fesri_5funit',['output_esri_unit',['../namespaceinpout__2d.html#a0dbbeacc5c79f6a7f3d4f9aaf9d1296d',1,'inpout_2d']]],
-  ['output_5ffile',['output_file',['../namespaceinpout__2d.html#a91ddcf1b2b4ce84ed80a9f08bc0fe007',1,'inpout_2d']]],
-  ['output_5ffile_5f2d',['output_file_2d',['../namespaceinpout__2d.html#a4399da26a62b952de0e8e36abc2d2905',1,'inpout_2d']]],
-  ['output_5fidx',['output_idx',['../namespaceinpout__2d.html#a9bd7cec385615b5ffcb2c081e545b3bc',1,'inpout_2d']]],
-  ['output_5fphys_5fflag',['output_phys_flag',['../namespaceinpout__2d.html#ae0fb04f8a12a527af0028296fca98fe4',1,'inpout_2d']]],
-  ['output_5funit',['output_unit',['../namespaceinpout__2d.html#a1c0bf1e737f1e4a9cc9dd0dfe5e4cba1',1,'inpout_2d']]],
-  ['output_5funit_5f2d',['output_unit_2d',['../namespaceinpout__2d.html#af723375a5273cb0edd67b02419f0454d',1,'inpout_2d']]]
+  ['n_5feqns',['n_eqns',['../namespaceparameters__2d.html#af26394560f6de98a227e85f8463774eb',1,'parameters_2d']]],
+  ['n_5fnh',['n_nh',['../namespaceparameters__2d.html#af2252fa3d1ab23103d540b37b508f47f',1,'parameters_2d']]],
+  ['n_5fprobes',['n_probes',['../namespaceinpout__2d.html#a6a171372388fe088c3ba075c64be741f',1,'inpout_2d']]],
+  ['n_5frk',['n_rk',['../namespaceparameters__2d.html#a58ee56a125130e5d1d0354b2d1b2a015',1,'parameters_2d']]],
+  ['n_5ftd',['n_td',['../namespaceconstitutive__2d.html#a409b3e243cfc9615c4a480c3631dcec6',1,'constitutive_2d']]],
+  ['n_5ftopography_5fprofile_5fx',['n_topography_profile_x',['../namespacegeometry__2d.html#aa1af6bfa27ed27015af431be02a373ea',1,'geometry_2d']]],
+  ['n_5ftopography_5fprofile_5fy',['n_topography_profile_y',['../namespacegeometry__2d.html#af940a6dfb6555aad20ddce95e1481766',1,'geometry_2d']]],
+  ['n_5fvars',['n_vars',['../namespaceparameters__2d.html#ac4ac1bcb3b2b2d9054234f6acc8b2fd2',1,'parameters_2d']]],
+  ['ncols',['ncols',['../namespaceinpout__2d.html#acf641ccce4038adca0699bfe4b8f6289',1,'inpout_2d']]],
+  ['nh',['nh',['../namespacesolver__2d.html#a2fb6bd6b80b9ac6c6890045c48d5e141',1,'solver_2d']]],
+  ['nhj',['nhj',['../namespacesolver__2d.html#a5e8b3031d9a44a5a683937aef7a14592',1,'solver_2d']]],
+  ['nodata_5fvalue',['nodata_value',['../namespaceinpout__2d.html#a7b113d27ca12e6e6d744a5003ac10082',1,'inpout_2d']]],
+  ['normalize_5ff',['normalize_f',['../namespacesolver__2d.html#acf617230b901235f7d2e5d42e699feee',1,'solver_2d']]],
+  ['normalize_5fq',['normalize_q',['../namespacesolver__2d.html#af0652ff6290d45bb242a1d222fdc8b16',1,'solver_2d']]],
+  ['nrows',['nrows',['../namespaceinpout__2d.html#a62705040f57d43e791c1c906ddd4cf9e',1,'inpout_2d']]],
+  ['nu_5fref',['nu_ref',['../namespaceconstitutive__2d.html#a7f1c6aeade8d23db5d997803c530d6c9',1,'constitutive_2d']]]
 ];

@@ -18,5 +18,6 @@ var searchData=
   ['input_5funit',['input_unit',['../namespaceinpout__2d.html#ad2064e0870b95cc94771c1f0bef66ac5',1,'inpout_2d']]],
   ['interfaces_5frelaxation',['interfaces_relaxation',['../namespaceparameters__2d.html#a3b35ba971d413c30be9a18f02b2f2624',1,'parameters_2d']]],
   ['interp_5f1d_5fscalar',['interp_1d_scalar',['../namespacegeometry__2d.html#abab6c7ba498d51dc92796575c49f40f9',1,'geometry_2d']]],
-  ['interp_5f2d_5fscalar',['interp_2d_scalar',['../namespacegeometry__2d.html#afcc0e89e2af6e7ba493f19b28b748bd7',1,'geometry_2d']]]
+  ['interp_5f2d_5fscalar',['interp_2d_scalar',['../namespacegeometry__2d.html#afcc0e89e2af6e7ba493f19b28b748bd7',1,'geometry_2d']]],
+  ['interp_5f2d_5fscalarb',['interp_2d_scalarb',['../namespacegeometry__2d.html#ab435029a9af059386744765b5a95d590',1,'geometry_2d']]]
 ];

@@ -9,5 +9,7 @@ var searchData=
   ['a_5finterface_5fypos',['a_interface_ypos',['../namespacesolver__2d.html#a9a567bcfb785893b69c71807c56a7588',1,'solver_2d']]],
   ['a_5ftilde',['a_tilde',['../namespacesolver__2d.html#aa17293d625fd1cbf3dd81d6508081803',1,'solver_2d']]],
   ['a_5ftilde_5fij',['a_tilde_ij',['../namespacesolver__2d.html#a330f99fc3c4f6bfa69144fad4a72e52b',1,'solver_2d']]],
+  ['alpha1',['alpha1',['../namespaceconstitutive__2d.html#a6e4bb7f3788d8f9d39b2c07772d201b0',1,'constitutive_2d']]],
+  ['alpha2',['alpha2',['../namespaceconstitutive__2d.html#ade00c26c18212ffe90ed265e8a713400',1,'constitutive_2d']]],
   ['atm_5fheat_5ftransf_5fcoeff',['atm_heat_transf_coeff',['../namespaceconstitutive__2d.html#ad1b4fd37c7cd0c8f8826d5a41aafdb9d',1,'constitutive_2d']]]
 ];

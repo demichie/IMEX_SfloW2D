@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['gamma_5fs',['gamma_s',['../namespaceconstitutive__2d.html#a8555cd8b2e9235f30c54d3ab6809cd69',1,'constitutive_2d']]],
+  ['gamma_5fw',['gamma_w',['../namespaceconstitutive__2d.html#a1ba2328c038572d0453742182cd75afa',1,'constitutive_2d']]],
   ['ge_5faa',['ge_aa',['../namespacecomplexify.html#aac68812f7c5d71231a6661c8989486dd',1,'complexify']]],
   ['ge_5fcc',['ge_cc',['../interfacecomplexify_1_1operator_07_4_0A_08.html#abc17b7d0f7f8e26d702a1339dd305268',1,'complexify::operator(&gt;=)::ge_cc()'],['../namespacecomplexify.html#aa08e14311e5b5a9bd3be5bf691575f76',1,'complexify::ge_cc()']]],
   ['ge_5fci',['ge_ci',['../interfacecomplexify_1_1operator_07_4_0A_08.html#ae520aaf9b72fc9090df2a093a5da09f0',1,'complexify::operator(&gt;=)::ge_ci()'],['../namespacecomplexify.html#a6567b513c6585a578c11beed2f14c0fb',1,'complexify::ge_ci()']]],

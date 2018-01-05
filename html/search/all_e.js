@@ -1,17 +1,11 @@
 var searchData=
 [
-  ['q',['q',['../namespacesolver__2d.html#a02c8bec7a5c8b756671618222596e786',1,'solver_2d']]],
-  ['q0',['q0',['../namespacesolver__2d.html#ac9db50a9c0cef6e95d0ee3ab54333942',1,'solver_2d']]],
-  ['q_5ffv',['q_fv',['../namespacesolver__2d.html#a56814e28bc733d7bcd8a5e7c1d5c65f4',1,'solver_2d']]],
-  ['q_5finit',['q_init',['../namespaceinit__2d.html#a3c1d01037e449241957c4840054e1b90',1,'init_2d']]],
-  ['q_5finterfaceb',['q_interfaceb',['../namespacesolver__2d.html#aa841f540bb008a5cf427c7408ae67a5f',1,'solver_2d']]],
-  ['q_5finterfacel',['q_interfacel',['../namespacesolver__2d.html#a2a13d8f607572bfd9d5ad423868b30db',1,'solver_2d']]],
-  ['q_5finterfacer',['q_interfacer',['../namespacesolver__2d.html#a33ec28605f54d4165ac38fb305a4f066',1,'solver_2d']]],
-  ['q_5finterfacet',['q_interfacet',['../namespacesolver__2d.html#afdab0ce11ba42d5c545ab7da6d04b019',1,'solver_2d']]],
-  ['q_5frk',['q_rk',['../namespacesolver__2d.html#a3e7ac3a442e2fdc8be0eee72f019ba84',1,'solver_2d']]],
-  ['qc_5fto_5fqp',['qc_to_qp',['../namespaceconstitutive__2d.html#aa38b7de1baa7a734227a0aa5bf9548bf',1,'constitutive_2d']]],
-  ['qc_5fto_5fqp2',['qc_to_qp2',['../namespaceconstitutive__2d.html#a45696f0546def3ceeed24fc0d3f8e9e9',1,'constitutive_2d']]],
-  ['qp',['qp',['../namespacesolver__2d.html#af07e2db2c847b6af9a346d3e7cab52dc',1,'solver_2d']]],
-  ['qp2_5fto_5fqc',['qp2_to_qc',['../namespaceconstitutive__2d.html#a7cfd8bf0e3f563b1baa6df32a887e82c',1,'constitutive_2d']]],
-  ['qp_5fto_5fqc',['qp_to_qc',['../namespaceconstitutive__2d.html#a3b66666c5794e7c491a3d915e600cbb4',1,'constitutive_2d']]]
+  ['parameters_5f2d',['parameters_2d',['../namespaceparameters__2d.html',1,'']]],
+  ['parameters_5f2d_2ef90',['parameters_2d.f90',['../parameters__2d_8f90.html',1,'']]],
+  ['phase1_5fname',['phase1_name',['../namespaceconstitutive__2d.html#a99d2758232254c2600d24418d0fde411',1,'constitutive_2d']]],
+  ['phase2_5fname',['phase2_name',['../namespaceconstitutive__2d.html#a92fbd541533e8daa6264944b82e622d5',1,'constitutive_2d']]],
+  ['phys_5fvar',['phys_var',['../namespaceconstitutive__2d.html#a42f0343ddf616b70de2f9ffdc20dbf8d',1,'constitutive_2d']]],
+  ['probes_5fcoords',['probes_coords',['../namespaceinpout__2d.html#ae62da0d7de3cd3dff7ea8f4ce810ad2d',1,'inpout_2d']]],
+  ['probes_5ffile',['probes_file',['../namespaceinpout__2d.html#a42b0d825aa8b19d11fe924030756668a',1,'inpout_2d']]],
+  ['probes_5funit',['probes_unit',['../namespaceinpout__2d.html#ac517c0931d69979e45cb6c4b5ecca6fc',1,'inpout_2d']]]
 ];

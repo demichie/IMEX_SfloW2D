@@ -11,5 +11,7 @@ var searchData=
   ['bce',['bce',['../namespaceparameters__2d.html#aee9446026c60aa4937f1da60bda439f5',1,'parameters_2d']]],
   ['bcn',['bcn',['../namespaceparameters__2d.html#afda7adb43bac23a732e32b5a5edff6ad',1,'parameters_2d']]],
   ['bcs',['bcs',['../namespaceparameters__2d.html#ac30b304480dc5ffde8a43cf742cfde15',1,'parameters_2d']]],
-  ['bcw',['bcw',['../namespaceparameters__2d.html#a1444c57edc9f76441464f8d4cbc19d6c',1,'parameters_2d']]]
+  ['bcw',['bcw',['../namespaceparameters__2d.html#a1444c57edc9f76441464f8d4cbc19d6c',1,'parameters_2d']]],
+  ['beta1',['beta1',['../namespaceconstitutive__2d.html#ab2da798eaf81eddc63e78bf1a593c182',1,'constitutive_2d']]],
+  ['beta2',['beta2',['../namespaceconstitutive__2d.html#ad1c1e730a3b0294bca3868779313d3a0',1,'constitutive_2d']]]
 ];

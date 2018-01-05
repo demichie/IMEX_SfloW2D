@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['dakota_5ffile',['dakota_file',['../namespaceinpout__2d.html#af01b550e25bd438bb1b71113fa4dec3b',1,'inpout_2d']]],
-  ['dakota_5funit',['dakota_unit',['../namespaceinpout__2d.html#a0e177b5b0e440e69dd3541eebef91b84',1,'inpout_2d']]],
   ['deallocate_5fsolver_5fvariables',['deallocate_solver_variables',['../namespacesolver__2d.html#a955472f578d2b3f6c399f8b7160caff8',1,'solver_2d']]],
   ['dem_5fesri_5funit',['dem_esri_unit',['../namespaceinpout__2d.html#a61ee66608f1e8f95b72be0067ca50959',1,'inpout_2d']]],
   ['dim',['dim',['../interfacecomplexify_1_1dim.html',1,'complexify']]],

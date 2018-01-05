@@ -14,6 +14,8 @@ var searchData=
   ['acos',['acos',['../interfacecomplexify_1_1acos.html',1,'complexify']]],
   ['acos_5fc',['acos_c',['../interfacecomplexify_1_1acos.html#ad705956feeb7f51ed5ea97da9e13be50',1,'complexify::acos::acos_c()'],['../namespacecomplexify.html#a517fa3409ad773dd7955397c4c948a58',1,'complexify::acos_c()']]],
   ['allocate_5fsolver_5fvariables',['allocate_solver_variables',['../namespacesolver__2d.html#a5f387c3d0986fec817ad63c0f06bd845',1,'solver_2d']]],
+  ['alpha1',['alpha1',['../namespaceconstitutive__2d.html#a6e4bb7f3788d8f9d39b2c07772d201b0',1,'constitutive_2d']]],
+  ['alpha2',['alpha2',['../namespaceconstitutive__2d.html#ade00c26c18212ffe90ed265e8a713400',1,'constitutive_2d']]],
   ['asin',['asin',['../interfacecomplexify_1_1asin.html',1,'complexify']]],
   ['asin_5fc',['asin_c',['../interfacecomplexify_1_1asin.html#aa4d7115578530b6b338b69e75b78e4de',1,'complexify::asin::asin_c()'],['../namespacecomplexify.html#a545984a81d91f8d60c064cfb51f370fa',1,'complexify::asin_c()']]],
   ['atan',['atan',['../interfacecomplexify_1_1atan.html',1,'complexify']]],
