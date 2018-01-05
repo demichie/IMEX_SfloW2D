@@ -99,6 +99,9 @@ MODULE parameters_2d
   !> Ambient temperature
   REAL*8 :: T_ambient
 
+  !> Volumetric fraction of sediment in the flow
+  REAL*8 :: sed_vol_fract
+
   INTEGER :: n_vars        !< Number of conservative variables
   INTEGER :: n_eqns   !< Number of equations
 

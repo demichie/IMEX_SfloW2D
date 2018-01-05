@@ -133,7 +133,7 @@ CONTAINS
 
     IMPLICIT NONE
 
-    REAL*8 :: gamma
+    REAL*8 :: gamma , delta
 
     INTEGER :: i,j
 
@@ -220,6 +220,7 @@ CONTAINS
     omega = 0.D0
 
     gamma = 1.D0 - 1.D0 / SQRT(2.D0)
+    delta = 1.D0 - 1.D0 / ( 2.D0 * gamma )
 
     IF ( n_RK .EQ. 1 ) THEN
 
@@ -243,6 +244,7 @@ CONTAINS
        omega(1) = 0.D0
        omega(2) = 1.D0
 
+      
     ELSEIF ( n_RK .EQ. 3 ) THEN
 
        ! Tableau for the IMEX-SSP(3,3,2) Stiffly Accurate Scheme
@@ -546,15 +548,6 @@ CONTAINS
 
           DO k = 1,comp_cells_y
 
-             IF ( ( j .EQ. -200 ) .OR. ( j .EQ. -201 ) ) THEN
-
-                WRITE(*,*) 'a_interface,j',j
-                WRITE(*,*) MAXVAL(a_interface_x_max(:,j,k))
-                WRITE(*,*) MAXVAL(a_interface_x_max(:,j+1,k))
-
-             END IF
-
-
              dt_interface_x = cfl * dx / MAX( MAXVAL(a_interface_x_max(:,j,k))  &
                   , MAXVAL(a_interface_x_max(:,j+1,k)) )
 
@@ -643,22 +636,35 @@ CONTAINS
 
              END IF
 
+             ! initialize the RK step
              IF ( i_RK .EQ. 1 ) THEN
 
+                ! solution from the previous time step
                 q_guess(1:n_vars) = q0( 1:n_vars , j , k) 
 
              ELSE
 
+                ! solution from the previous RK step
                 q_guess(1:n_vars) = q_rk( 1:n_vars , j , k , MAX(1,i_RK-1) )
 
              END IF
 
+             ! RK explicit hyperbolic terms for the volume (i,j)
              divFluxj(1:n_eqns,1:n_RK) = divFlux( 1:n_eqns , j , k , 1:n_RK )
 
+             ! RK implicit terms for the volume (i,j)
              NHj(1:n_eqns,1:n_RK) = NH( 1:n_eqns , j , k , 1:n_RK )
 
+             ! RK additional explicit terms for the volume (i,j)
              Expl_terms_j(1:n_eqns,1:n_RK) = expl_terms( 1:n_eqns,j,k,1:n_RK )
 
+             ! New solution at the i_RK step without the implicit term
+             q_fv( 1:n_vars , j , k ) = q0( 1:n_vars , j , k )                  &
+                  - dt * (MATMUL( divFluxj(1:n_eqns,1:i_RK)                     &
+                  + Expl_terms_j(1:n_eqns,1:i_RK) , a_tilde(1:i_RK) )           &
+                  - MATMUL( NHj(1:n_eqns,1:i_RK) , a_dirk(1:i_RK) ) )
+
+            
              IF ( verbose_level .GE. 2 ) THEN
 
                 WRITE(*,*) 'q_guess',q_guess
@@ -669,21 +675,63 @@ CONTAINS
 
              IF ( a_diag .NE. 0.D0 ) THEN
 
-                ! solve the implicit system
-                CALL solve_rk_step( B_cent(j,k) , B_prime_x(j,k) ,              &
-                     B_prime_y(j,k), grav_surf(j,k) ,                           &
-                     q_guess , q0(1:n_vars,j,k ) , a_tilde ,                    &
-                     a_dirk , a_diag )
+                IF ( q_fv(1,j,k) .GT.  B_cent(j,k) )  THEN
+
+                   ! Solve the implicit system to find the solution at the 
+                   ! i_RK step of the IMEX RK procedure
+                   CALL solve_rk_step( B_cent(j,k) , B_prime_x(j,k) ,           &
+                        B_prime_y(j,k), grav_surf(j,k) ,                        &
+                        q_guess , q0(1:n_vars,j,k ) , a_tilde ,                 &
+                        a_dirk , a_diag )
+
+                ELSE
+
+                   q_guess(1:n_vars) = q_fv( 1:n_vars , j , k ) 
+
+                END IF
 
              END IF
 
+             ! Eval and store the implicit term at the i_RK step
+             CALL eval_nonhyperbolic_terms( B_cent(j,k) , B_prime_x(j,k) ,      &
+                  B_prime_y(j,k) , grav_surf(j,k) , r_qj = q_guess ,            &
+                  r_nh_term_impl = NH(1:n_eqns,j,k,i_RK) ) 
+
+             IF ( q_fv(2,j,k)**2 + q_fv(3,j,k)**2 .EQ. 0.D0 ) THEN
+
+                q_guess(2:3) = 0.D0 
+
+             ! Check if the impl. friction term changed the sign of the velocity
+             ELSEIF ( ( q_guess(2)*q_fv(2,j,k) .LT. 0.D0 ) .AND.                &
+                  ( q_guess(3)*q_fv(3,j,k) .LT. 0.D0 ) ) THEN
+
+                q_guess(2:3) = 0.D0 
+          
+             ! Align the velocity vector with previous one
+             ELSE
+
+                q_guess(2:3) = DSQRT( q_guess(2)**2 + q_guess(3)**2 ) *         &
+                     q_fv(2:3,j,k) / DSQRT( q_fv(2,j,k)**2 + q_fv(3,j,k)**2 ) 
+
+             END IF
+          
+             IF ( a_diag .NE. 0.D0 ) THEN
+                
+                ! Update the viscous term with the correction on the new velocity
+                NH(2:3,j,k,i_RK) = - ( q_fv(2:3,j,k) - q_guess(2:3) ) /         &
+                     ( dt*a_diag )
+
+             END IF
+
+             ! Store the solution at the end of the i_RK step
              q_rk( 1:n_vars , j , k , i_RK ) = q_guess
 
+             ! Check the sign of the flow thickness
              h_new = q_guess(1) - B_cent(j,k)
 
              IF ( h_new .LT. 0.D0 ) THEN
 
-                IF ( DABS(h_new) .LT. 1.D-10 ) THEN
+                IF ( DABS(h_new) .LT. 1.D-8 ) THEN
 
                    q_rk(1,j,k,i_RK) = B_cent(j,k)
                    q_rk(2:n_vars,j,k,i_RK) = 0.D0
@@ -734,20 +782,29 @@ CONTAINS
                    WRITE(*,*) 'a^+_j+1/2',a_interface_xPos(1,j+1,k)
 
                    WRITE(*,*)
-                   WRITE(*,*) 'lambda*a^-_j-1/2',dt/dx*ABS(a_interface_xNeg(1,j,k))
-                   WRITE(*,*) 'lambda*a^+_j-1/2',dt/dx*ABS(a_interface_xPos(1,j,k))
-                   WRITE(*,*) 'lambda*a^-_j+1/2',dt/dx*ABS(a_interface_xNeg(1,j+1,k))
-                   WRITE(*,*) 'lambda*a^-_j+1/2',dt/dx*ABS(a_interface_xPos(1,j+1,k))
+                   WRITE(*,*) 'lambda*a^-_j-1/2' , dt / dx                      &
+                        * ABS(a_interface_xNeg(1,j,k))
+
+                   WRITE(*,*) 'lambda*a^+_j-1/2' , dt / dx                      &
+                        * ABS(a_interface_xPos(1,j,k))
+
+                   WRITE(*,*) 'lambda*a^-_j+1/2' , dt / dx                      &
+                        * ABS(a_interface_xNeg(1,j+1,k))
+                   WRITE(*,*) 'lambda*a^-_j+1/2' , dt / dx                      &
+                        * ABS(a_interface_xPos(1,j+1,k))
 
                    WRITE(*,*)
                    
-                   WRITE(*,*) 'u^-_j-1/2', q_interfaceL(2,j,k) / & 
+                   WRITE(*,*) 'u^-_j-1/2', q_interfaceL(2,j,k) /                & 
                         ( q_interfaceL(1,j,k) - B_stag_x(j,k) )
-                   WRITE(*,*) 'u^+_j-1/2', q_interfaceR(2,j,k) / &
+ 
+                   WRITE(*,*) 'u^+_j-1/2', q_interfaceR(2,j,k) /                &
                         ( q_interfaceR(1,j,k) - B_stag_x(j,k) )
-                   WRITE(*,*) 'u^-_j+1/2', q_interfaceL(2,j+1,k) / &
+                
+                   WRITE(*,*) 'u^-_j+1/2', q_interfaceL(2,j+1,k) /              &
                         ( q_interfaceL(1,j+1,k) - B_stag_x(j+1,k) )
-                   WRITE(*,*) 'u^+_j+1/2', q_interfaceR(2,j+1,k) / &
+                
+                   WRITE(*,*) 'u^+_j+1/2', q_interfaceR(2,j+1,k) /              &
                         ( q_interfaceR(1,j+1,k) - B_stag_x(j+1,k) )
                    
                    WRITE(*,*) 
@@ -756,20 +813,21 @@ CONTAINS
                    
                    WRITE(*,*) 
                    
-                   WRITE(*,*) ( a_interface_xPos(1,j,k) -  q_interfaceR(1,j,k) / &
-                        ( q_interfaceR(2,j,k) - B_stag_x(j,k) ) ) /              &
+                   WRITE(*,*) ( a_interface_xPos(1,j,k) -  q_interfaceR(1,j,k)  &
+                        / ( q_interfaceR(2,j,k) - B_stag_x(j,k) ) ) /           &
                         (  a_interface_xPos(1,j,k) - a_interface_xNeg(1,j,k) )
                    
-                   WRITE(*,*) (  q_interfaceL(1,j+1,k) / ( q_interfaceL(2,j+1,k) -   &
-                        B_stag_x(j+1,k) ) - a_interface_xNeg(1,j+1,k) ) /            &
+                   WRITE(*,*) (  q_interfaceL(1,j+1,k) / ( q_interfaceL(2,j+1,k)&
+                        -  B_stag_x(j+1,k) ) - a_interface_xNeg(1,j+1,k) ) /    &
                         ( a_interface_xPos(1,j+1,k) - a_interface_xNeg(1,j+1,k) )
                    
-                   WRITE(*,*) ( a_interface_xPos(1,j+1,k) -  q_interfaceR(1,j+1,k) / &
-                        ( q_interfaceR(2,j+1,k) - B_stag_x(j+1,k) ) ) /              &
-                        (  a_interface_xPos(1,j+1,k) - a_interface_xNeg(1,j+1,k) )
+                   WRITE(*,*) ( a_interface_xPos(1,j+1,k)                       &
+                        - q_interfaceR(1,j+1,k) /                               &
+                        ( q_interfaceR(2,j+1,k) - B_stag_x(j+1,k) ) ) /         &
+                        (  a_interface_xPos(1,j+1,k) - a_interface_xNeg(1,j+1,k))
                    
-                   WRITE(*,*) (  q_interfaceL(1,j,k) / ( q_interfaceL(2,j,k) -   &
-                        B_stag_x(j,k) ) - a_interface_xNeg(1,j,k) ) /            &
+                   WRITE(*,*) (  q_interfaceL(1,j,k) / ( q_interfaceL(2,j,k) -  &
+                        B_stag_x(j,k) ) - a_interface_xNeg(1,j,k) ) /           &
                         ( a_interface_xPos(1,j,k) - a_interface_xNeg(1,j,k) )
                                       
                    WRITE(*,*) 
@@ -782,21 +840,6 @@ CONTAINS
                    
              END IF
 
-             ! store the non-hyperbolic term for the explicit computations
-             !IF ( a_diag .EQ. 0.D0 ) THEN
-
-                CALL eval_nonhyperbolic_terms( B_cent(j,k) , B_prime_x(j,k) ,   &
-                     B_prime_y(j,k) , grav_surf(j,k) ,                          &
-                     r_qj = q_guess , r_nh_term_impl = NH(1:n_eqns,j,k,i_RK) ) 
-
-             !ELSE
-                !
-                !NH( 1:n_eqns , j , k , i_RK ) = 1.D0 / a_diag * ( ( q_guess -   &
-                !     q0( 1:n_vars , j , k ) ) / dt +                            &
-                !     ( MATMUL( divFluxj + Expl_terms_j , a_tilde)               &
-                !     - MATMUL( NHj , a_dirk ) ) )
-                !
-             !END IF
 
              IF ( verbose_level .GE. 2 ) THEN
 
@@ -811,11 +854,11 @@ CONTAINS
 
        ENDDO loop_over_xcells
 
-       ! Eval and save the explicit hyperbolic (fluxes) terms
+       ! Eval and store the explicit hyperbolic (fluxes) terms
        CALL eval_hyperbolic_terms( q_rk(1:n_vars,1:comp_cells_x,1:comp_cells_y, &
             i_RK) , divFlux(1:n_eqns,1:comp_cells_x,1:comp_cells_y,i_RK) )
 
-       ! Eval and save the other explicit terms (e.g. gravity or viscous forces)
+       ! Eval and store the other explicit terms (e.g. gravity or viscous forces)
        CALL eval_explicit_terms( q_rk(1:n_vars,1:comp_cells_x,1:comp_cells_y,   &
             i_RK) , expl_terms(1:n_eqns,1:comp_cells_x,1:comp_cells_y,i_RK) )
 
@@ -921,20 +964,20 @@ CONTAINS
 
                 WRITE(*,*) 
 
-                WRITE(*,*) ( a_interface_xPos(1,j,k) -  q_interfaceR(1,j,k) / &
-                     ( q_interfaceR(2,j,k) - B_stag_x(j,k) ) ) /              &
+                WRITE(*,*) ( a_interface_xPos(1,j,k) -  q_interfaceR(1,j,k) /   &
+                     ( q_interfaceR(2,j,k) - B_stag_x(j,k) ) ) /                &
                      (  a_interface_xPos(1,j,k) - a_interface_xNeg(1,j,k) )
 
-                WRITE(*,*) (  q_interfaceL(1,j+1,k) / ( q_interfaceL(2,j+1,k) -   &
-                     B_stag_x(j+1,k) ) - a_interface_xNeg(1,j+1,k) ) /            &
+                WRITE(*,*) (  q_interfaceL(1,j+1,k) / ( q_interfaceL(2,j+1,k) - &
+                     B_stag_x(j+1,k) ) - a_interface_xNeg(1,j+1,k) ) /          &
                      ( a_interface_xPos(1,j+1,k) - a_interface_xNeg(1,j+1,k) )
 
-                WRITE(*,*) ( a_interface_xPos(1,j+1,k) -  q_interfaceR(1,j+1,k) / &
-                     ( q_interfaceR(2,j+1,k) - B_stag_x(j+1,k) ) ) /              &
+                WRITE(*,*) ( a_interface_xPos(1,j+1,k) -  q_interfaceR(1,j+1,k) &
+                     / ( q_interfaceR(2,j+1,k) - B_stag_x(j+1,k) ) ) /          &
                      (  a_interface_xPos(1,j+1,k) - a_interface_xNeg(1,j+1,k) )
 
-                WRITE(*,*) (  q_interfaceL(1,j,k) / ( q_interfaceL(2,j,k) -   &
-                     B_stag_x(j,k) ) - a_interface_xNeg(1,j,k) ) /            &
+                WRITE(*,*) (  q_interfaceL(1,j,k) / ( q_interfaceL(2,j,k) -     &
+                     B_stag_x(j,k) ) - a_interface_xNeg(1,j,k) ) /              &
                      ( a_interface_xPos(1,j,k) - a_interface_xNeg(1,j,k) )
 
 
@@ -946,16 +989,23 @@ CONTAINS
                 WRITE(*,*) 'expl_terms',expl_terms(1,j,k,1:n_RK)
                 WRITE(*,*) 'NH',NH(1,j,k,1:n_RK)
                
-                CALL qc_to_qp(q(1:n_vars,j,k) , B_cent(j,k) , qp(1:n_vars,j,k))
-                
-                WRITE(*,*) 'after imex_RK_solver: qc',q(1:n_vars,j,k)
-                WRITE(*,*) 'after imex_RK_solver: qp',qp(1:n_vars,j,k)
-                WRITE(*,*) 'h new',q(1,j,k) - B_cent(j,k)
                 READ(*,*)
                 
              END IF
 
           END IF
+
+          IF ( verbose_level .GE. 1 ) THEN
+          
+             CALL qc_to_qp(q(1:n_vars,j,k) , B_cent(j,k) , qp(1:n_vars,j,k))
+             
+             WRITE(*,*) 'after imex_RK_solver: qc',q(1:n_vars,j,k)
+             WRITE(*,*) 'after imex_RK_solver: qp',qp(1:n_vars,j,k)
+             WRITE(*,*) 'h new',q(1,j,k) - B_cent(j,k)
+             READ(*,*)
+
+          END IF
+
 
        ENDDO
 
@@ -1005,6 +1055,8 @@ CONTAINS
     REAL*8, INTENT(IN) :: a_tilde(n_RK)
     REAL*8, INTENT(IN) :: a_dirk(n_RK)
     REAL*8, INTENT(IN) :: a_diag
+
+    REAL*8 :: qj_init(n_vars)
 
     REAL*8 :: qj_org(n_vars) , qj_rel(n_vars)
 
@@ -1056,8 +1108,9 @@ CONTAINS
 
     coeff_f(1:n_eqns) = 1.D0
 
-    ! normalize the functions of the nonlinear system
+    qj_init = qj
 
+    ! normalize the functions of the nonlinear system
     IF ( normalize_f ) THEN
 
        qj = qj_old - dt * ( MATMUL(divFluxj+ Expl_terms_j,a_tilde)              &
@@ -1243,6 +1296,7 @@ CONTAINS
 
        END IF
 
+       
        IF ( MAXVAL( ABS( right_term(:) ) ) < TOLF ) THEN
 
           IF ( verbose_level .GE. 3 ) WRITE(*,*) '1: check',check
@@ -1545,7 +1599,6 @@ CONTAINS
 
     REAL*8 :: nh_term_impl(n_eqns)
     REAL*8 :: Rj(n_eqns)
-
 
     CALL eval_nonhyperbolic_terms( Bj , Bprimej_x , Bprimej_y , grav3_surf ,    &
          r_qj = qj , r_nh_term_impl = nh_term_impl ) 
@@ -1873,17 +1926,6 @@ CONTAINS
 
              ENDDO eqns_loop
 
-             !IF ( ( j .EQ. 200 ) .OR. ( j .EQ. 201 ) ) THEN
-             !
-             !   WRITE(*,*) 'eval_flux_KT',j,k
-             !   WRITE(*,*) 'q_interfaceL',q_interfaceL(1:n_vars,j,k)
-             !   WRITE(*,*) 'fluxL',fluxL
-             !   WRITE(*,*) 'q_interfaceR',q_interfaceR(1:n_vars,j,k)
-             !   WRITE(*,*) 'fluxR',fluxR
-             !   WRITE(*,*) 'H_interface',H_interface_x(:,j,k)
-             !
-             !END IF
-
           END DO
 
        END DO
@@ -1977,6 +2019,7 @@ CONTAINS
 
        IF ( a1(i) .EQ. a2(i) ) THEN
 
+          w_avg(i) = 0.5D0 * ( w1(i) + w2(i) )
           w_avg(i) = 0.D0
 
        ELSE
@@ -2062,7 +2105,7 @@ CONTAINS
     INTEGER :: i              !< loop counter (variables)
 
 
-    ! Convert the conservative variables to the physical variables
+    ! Compute the variable to reconstruct (phys or cons)
     DO j = 1,comp_cells_x
 
        DO k = 1,comp_cells_y
@@ -2105,7 +2148,7 @@ CONTAINS
                       qrec_stencil(1) = bcW(i)%value
                       qrec_stencil(2:3) = qrec(i,1:2,k)
                       
-                      CALL limit( qrec_stencil , x_stencil , limiter(i) ,          &
+                      CALL limit( qrec_stencil , x_stencil , limiter(i) ,       &
                            qrec_prime_x ) 
                       
                    ELSEIF ( bcW(i)%flag .EQ. 1 ) THEN
@@ -2129,7 +2172,7 @@ CONTAINS
                       x_stencil(3) = x_stag(comp_interfaces_x)
                       x_stencil(1:2) = x_comp(comp_cells_x-1:comp_cells_x)
                       
-                      CALL limit( qrec_stencil , x_stencil , limiter(i) ,          &
+                      CALL limit( qrec_stencil , x_stencil , limiter(i) ,       &
                            qrec_prime_x ) 
                       
                    ELSEIF ( bcE(i)%flag .EQ. 1 ) THEN
@@ -2138,7 +2181,7 @@ CONTAINS
                       
                    ELSEIF ( bcE(i)%flag .EQ. 2 ) THEN
                       
-                      qrec_prime_x = ( qrec(i,comp_cells_x,k) -                    &
+                      qrec_prime_x = ( qrec(i,comp_cells_x,k) -                 &
                            qrec(i,comp_cells_x-1,k) ) / dx
                       
                    END IF
@@ -2149,7 +2192,7 @@ CONTAINS
                    x_stencil(1:3) = x_comp(j-1:j+1)
                    qrec_stencil = qrec(i,j-1:j+1,k)
                    
-                   CALL limit( qrec_stencil , x_stencil , limiter(i) ,             &
+                   CALL limit( qrec_stencil , x_stencil , limiter(i) ,          &
                         qrec_prime_x )
                    
                 ENDIF
@@ -2157,22 +2200,9 @@ CONTAINS
                 qrecW(i) = qrec(i,j,k) - reconstr_coeff * dx2 * qrec_prime_x
                 qrecE(i) = qrec(i,j,k) + reconstr_coeff * dx2 * qrec_prime_x
 
-                ! positivity preserving reconstruction for h
+                ! positivity preserving reconstruction for h (i=1, 1st variable)
                 IF ( i .EQ. 1 ) THEN
-               
-                
-                   IF ( j .EQ. -200 ) THEN
-                      
-                      WRITE(*,*) 'reconstruction: before correction'
-                   
-                      WRITE(*,*) qrec_prime_x
-                      WRITE(*,*) qrec(1,j,k) - B_cent(j,k)
-                      WRITE(*,*) qrecW(1) - B_stag_x(j,k)
-                      WRITE(*,*) qrecE(1) - B_stag_x(j+1,k)
-                      WRITE(*,*) B_stag_x(j,k) , B_cent(j,k) , B_stag_x(j+1,k)  
-                   
-                   END IF
-       
+                               
                    IF ( qrecE(i) .LT. B_stag_x(j+1,k) ) THEN
                       
                       qrec_prime_x = ( B_stag_x(j+1,k) - qrec(i,j,k) ) / dx2
@@ -2183,19 +2213,6 @@ CONTAINS
                                             
                    ENDIF
                    
-                
-                   IF ( j .EQ. -201) THEN
-                      
-                      WRITE(*,*) 'reconstruction: after 1st correction'
-                   
-                      WRITE(*,*) qrec_prime_x
-                      WRITE(*,*) qrec(1,j,k) - B_cent(j,k)
-                      WRITE(*,*) qrecW(1) - B_stag_x(j,k)
-                      WRITE(*,*) qrecE(1) - B_stag_x(j+1,k)
-                      WRITE(*,*) B_stag_x(j,k) , B_cent(j,k) , B_stag_x(j+1,k)  
-                   
-                   END IF
-
                    IF ( qrecW(i) .LT. B_stag_x(j,k) ) THEN
                       
                       qrec_prime_x = ( qrec(i,j,k) - B_stag_x(j,k) ) / dx2
@@ -2206,20 +2223,8 @@ CONTAINS
                       
                    ENDIF
                 
-                   IF ( j .EQ. -200 ) THEN
-                      
-                      WRITE(*,*) 'reconstruction: after 2nd correction'
-                   
-                      WRITE(*,*) qrec_prime_x
-                      WRITE(*,*) qrec(1,j,k) - B_cent(j,k)
-                      WRITE(*,*) qrecW(1) - B_stag_x(j,k)
-                      WRITE(*,*) qrecE(1) - B_stag_x(j+1,k)
-                      WRITE(*,*) B_stag_x(j,k) , B_cent(j,k) , B_stag_x(j+1,k)  
-                   
-                   END IF
-   
                 END IF
-                
+          
              END IF
                 
              ! y-direction
@@ -2236,7 +2241,7 @@ CONTAINS
                       y_stencil(1) = y_stag(1)
                       y_stencil(2:3) = y_comp(1:2)
                       
-                      CALL limit( qrec_stencil , y_stencil , limiter(i) ,          &
+                      CALL limit( qrec_stencil , y_stencil , limiter(i) ,       &
                            qrec_prime_y ) 
                       
                    ELSEIF ( bcS(i)%flag .EQ. 1 ) THEN
@@ -2260,7 +2265,7 @@ CONTAINS
                       y_stencil(3) = y_stag(comp_interfaces_y)
                       y_stencil(1:2) = y_comp(comp_cells_y-1:comp_cells_y)
                       
-                      CALL limit( qrec_stencil , y_stencil , limiter(i) ,          &
+                      CALL limit( qrec_stencil , y_stencil , limiter(i) ,       &
                            qrec_prime_y ) 
                       
                    ELSEIF ( bcN(i)%flag .EQ. 1 ) THEN
@@ -2269,7 +2274,7 @@ CONTAINS
                       
                    ELSEIF ( bcN(i)%flag .EQ. 2 ) THEN
                       
-                      qrec_prime_y = ( qrec(i,j,comp_cells_y) -                    &
+                      qrec_prime_y = ( qrec(i,j,comp_cells_y) -                 &
                            qrec(i,j,comp_cells_y-1) ) / dy 
                       
                    END IF
@@ -2280,7 +2285,7 @@ CONTAINS
                    y_stencil(1:3) = y_comp(k-1:k+1)
                    qrec_stencil = qrec(i,j,k-1:k+1)
                    
-                   CALL limit( qrec_stencil , y_stencil , limiter(i) ,             &
+                   CALL limit( qrec_stencil , y_stencil , limiter(i) ,          &
                         qrec_prime_y )
                    
                 ENDIF check_y_boundary
@@ -2339,15 +2344,15 @@ CONTAINS
              
              IF ( comp_cells_x .GT. 1 ) THEN
 
-                CALL qrec_to_qc( qrecW , B_stag_x(j,k) , q_interfaceR(:,j,k) )
-                CALL qrec_to_qc( qrecE , B_stag_x(j+1,k) , q_interfaceL(:,j+1,k) )
+                CALL qrec_to_qc( qrecW, B_stag_x(j,k) , q_interfaceR(:,j,k) )
+                CALL qrec_to_qc( qrecE, B_stag_x(j+1,k) , q_interfaceL(:,j+1,k) )
 
              END IF
 
              IF ( comp_cells_y .GT. 1 ) THEN
                 
-                CALL qrec_to_qc( qrecS , B_stag_y(j,k) , q_interfaceT(:,j,k) )
-                CALL qrec_to_qc( qrecN , B_stag_y(j,k+1) , q_interfaceB(:,j,k+1) )
+                CALL qrec_to_qc( qrecS, B_stag_y(j,k) , q_interfaceT(:,j,k) )
+                CALL qrec_to_qc( qrecN, B_stag_y(j,k+1) , q_interfaceB(:,j,k+1) )
 
              END IF
                 
@@ -2383,11 +2388,11 @@ CONTAINS
                 
                 IF ( reconstr_variables .EQ. 'phys' ) THEN
                    
-                   CALL qp_to_qc( qrec_bdry , B_stag_y(j,1) , q_interfaceB(:,j,1) )
+                   CALL qp_to_qc( qrec_bdry, B_stag_y(j,1), q_interfaceB(:,j,1) )
                    
                 ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
                    
-                   CALL qrec_to_qc( qrec_bdry , B_stag_y(j,1) ,                    &
+                   CALL qrec_to_qc( qrec_bdry , B_stag_y(j,1) ,                 &
                         q_interfaceB(:,j,1) )
                    
                 END IF
@@ -2413,12 +2418,12 @@ CONTAINS
                 
                 IF ( reconstr_variables .EQ. 'phys' ) THEN
                    
-                   CALL qp_to_qc( qrec_bdry , B_stag_y(j,comp_interfaces_y) ,      &
+                   CALL qp_to_qc( qrec_bdry , B_stag_y(j,comp_interfaces_y) ,   &
                         q_interfaceT(:,j,comp_interfaces_y) )
                    
                 ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
                    
-                   CALL qrec_to_qc( qrec_bdry , B_stag_y(j,comp_interfaces_y) ,    &
+                   CALL qrec_to_qc( qrec_bdry , B_stag_y(j,comp_interfaces_y) , &
                         q_interfaceT(:,j,comp_interfaces_y) )
                    
                 END IF
@@ -2448,11 +2453,11 @@ CONTAINS
                 
                 IF ( reconstr_variables .EQ. 'phys' ) THEN
                    
-                   CALL qp_to_qc( qrec_bdry , B_stag_x(1,k) , q_interfaceL(:,1,k) )
+                   CALL qp_to_qc( qrec_bdry, B_stag_x(1,k), q_interfaceL(:,1,k) )
                    
                 ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
                    
-                   CALL qrec_to_qc( qrec_bdry , B_stag_x(1,k) ,                    &
+                   CALL qrec_to_qc( qrec_bdry , B_stag_x(1,k) ,                 &
                         q_interfaceL(:,1,k) )
                    
                 END IF
@@ -2480,17 +2485,17 @@ CONTAINS
                 
                 IF ( reconstr_variables .EQ. 'phys' ) THEN
                    
-                   CALL qp_to_qc( qrec_bdry , B_stag_x(comp_interfaces_x,k) ,      &
+                   CALL qp_to_qc( qrec_bdry , B_stag_x(comp_interfaces_x,k) ,   &
                         q_interfaceR(:,comp_interfaces_x,k) )
                    
                 ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
                    
-                   CALL qrec_to_qc( qrec_bdry , B_stag_x(comp_interfaces_x,k) ,    &
+                   CALL qrec_to_qc( qrec_bdry , B_stag_x(comp_interfaces_x,k) , &
                         q_interfaceR(:,comp_interfaces_x,k) )
                    
                 END IF
                 
-                q_interfaceL(:,comp_interfaces_x,k) =                              &
+                q_interfaceL(:,comp_interfaces_x,k) =                           &
                      q_interfaceR(:,comp_interfaces_x,k)
                 
              ENDIF
@@ -2536,10 +2541,10 @@ CONTAINS
           
           DO k = 1, comp_cells_y
              
-             CALL eval_local_speeds2_x( q_interfaceL(:,j,k) , B_stag_x(j,k) ,      &
+             CALL eval_local_speeds2_x( q_interfaceL(:,j,k) , B_stag_x(j,k) ,   &
                   abslambdaL_min , abslambdaL_max )
              
-             CALL eval_local_speeds2_x( q_interfaceR(:,j,k) , B_stag_x(j,k) ,      &
+             CALL eval_local_speeds2_x( q_interfaceR(:,j,k) , B_stag_x(j,k) ,   &
                   abslambdaR_min , abslambdaR_max )
              
              min_r = MIN(abslambdaL_min , abslambdaR_min , 0.0D0)
@@ -2560,10 +2565,10 @@ CONTAINS
           
           DO k = 1,comp_interfaces_y
              
-             CALL eval_local_speeds2_y( q_interfaceB(:,j,k) , B_stag_y(j,k) ,      &
+             CALL eval_local_speeds2_y( q_interfaceB(:,j,k) , B_stag_y(j,k) ,   &
                   abslambdaB_min , abslambdaB_max )
              
-             CALL eval_local_speeds2_y( q_interfaceT(:,j,k) , B_stag_y(j,k) ,      &
+             CALL eval_local_speeds2_y( q_interfaceT(:,j,k) , B_stag_y(j,k) ,   &
                   abslambdaT_min , abslambdaT_max )
              
              min_r = MIN(abslambdaB_min , abslambdaT_min , 0.0D0)

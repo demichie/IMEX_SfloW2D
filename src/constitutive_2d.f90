@@ -78,6 +78,32 @@ MODULE constitutive_2d
   !> thermal conductivity [W m-1 K-1] (k in Costa & Macedonio, 2005)
   REAL*8 :: thermal_conductivity
 
+  !--- Lahars rheology model parameters
+
+  !> 1st parameter for yield strenght empirical relationship (O'Brian et al, 1993)
+  REAL*8 :: alpha2
+
+  !> 2nd parameter for yield strenght empirical relationship (O'Brian et al, 1993)
+  REAL*8 :: beta2
+
+  !> 1st parameter for fluid viscosity empirical relationship (O'Brian et al, 1993)
+  REAL*8 :: alpha1
+
+  !> 2nd parameter for fluid viscosity empirical relationship (O'Brian et al, 1993)
+  REAL*8 :: beta1
+
+  !> Empirical resistance parameter
+  REAL*8 :: Kappa
+
+  !> Mannings roughness coefficient ( units: T L^(-1/3) )
+  REAL*8 :: n_td
+ 
+  !> Specific weight of water
+  REAL*8 :: gamma_w
+
+  !> Specific weight of sediments
+  REAL*8 :: gamma_s
+
 CONTAINS
 
   !******************************************************************************
@@ -112,6 +138,8 @@ CONTAINS
   !> the local physical variables  (\f$h+B, u, v, T \f$).
   !> \param[in]    r_qj     real conservative variables 
   !> \param[in]    c_qj     complex conservative variables 
+  !> @author 
+  !> Mattia de' Michieli Vitturi
   !> \date 15/08/2011
   !******************************************************************************
 
@@ -160,16 +188,21 @@ CONTAINS
        END IF
 
     END IF
-
-
+    
   END SUBROUTINE phys_var
 
   !******************************************************************************
   !> \brief Local Characteristic speeds x direction
   !
-  !> This subroutine evaluates an the largest positive
-  !> and negative characteristic speed for the state qj. 
-  !> \date 10/04/2012
+  !> This subroutine desingularize the velocities and then evaluates the largest 
+  !> positive and negative characteristic speed in the x-direction. 
+  !> \param[in]     qj            array of conservative variables
+  !> \param[in]     Bj            topography at the cell center
+  !> \param[out]    vel_min       minimum x-velocity
+  !> \param[out]    vel_max       maximum x-velocity
+  !> @author 
+  !> Mattia de' Michieli Vitturi
+  !> \date 05/12/2017
   !******************************************************************************
 
   SUBROUTINE eval_local_speeds_x(qj,Bj,vel_min,vel_max)
@@ -190,9 +223,15 @@ CONTAINS
   !******************************************************************************
   !> \brief Local Characteristic speeds y direction
   !
-  !> This subroutine evaluates an the largest positive
-  !> and negative characteristic speed for the state qj. 
-  !> \date 10/04/2012
+  !> This subroutine desingularize the velocities and then evaluates the largest 
+  !> positive and negative characteristic speed in the y-direction. 
+  !> \param[in]     qj            array of conservative variables
+  !> \param[in]     Bj            topography at the cell center
+  !> \param[out]    vel_min       minimum y-velocity
+  !> \param[out]    vel_max       maximum y-velocity
+  !> @author 
+  !> Mattia de' Michieli Vitturi
+  !> \date 05/12/2017
   !******************************************************************************
 
   SUBROUTINE eval_local_speeds_y(qj,Bj,vel_min,vel_max)
@@ -215,7 +254,13 @@ CONTAINS
   !
   !> This subroutine evaluates an the largest pos and neg characteristic speeds
   !> from the conservative variables qj, without any change on u and h.
-  !> \date 10/04/2012
+  !> \param[in]     qj            array of conservative variables
+  !> \param[in]     Bj            topography at the cell center
+  !> \param[out]    vel_min       minimum x-velocity
+  !> \param[out]    vel_max       maximum x-velocity
+  !> @author 
+  !> Mattia de' Michieli Vitturi
+  !> \date 05/12/2017
   !******************************************************************************
 
   SUBROUTINE eval_local_speeds2_x(qj,Bj,vel_min,vel_max)
@@ -250,7 +295,13 @@ CONTAINS
   !
   !> This subroutine evaluates an the largest pos and neg characteristic speeds
   !> from the conservative variables qj, without any change on v and h.
-  !> \date 10/04/2012
+  !> \param[in]     qj            array of conservative variables
+  !> \param[in]     Bj            topography at the cell center
+  !> \param[out]    vel_min       minimum y-velocity
+  !> \param[out]    vel_max       maximum y-velocity
+  !> @author 
+  !> Mattia de' Michieli Vitturi
+  !> \date 05/12/2017
   !******************************************************************************
 
   SUBROUTINE eval_local_speeds2_y(qj,Bj,vel_min,vel_max)
@@ -279,8 +330,7 @@ CONTAINS
     vel_max(1:n_eqns) = v_temp + DSQRT( grav * h_temp )
     
   END SUBROUTINE eval_local_speeds2_y
-
-
+  
   !******************************************************************************
   !> \brief Conservative to physical variables
   !
@@ -327,7 +377,6 @@ CONTAINS
   !> - qp(3) = \f$ v \f$
   !> - qp(4) = \f$ T \f$
   !> .
-
   !> \param[in]    qp      physical variables  
   !> \param[out]   qc      conservative variables 
   !> \date 15/08/2011
@@ -348,93 +397,33 @@ CONTAINS
     REAL*8 :: r_T       !> temperature
 
     r_hB = qp(1)
-    r_u = qp(2)
-    r_v = qp(3)
-    r_T = qp(4)
+    r_u  = qp(2)
+    r_v  = qp(3)
+    r_T  = qp(4)
 
     qc(1) = r_hB
     qc(2) = ( r_hB - B ) * r_u
     qc(3) = ( r_hB - B ) * r_v
+
     IF ( temperature_flag ) qc(4) = ( r_hB - B ) * r_T 
 
   END SUBROUTINE qp_to_qc
 
   !******************************************************************************
-  !> \brief Conservative to 2nd set of physical variables
-  !
-  !> This subroutine evaluates from the conservative variables qc the 
-  !> array of physical variables qp:\n
-  !> - qp(1) = \f$ h \f$
-  !> - qp(2) = \f$ u \f$
-  !> - qp(3) = \f$ v \f$
-  !> - qp(4) = \f$ T \f$
-  !> .
-  !> The physical variables are those used for the linear reconstruction at the
-  !> cell interfaces. Limiters are applied to the reconstructed slopes.
-  !> \param[in]     qc      conservative variables 
-  !> \param[out]    qp      physical variables  
-  !> \date 15/08/2011
-  !******************************************************************************
-  
-  SUBROUTINE qc_to_qp2(qc,B,qp)
-    
-    IMPLICIT none
-    
-    REAL*8, INTENT(IN) :: qc(n_vars)
-    REAL*8, INTENT(IN) :: B
-    REAL*8, INTENT(OUT) :: qp(n_vars)
-    
-    CALL phys_var(B,r_qj = qc)
-          
-    qp(1) = REAL(h)
-    qp(2) = REAL(u)
-    qp(3) = REAL(v)
-
-    IF ( temperature_flag ) qp(4) = REAL(T)
-
-    
-  END SUBROUTINE qc_to_qp2
-
-  !******************************************************************************
-  !> \brief From 2nd set of physical to conservative variables
+  !> \brief Reconstructed to conservative variables
   !
   !> This subroutine evaluates the conservative variables qc from the 
-  !> array of physical variables qp:\n
-  !> - qp(1) = \f$ h \f$
-  !> - qp(2) = \f$ u \f$
-  !> - qp(2) = \f$ v \f$
+  !> array of physical variables qrec:\n
+  !> - qrec(1) = \f$ h + B \f$
+  !> - qrec(2) = \f$ hu \f$
+  !> - qrec(3) = \f$ hv \f$
+  !> - qrec(4) = \f$ h \cdot xs \f$
+  !> - qrec(5) = \f$ T \f$
   !> .
-  !> \param[in]    qp      physical variables  
+  !> \param[in]    qrec      physical variables  
   !> \param[out]   qc      conservative variables 
   !> \date 15/08/2011
   !******************************************************************************
-
-  SUBROUTINE qp2_to_qc(qp,B,qc)
-    
-    USE COMPLEXIFY 
-    IMPLICIT none
-    
-    REAL*8, INTENT(IN) :: qp(n_vars)
-    REAL*8, INTENT(IN) :: B
-    REAL*8, INTENT(OUT) :: qc(n_vars)
-    
-    REAL*8 :: r_h      !> topography + height 
-    REAL*8 :: r_u      !> velocity x direction
-    REAL*8 :: r_v      !> velocity y direction
-    REAL*8 :: r_T      !> temperature
-    
-    r_h = qp(1)
-    r_u = qp(2)
-    r_v = qp(3)
-    
-    qc(1) = r_h + B
-    qc(2) = r_h * r_u
-    qc(3) = r_h * r_v
-
-    IF ( temperature_flag ) qc(4) = r_h * r_T 
-
-  END SUBROUTINE qp2_to_qc
-
 
   SUBROUTINE qrec_to_qc(qrec,B,qc)
     
@@ -613,6 +602,7 @@ CONTAINS
        c_qj , c_nh_term_impl , r_qj , r_nh_term_impl )
 
     USE COMPLEXIFY 
+    USE parameters_2d, ONLY : sed_vol_fract
     IMPLICIT NONE
 
     REAL*8, INTENT(IN) :: Bj
@@ -651,6 +641,33 @@ CONTAINS
     REAL*8 :: thermal_diffusivity
 
     REAL*8 :: h_threshold
+
+    !--- Lahars rheology model variables
+    
+    !> Yield strenght
+    COMPLEX*8 :: tau_y
+
+    !> Fluid viscosity
+    COMPLEX*8 :: fluid_visc
+
+    !> Sediment volume fraction
+    COMPLEX*8 :: sed_vol_fract_cmplx
+
+    !> Specific weight of sediment mixture
+    COMPLEX*8 :: gamma_m
+
+    !> Total friction
+    COMPLEX*8 :: s_f
+
+    !> Yield slope component of total friction
+    COMPLEX*8 :: s_y
+
+    !> Viscous slope component of total Friction
+    COMPLEX*8 :: s_v
+
+    !> Turbulent dispersive slope component of total friction
+    COMPLEX*8 :: s_td
+
 
     IF ( temperature_flag ) THEN
 
@@ -749,18 +766,83 @@ CONTAINS
              forces_term(3) = forces_term(3) - gamma * v
 
           ENDIF
+          
+       ! Lahars rheology (O'Brien 1993, FLO2D)
+       ELSEIF ( rheology_model .EQ. 4 ) THEN
 
-       ELSEIF ( rheology_model .EQ. 4) THEN
+          h_threshold = 1.D-20
+
+          sed_vol_fract_cmplx = DCMPLX(sed_vol_fract,0.D0)
+
+          ! Convert from mass fraction to volume fraction
+          ! sed_vol_fract = xs * gamma_w / ( xs * gamma_w + (  DCMPLX(1.D0,0.D0) - xs ) * gamma_s )
+
+          !IF ( xs .NE. 0.D0 ) THEN
+             
+             !WRITE(*,*) 'xs',xs
+             !WRITE(*,*) 'sed_vol_fract',sed_vol_fract
+             !READ(*,*) 
+             
+          !END IF
+
+
+          ! Mixture density
+          gamma_m = ( DCMPLX(1.D0,0.D0) - sed_vol_fract_cmplx ) * gamma_w       &
+               + sed_vol_fract_cmplx * gamma_s 
+
+          ! Yield strength
+          tau_y = alpha2 * CDEXP( beta2 * sed_vol_fract_cmplx )
+
+          ! Fluid viscosity
+          fluid_visc = alpha1 * CDEXP( beta1 * sed_vol_fract_cmplx )
+
+
+          IF ( h .GT. h_threshold ) THEN
+             
+             ! Yield slope component
+             s_y = tau_y / ( gamma_m * h )
+             
+             ! Viscous slope component
+             s_v = Kappa * fluid_visc * mod_vel / ( 8.D0 * gamma_m * h**2 )
+             
+             
+             ! Turbulent dispersive component
+             s_td = n_td**2 * mod_vel**2 / ( h**(4.D0/3.D0) )
+             
+          ELSE
+             
+             ! Yield slope component
+             s_y = tau_y / ( gamma_m * h_threshold )
+             
+             ! Viscous slope component
+             s_v = Kappa * fluid_visc * mod_vel / ( 8.D0 * gamma_m *            &
+                  h_threshold**2 )
+             
+             ! Turbulent dispersive components
+             s_td = n_td**2 * mod_vel**2 / ( h_threshold**(4.D0/3.D0) )
+             
+          END IF
+          
+          ! Total friction slope
+          s_f = s_y + s_v + s_td
+          
+          IF ( mod_vel .GT. 0.D0 ) THEN
+
+             forces_term(2) = forces_term(2) - grav * h * ( u / mod_vel ) * s_f
+             forces_term(3) = forces_term(3) - grav * h * ( v / mod_vel ) * s_f
+  
+          END IF
+
+       ELSEIF ( rheology_model .EQ. 5 ) THEN
 
           tau = 1.D-3 / ( 1.D0 + 10.D0 * h ) * mod_vel
           
-          IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
-          
-             forces_term(2) = forces_term(2) - tau * (u/mod_vel)
-          
-             forces_term(3) = forces_term(3) - tau * (v/mod_vel)
+          IF ( REAL(mod_vel) .NE. 0.D0 ) THEN
+             
+             forces_term(2) = forces_term(2) - tau * ( u / mod_vel )
+             forces_term(3) = forces_term(3) - tau * ( v / mod_vel )
 
-          ENDIF
+          END IF
           
        ENDIF
               

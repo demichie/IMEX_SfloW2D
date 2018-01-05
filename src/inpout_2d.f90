@@ -29,6 +29,7 @@ MODULE inpout_2d
   ! -- Variables for the namelist INITIAL_CONDITIONS
   USE parameters_2d, ONLY : released_volume , x_release , y_release
   USE parameters_2d, ONLY : velocity_mod_release , velocity_ang_release
+  USE parameters_2d, ONLY : sed_vol_fract
   USE parameters_2d, ONLY : T_init , T_ambient
 
   ! -- Variables for the namelist LEFT_STATE
@@ -56,6 +57,8 @@ MODULE inpout_2d
   ! -- Variables for the namelist RHEOLOGY_PARAMETERS
   USE parameters_2d, ONLY : rheology_model
   USE constitutive_2d, ONLY : mu , xi , tau , nu_ref , visc_par , T_ref
+  USE constitutive_2d, ONLY : alpha2 , beta2 , alpha1 , beta1 , Kappa , n_td ,  &
+       gamma_w , gamma_s
 
   IMPLICIT NONE
 
@@ -132,7 +135,8 @@ MODULE inpout_2d
        t_start , t_end , dt_output , output_cons_flag , output_esri_flag ,      &
        output_phys_flag , verbose_level
 
-  NAMELIST / restart_parameters / restart_file , T_init , T_ambient
+  NAMELIST / restart_parameters / restart_file , T_init , T_ambient ,           &
+       sed_vol_fract
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
        cell_size , temperature_flag , source_flag , rheology_flag , riemann_flag
@@ -213,6 +217,7 @@ CONTAINS
     restart_file = ''
     T_init = 0.D0
     T_ambient = 0.D0
+    sed_vol_fract = 0.D0
 
     !-- Inizialization of the Variables for the namelist newrun_parameters
     x0 = 0.D0
@@ -1485,7 +1490,83 @@ CONTAINS
 
        ELSEIF ( rheology_model .EQ. 4 ) THEN
 
-          
+          IF ( alpha2 .EQ. -1.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'ALPHA2 =' , alpha2 
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+
+          IF ( beta2 .EQ. -1.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'BETA2 =' , beta2 
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+
+          IF ( alpha1 .EQ. -1.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'ALPHA1 =' , alpha1 
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+
+          IF ( beta1 .EQ. -1.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'BETA1 =' , beta1 
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+
+          IF ( Kappa .EQ. -1.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'KAPPA =' , kappa 
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+
+          IF ( n_td .EQ. -1.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'N_TD =' , n_td 
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+
+          IF ( gamma_w .EQ. -1.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'GAMMA_W =' , gamma_w 
+             WRITE(*,*) 'Please check the input file'
+             STOP
+
+          END IF
+
+          IF ( gamma_s .EQ. -1.D0 ) THEN
+             
+             WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+             WRITE(*,*) 'GAMMA_S =' , gamma_s 
+             WRITE(*,*) 'Please check the input file'
+             STOP
+             
+          END IF
+
+       ELSEIF ( rheology_model .EQ. 5 ) THEN
+
+             WRITE(*,*) 'RHEOLOGY_MODEL =' , rheology_model
+             WRITE(*,*) 'Kurganov & Petrova Example 5'
+
        ELSE
 
              WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
@@ -2250,8 +2331,14 @@ CONTAINS
              END DO
              
              CALL qc_to_qp(q(:,j,k),B_cent(j,k),qp(:))
+
+             IF ( dabs(REAL(h)) .LT. 1d-99) h = DCMPLX(0.d0,0.d0)
+             IF ( dabs(REAL(u)) .LT. 1d-99) u = DCMPLX(0.d0,0.d0) 
+             IF ( dabs(REAL(v)) .LT. 1d-99) v = DCMPLX(0.d0,0.d0) 
              
              IF ( temperature_flag ) THEN
+
+                IF ( dabs(REAL(T)) .LT. 1d-99) T = DCMPLX(0.d0,0.d0) 
 
                 WRITE(output_unit_2d,1010) x_comp(j), y_comp(k), REAL(h),       &
                      REAL(u), REAL(v) , B_cent(j,k) , REAL(h) + B_cent(j,k) ,   &
