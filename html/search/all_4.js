@@ -30,6 +30,7 @@ var searchData=
   ['eval_5flocal_5fspeeds2_5fy',['eval_local_speeds2_y',['../namespaceconstitutive__2d.html#a2c63e6f560dea7e590f41f0db115b394',1,'constitutive_2d']]],
   ['eval_5flocal_5fspeeds_5fx',['eval_local_speeds_x',['../namespaceconstitutive__2d.html#a590e97786f34f67047ee3f5aa186dfc3',1,'constitutive_2d']]],
   ['eval_5flocal_5fspeeds_5fy',['eval_local_speeds_y',['../namespaceconstitutive__2d.html#af32f105f1800b2ce204a4c520492b4d5',1,'constitutive_2d']]],
+  ['eval_5fnh_5fsemi_5fimpl_5fterms',['eval_nh_semi_impl_terms',['../namespaceconstitutive__2d.html#a1091bcee069089854468877d17095bb7',1,'constitutive_2d']]],
   ['eval_5fnonhyperbolic_5fterms',['eval_nonhyperbolic_terms',['../namespaceconstitutive__2d.html#aa509fe9f1dacb9245d9906a768d72e72',1,'constitutive_2d']]],
   ['eval_5fspeeds',['eval_speeds',['../namespacesolver__2d.html#a24f04d82aa0f418dce078ce469dc0542',1,'solver_2d']]],
   ['exp_5farea_5ffract',['exp_area_fract',['../namespaceconstitutive__2d.html#a181c9052f636998c4858328ad68be5ac',1,'constitutive_2d']]],

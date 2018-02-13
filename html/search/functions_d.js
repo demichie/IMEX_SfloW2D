@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['sediment_5ffunction',['sediment_function',['../namespaceinit__2d.html#a02da8caeb21f45fc116600ecbf6769dc',1,'init_2d']]],
   ['sign_5fcc',['sign_cc',['../interfacecomplexify_1_1sign.html#a70c728d68680585c93a198829b691cdc',1,'complexify::sign::sign_cc()'],['../namespacecomplexify.html#ac59dfb2deecbb6d974df7399fead20fd',1,'complexify::sign_cc()']]],
   ['sign_5fcr',['sign_cr',['../interfacecomplexify_1_1sign.html#a836cb9841f5e13c135acb382225b629d',1,'complexify::sign::sign_cr()'],['../namespacecomplexify.html#a232e1a277f20d7a423967f570e4be570',1,'complexify::sign_cr()']]],
   ['sign_5frc',['sign_rc',['../interfacecomplexify_1_1sign.html#a7d278cee406cdde72ca16f5b03f63762',1,'complexify::sign::sign_rc()'],['../namespacecomplexify.html#a44f032486acb0443065c1ff8246e1e40',1,'complexify::sign_rc()']]],

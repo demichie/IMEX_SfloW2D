@@ -231,6 +231,9 @@ Variables</h2></td></tr>
 <tr class="separator:a4f5e13b027bf2e12db3f769ccd4d9050"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d61081e7b9d13fa287de1c61dbb9f26"><td class="memItemLeft" align="right" valign="top">logical, dimension(:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a1d61081e7b9d13fa287de1c61dbb9f26">solver_2d::mask12</a></td></tr>
 <tr class="separator:a1d61081e7b9d13fa287de1c61dbb9f26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c7a3a349264945bf0060b10f4ec76a7"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a7c7a3a349264945bf0060b10f4ec76a7">solver_2d::i_rk</a></td></tr>
+<tr class="memdesc:a7c7a3a349264945bf0060b10f4ec76a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">loop counter for the RK iteration  <a href="namespacesolver__2d.html#a7c7a3a349264945bf0060b10f4ec76a7">More...</a><br /></td></tr>
+<tr class="separator:a7c7a3a349264945bf0060b10f4ec76a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a330f99fc3c4f6bfa69144fad4a72e52b"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a330f99fc3c4f6bfa69144fad4a72e52b">solver_2d::a_tilde_ij</a></td></tr>
 <tr class="memdesc:a330f99fc3c4f6bfa69144fad4a72e52b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Butcher Tableau for the explicit part of the Runge-Kutta scheme.  <a href="namespacesolver__2d.html#a330f99fc3c4f6bfa69144fad4a72e52b">More...</a><br /></td></tr>
 <tr class="separator:a330f99fc3c4f6bfa69144fad4a72e52b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -261,6 +264,9 @@ Variables</h2></td></tr>
 <tr class="memitem:a2fb6bd6b80b9ac6c6890045c48d5e141"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:,:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a2fb6bd6b80b9ac6c6890045c48d5e141">solver_2d::nh</a></td></tr>
 <tr class="memdesc:a2fb6bd6b80b9ac6c6890045c48d5e141"><td class="mdescLeft">&#160;</td><td class="mdescRight">Intermediate non-hyperbolic terms of the Runge-Kutta scheme.  <a href="namespacesolver__2d.html#a2fb6bd6b80b9ac6c6890045c48d5e141">More...</a><br /></td></tr>
 <tr class="separator:a2fb6bd6b80b9ac6c6890045c48d5e141"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcd7b18e2113f76851edf67942aacfd8"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:,:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#adcd7b18e2113f76851edf67942aacfd8">solver_2d::si_nh</a></td></tr>
+<tr class="memdesc:adcd7b18e2113f76851edf67942aacfd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Intermediate semi-implicit non-hyperbolic terms of the Runge-Kutta scheme.  <a href="namespacesolver__2d.html#adcd7b18e2113f76851edf67942aacfd8">More...</a><br /></td></tr>
+<tr class="separator:adcd7b18e2113f76851edf67942aacfd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad188b5598eed2f41193095163f8f5b7f"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:,:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#ad188b5598eed2f41193095163f8f5b7f">solver_2d::expl_terms</a></td></tr>
 <tr class="memdesc:ad188b5598eed2f41193095163f8f5b7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Intermediate explicit terms of the Runge-Kutta scheme.  <a href="namespacesolver__2d.html#ad188b5598eed2f41193095163f8f5b7f">More...</a><br /></td></tr>
 <tr class="separator:ad188b5598eed2f41193095163f8f5b7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -273,6 +279,9 @@ Variables</h2></td></tr>
 <tr class="memitem:a7ab82188c22abbc0bf671335d77e3ed5"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a7ab82188c22abbc0bf671335d77e3ed5">solver_2d::expl_terms_j</a></td></tr>
 <tr class="memdesc:a7ab82188c22abbc0bf671335d77e3ed5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local Intermediate explicit terms of the Runge-Kutta scheme.  <a href="namespacesolver__2d.html#a7ab82188c22abbc0bf671335d77e3ed5">More...</a><br /></td></tr>
 <tr class="separator:a7ab82188c22abbc0bf671335d77e3ed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cc2db16ecb9630d0a18ede2aab3095d"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a1cc2db16ecb9630d0a18ede2aab3095d">solver_2d::si_nhj</a></td></tr>
+<tr class="memdesc:a1cc2db16ecb9630d0a18ede2aab3095d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local Intermediate semi-impl non-hyperbolic terms of the Runge-Kutta scheme.  <a href="namespacesolver__2d.html#a1cc2db16ecb9630d0a18ede2aab3095d">More...</a><br /></td></tr>
+<tr class="separator:a1cc2db16ecb9630d0a18ede2aab3095d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0652ff6290d45bb242a1d222fdc8b16"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#af0652ff6290d45bb242a1d222fdc8b16">solver_2d::normalize_q</a></td></tr>
 <tr class="memdesc:af0652ff6290d45bb242a1d222fdc8b16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag for the normalization of the array q in the implicit solution scheme.  <a href="namespacesolver__2d.html#af0652ff6290d45bb242a1d222fdc8b16">More...</a><br /></td></tr>
 <tr class="separator:af0652ff6290d45bb242a1d222fdc8b16"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -285,11 +294,15 @@ Variables</h2></td></tr>
 <tr class="memitem:a7315b34519b375d889c6a03ed15875de"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a7315b34519b375d889c6a03ed15875de">solver_2d::residual_term</a></td></tr>
 <tr class="memdesc:a7315b34519b375d889c6a03ed15875de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sum of all the terms of the equations except the transient term.  <a href="namespacesolver__2d.html#a7315b34519b375d889c6a03ed15875de">More...</a><br /></td></tr>
 <tr class="separator:a7315b34519b375d889c6a03ed15875de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7aa9cf63d9bab1d54ad2ae44b2d5327"><td class="memItemLeft" align="right" valign="top">real *8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#af7aa9cf63d9bab1d54ad2ae44b2d5327">solver_2d::t_imex1</a></td></tr>
+<tr class="separator:af7aa9cf63d9bab1d54ad2ae44b2d5327"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae14ef20c2c0f4311ee0d9f9d802a79c1"><td class="memItemLeft" align="right" valign="top">real *8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#ae14ef20c2c0f4311ee0d9f9d802a79c1">solver_2d::t_imex2</a></td></tr>
+<tr class="separator:ae14ef20c2c0f4311ee0d9f9d802a79c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 5 2018 10:53:40 for IMEX_SfloW2D by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 13 2018 12:40:55 for IMEX_SfloW2D by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>

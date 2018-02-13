@@ -221,6 +221,9 @@ Variables</h2></td></tr>
 <tr class="separator:a4f5e13b027bf2e12db3f769ccd4d9050"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d61081e7b9d13fa287de1c61dbb9f26"><td class="memItemLeft" align="right" valign="top">logical, dimension(:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a1d61081e7b9d13fa287de1c61dbb9f26">mask12</a></td></tr>
 <tr class="separator:a1d61081e7b9d13fa287de1c61dbb9f26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c7a3a349264945bf0060b10f4ec76a7"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a7c7a3a349264945bf0060b10f4ec76a7">i_rk</a></td></tr>
+<tr class="memdesc:a7c7a3a349264945bf0060b10f4ec76a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">loop counter for the RK iteration  <a href="#a7c7a3a349264945bf0060b10f4ec76a7">More...</a><br /></td></tr>
+<tr class="separator:a7c7a3a349264945bf0060b10f4ec76a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a330f99fc3c4f6bfa69144fad4a72e52b"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a330f99fc3c4f6bfa69144fad4a72e52b">a_tilde_ij</a></td></tr>
 <tr class="memdesc:a330f99fc3c4f6bfa69144fad4a72e52b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Butcher Tableau for the explicit part of the Runge-Kutta scheme.  <a href="#a330f99fc3c4f6bfa69144fad4a72e52b">More...</a><br /></td></tr>
 <tr class="separator:a330f99fc3c4f6bfa69144fad4a72e52b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -251,6 +254,9 @@ Variables</h2></td></tr>
 <tr class="memitem:a2fb6bd6b80b9ac6c6890045c48d5e141"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:,:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a2fb6bd6b80b9ac6c6890045c48d5e141">nh</a></td></tr>
 <tr class="memdesc:a2fb6bd6b80b9ac6c6890045c48d5e141"><td class="mdescLeft">&#160;</td><td class="mdescRight">Intermediate non-hyperbolic terms of the Runge-Kutta scheme.  <a href="#a2fb6bd6b80b9ac6c6890045c48d5e141">More...</a><br /></td></tr>
 <tr class="separator:a2fb6bd6b80b9ac6c6890045c48d5e141"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcd7b18e2113f76851edf67942aacfd8"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:,:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#adcd7b18e2113f76851edf67942aacfd8">si_nh</a></td></tr>
+<tr class="memdesc:adcd7b18e2113f76851edf67942aacfd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Intermediate semi-implicit non-hyperbolic terms of the Runge-Kutta scheme.  <a href="#adcd7b18e2113f76851edf67942aacfd8">More...</a><br /></td></tr>
+<tr class="separator:adcd7b18e2113f76851edf67942aacfd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad188b5598eed2f41193095163f8f5b7f"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:,:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#ad188b5598eed2f41193095163f8f5b7f">expl_terms</a></td></tr>
 <tr class="memdesc:ad188b5598eed2f41193095163f8f5b7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Intermediate explicit terms of the Runge-Kutta scheme.  <a href="#ad188b5598eed2f41193095163f8f5b7f">More...</a><br /></td></tr>
 <tr class="separator:ad188b5598eed2f41193095163f8f5b7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -263,6 +269,9 @@ Variables</h2></td></tr>
 <tr class="memitem:a7ab82188c22abbc0bf671335d77e3ed5"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a7ab82188c22abbc0bf671335d77e3ed5">expl_terms_j</a></td></tr>
 <tr class="memdesc:a7ab82188c22abbc0bf671335d77e3ed5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local Intermediate explicit terms of the Runge-Kutta scheme.  <a href="#a7ab82188c22abbc0bf671335d77e3ed5">More...</a><br /></td></tr>
 <tr class="separator:a7ab82188c22abbc0bf671335d77e3ed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cc2db16ecb9630d0a18ede2aab3095d"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a1cc2db16ecb9630d0a18ede2aab3095d">si_nhj</a></td></tr>
+<tr class="memdesc:a1cc2db16ecb9630d0a18ede2aab3095d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local Intermediate semi-impl non-hyperbolic terms of the Runge-Kutta scheme.  <a href="#a1cc2db16ecb9630d0a18ede2aab3095d">More...</a><br /></td></tr>
+<tr class="separator:a1cc2db16ecb9630d0a18ede2aab3095d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0652ff6290d45bb242a1d222fdc8b16"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#af0652ff6290d45bb242a1d222fdc8b16">normalize_q</a></td></tr>
 <tr class="memdesc:af0652ff6290d45bb242a1d222fdc8b16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag for the normalization of the array q in the implicit solution scheme.  <a href="#af0652ff6290d45bb242a1d222fdc8b16">More...</a><br /></td></tr>
 <tr class="separator:af0652ff6290d45bb242a1d222fdc8b16"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -275,6 +284,10 @@ Variables</h2></td></tr>
 <tr class="memitem:a7315b34519b375d889c6a03ed15875de"><td class="memItemLeft" align="right" valign="top">real *8, dimension(:,:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#a7315b34519b375d889c6a03ed15875de">residual_term</a></td></tr>
 <tr class="memdesc:a7315b34519b375d889c6a03ed15875de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sum of all the terms of the equations except the transient term.  <a href="#a7315b34519b375d889c6a03ed15875de">More...</a><br /></td></tr>
 <tr class="separator:a7315b34519b375d889c6a03ed15875de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7aa9cf63d9bab1d54ad2ae44b2d5327"><td class="memItemLeft" align="right" valign="top">real *8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#af7aa9cf63d9bab1d54ad2ae44b2d5327">t_imex1</a></td></tr>
+<tr class="separator:af7aa9cf63d9bab1d54ad2ae44b2d5327"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae14ef20c2c0f4311ee0d9f9d802a79c1"><td class="memItemLeft" align="right" valign="top">real *8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesolver__2d.html#ae14ef20c2c0f4311ee0d9f9d802a79c1">t_imex2</a></td></tr>
+<tr class="separator:ae14ef20c2c0f4311ee0d9f9d802a79c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Numerical solver. </p>
@@ -298,7 +311,7 @@ Variables</h2></td></tr>
 <p>This subroutine allocate the memory for the variables of the solver module. </p><dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00133">133</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00141">141</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -369,7 +382,7 @@ Here is the caller graph for this function:</div>
 <dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l02006">2006</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l02007">2007</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -401,7 +414,7 @@ Here is the caller graph for this function:</div>
 <p>This subroutine compute a 2D array of logicals defining the cells where the systems of equations have to be solved. It is defined according to the positive thickness in the cell and in the neighbour cells </p><dl class="section date"><dt>Date</dt><dd>20/04/2017 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00390">390</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00404">404</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -422,7 +435,7 @@ Here is the caller graph for this function:</div>
 <p>This subroutine de-allocate the memory for the variables of the solver module. </p><dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00326">326</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00338">338</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -471,7 +484,7 @@ Here is the caller graph for this function:</div>
 <dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01712">1712</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01677">1677</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -600,7 +613,7 @@ Here is the caller graph for this function:</div>
 <dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01582">1582</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01537">1537</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -644,7 +657,7 @@ Here is the caller graph for this function:</div>
 <dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l02043">2043</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l02044">2044</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -676,7 +689,7 @@ Here is the caller graph for this function:</div>
 <p>This subroutine evaluates the numerical fluxes H at the cells interfaces according to Kurganov et al. 2001. </p><dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>16/08/2011 </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01880">1880</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01864">1864</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -719,7 +732,7 @@ Here is the caller graph for this function:</div>
 <dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l02057">2057</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l02058">2058</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -769,7 +782,7 @@ Here is the caller graph for this function:</div>
 <dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01759">1759</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01724">1724</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -885,7 +898,7 @@ Here is the caller graph for this function:</div>
 <dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01639">1639</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01604">1604</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -976,28 +989,29 @@ Here is the caller graph for this function:</div>
 <p>This subroutine integrate the hyperbolic conservation law with non-hyperbolic terms using an implicit-explicit runge-kutta scheme. The fluxes are integrated explicitely while the non-hyperbolic terms are integrated implicitely. </p><dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00584">584</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00598">598</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="namespacesolver__2d_aed3f7dbc437442d0fd6521af6eafc8cd_cgraph.png" border="0" usemap="#namespacesolver__2d_aed3f7dbc437442d0fd6521af6eafc8cd_cgraph" alt=""/></div>
 <map name="namespacesolver__2d_aed3f7dbc437442d0fd6521af6eafc8cd_cgraph" id="namespacesolver__2d_aed3f7dbc437442d0fd6521af6eafc8cd_cgraph">
-<area shape="rect" id="node2" href="namespaceconstitutive__2d.html#aa509fe9f1dacb9245d9906a768d72e72" title="Non&#45;Hyperbolic terms. " alt="" coords="839,44,988,85"/>
-<area shape="rect" id="node4" href="namespaceconstitutive__2d.html#aa38b7de1baa7a734227a0aa5bf9548bf" title="Conservative to physical variables. " alt="" coords="642,221,774,262"/>
-<area shape="rect" id="node5" href="namespacesolver__2d.html#a078993e7cdf95727f5ec017909da7779" title="Runge&#45;Kutta single step integration. " alt="" coords="190,127,357,154"/>
-<area shape="rect" id="node9" href="namespacesolver__2d.html#a3490f633c5aa76cd08824229e0673ddd" title="Semidiscrete finite volume central scheme. " alt="" coords="185,360,361,401"/>
-<area shape="rect" id="node15" href="namespacesolver__2d.html#aa62b6d1efd000aaa23c7cd15e62d737a" title="Evaluate the explicit terms. " alt="" coords="194,497,353,538"/>
-<area shape="rect" id="node3" href="namespaceconstitutive__2d.html#a42f0343ddf616b70de2f9ffdc20dbf8d" title="Physical variables. " alt="" coords="1036,228,1207,255"/>
-<area shape="rect" id="node6" href="namespacesolver__2d.html#a75e177c38049533afe12b1040f6bb27b" title="Evaluate the nonlinear system. " alt="" coords="647,76,769,103"/>
-<area shape="rect" id="node7" href="namespacesolver__2d.html#acec103d2b2be3df4ef2173b6173509f6" title="Evaluate the jacobian. " alt="" coords="625,26,791,52"/>
-<area shape="rect" id="node8" href="namespacesolver__2d.html#a96c737c2dcf10ca9a7f6f2771262024d" title="Search the descent stepsize. " alt="" coords="433,127,554,154"/>
-<area shape="rect" id="node10" href="namespacesolver__2d.html#afd826688c650c7003818593da5da0b88" title="Linear reconstruction. " alt="" coords="409,279,577,306"/>
-<area shape="rect" id="node11" href="namespacesolver__2d.html#a24f04d82aa0f418dce078ce469dc0542" title="Characteristic speeds. " alt="" coords="414,447,573,474"/>
-<area shape="rect" id="node12" href="namespacesolver__2d.html#ad91efcc488e3c836dc1ce72956ea8f05" title="Numerical fluxes Lax&#45;Friedrichs. " alt="" coords="414,498,573,524"/>
-<area shape="rect" id="node13" href="namespacesolver__2d.html#a897041a2118c4f9f8e00dca8968e37a3" title="Numerical fluxes GFORCE. " alt="" coords="424,330,563,372"/>
-<area shape="rect" id="node14" href="namespacesolver__2d.html#a79e24f76b5eccc03a5ba8844459e405a" title="Semidiscrete numerical fluxes. " alt="" coords="415,396,571,423"/>
-<area shape="rect" id="node16" href="namespaceconstitutive__2d.html#a492353256239fee2847e2ade4a61c7fb" title="Explicit Forces term. " alt="" coords="842,410,985,452"/>
+<area shape="rect" id="node2" href="namespaceconstitutive__2d.html#aa509fe9f1dacb9245d9906a768d72e72" title="Non&#45;Hyperbolic terms. " alt="" coords="839,96,988,137"/>
+<area shape="rect" id="node4" href="namespaceconstitutive__2d.html#a1091bcee069089854468877d17095bb7" title="Non&#45;Hyperbolic semi&#45;implicit terms. " alt="" coords="839,249,988,291"/>
+<area shape="rect" id="node5" href="namespaceconstitutive__2d.html#aa38b7de1baa7a734227a0aa5bf9548bf" title="Conservative to physical variables. " alt="" coords="642,465,774,507"/>
+<area shape="rect" id="node6" href="namespacesolver__2d.html#a078993e7cdf95727f5ec017909da7779" title="Runge&#45;Kutta single step integration. " alt="" coords="190,129,357,155"/>
+<area shape="rect" id="node10" href="namespacesolver__2d.html#a3490f633c5aa76cd08824229e0673ddd" title="Semidiscrete finite volume central scheme. " alt="" coords="185,349,361,391"/>
+<area shape="rect" id="node16" href="namespacesolver__2d.html#aa62b6d1efd000aaa23c7cd15e62d737a" title="Evaluate the explicit terms. " alt="" coords="194,601,353,643"/>
+<area shape="rect" id="node3" href="namespaceconstitutive__2d.html#a42f0343ddf616b70de2f9ffdc20dbf8d" title="Physical variables. " alt="" coords="1036,339,1207,366"/>
+<area shape="rect" id="node7" href="namespacesolver__2d.html#a75e177c38049533afe12b1040f6bb27b" title="Evaluate the nonlinear system. " alt="" coords="647,78,769,105"/>
+<area shape="rect" id="node8" href="namespacesolver__2d.html#acec103d2b2be3df4ef2173b6173509f6" title="Evaluate the jacobian. " alt="" coords="625,129,791,155"/>
+<area shape="rect" id="node9" href="namespacesolver__2d.html#a96c737c2dcf10ca9a7f6f2771262024d" title="Search the descent stepsize. " alt="" coords="433,27,554,54"/>
+<area shape="rect" id="node11" href="namespacesolver__2d.html#afd826688c650c7003818593da5da0b88" title="Linear reconstruction. " alt="" coords="409,499,577,526"/>
+<area shape="rect" id="node12" href="namespacesolver__2d.html#a24f04d82aa0f418dce078ce469dc0542" title="Characteristic speeds. " alt="" coords="414,331,573,358"/>
+<area shape="rect" id="node13" href="namespacesolver__2d.html#ad91efcc488e3c836dc1ce72956ea8f05" title="Numerical fluxes Lax&#45;Friedrichs. " alt="" coords="414,382,573,409"/>
+<area shape="rect" id="node14" href="namespacesolver__2d.html#a897041a2118c4f9f8e00dca8968e37a3" title="Numerical fluxes GFORCE. " alt="" coords="424,433,563,475"/>
+<area shape="rect" id="node15" href="namespacesolver__2d.html#a79e24f76b5eccc03a5ba8844459e405a" title="Semidiscrete numerical fluxes. " alt="" coords="415,281,571,307"/>
+<area shape="rect" id="node17" href="namespaceconstitutive__2d.html#a492353256239fee2847e2ade4a61c7fb" title="Explicit Forces term. " alt="" coords="842,495,985,536"/>
 </map>
 </div>
 </p>
@@ -1245,7 +1259,7 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01358">1358</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01313">1313</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -1366,7 +1380,7 @@ Here is the caller graph for this function:</div>
 <p>In this subroutine a linear reconstruction with slope limiters is applied to a set of variables describing the state of the system, according to the input parameter reconstr_variables. </p><dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>15/08/2011 </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l02076">2076</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l02077">2077</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -1483,7 +1497,7 @@ Here is the caller graph for this function:</div>
 <dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l01042">1042</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00987">987</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -1530,7 +1544,7 @@ Here is the caller graph for this function:</div>
 <p>This subroutine evaluate the maximum time step according to the CFL condition. The local speed are evaluated with the characteristic polynomial of the Jacobian of the fluxes. </p><dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00434">434</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00448">448</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -1573,7 +1587,7 @@ Here is the caller graph for this function:</div>
 <p>This subroutine evaluate the maximum time step according to the CFL condition. The local speed are evaluated with the characteristic polynomial of the Jacobian of the fluxes. </p><dl class="section date"><dt>Date</dt><dd>07/10/2016 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Mattia de' Michieli Vitturi </dd></dl>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00511">511</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00525">525</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -1619,7 +1633,7 @@ Here is the caller graph for this function:</div>
 
 <p>Implicit coeff. for the non-hyp. part for a single step of the R-K scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00086">86</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00088">88</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1635,7 +1649,7 @@ Here is the caller graph for this function:</div>
 
 <p>Explicit coeff. for the non-hyp. part for a single step of the R-K scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00084">84</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00086">86</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1651,7 +1665,7 @@ Here is the caller graph for this function:</div>
 
 <p>Butcher Tableau for the implicit part of the Runge-Kutta scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00074">74</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00076">76</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1731,7 +1745,7 @@ Here is the caller graph for this function:</div>
 
 <p>Explicit coeff. for the hyperbolic part for a single step of the R-K scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00082">82</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00084">84</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1747,7 +1761,7 @@ Here is the caller graph for this function:</div>
 
 <p>Butcher Tableau for the explicit part of the Runge-Kutta scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00072">72</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00074">74</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1763,7 +1777,7 @@ Here is the caller graph for this function:</div>
 
 <p>Intermediate hyperbolic terms of the Runge-Kutta scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00091">91</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00093">93</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1779,7 +1793,7 @@ Here is the caller graph for this function:</div>
 
 <p>Local Intermediate hyperbolic terms of the Runge-Kutta scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00099">99</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00103">103</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1811,7 +1825,7 @@ Here is the caller graph for this function:</div>
 
 <p>Intermediate explicit terms of the Runge-Kutta scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00096">96</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00100">100</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1827,7 +1841,7 @@ Here is the caller graph for this function:</div>
 
 <p>Local Intermediate explicit terms of the Runge-Kutta scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00103">103</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00107">107</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1860,6 +1874,22 @@ Here is the caller graph for this function:</div>
 <p>Semidiscrete numerical interface fluxes. </p>
 
 <p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00057">57</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7c7a3a349264945bf0060b10f4ec76a7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer solver_2d::i_rk</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>loop counter for the RK iteration </p>
+
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00071">71</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1931,7 +1961,7 @@ Here is the caller graph for this function:</div>
 
 <p>Intermediate non-hyperbolic terms of the Runge-Kutta scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00093">93</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00095">95</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1947,7 +1977,7 @@ Here is the caller graph for this function:</div>
 
 <p>Local Intermediate non-hyperbolic terms of the Runge-Kutta scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00101">101</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00105">105</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1963,7 +1993,7 @@ Here is the caller graph for this function:</div>
 
 <p>Flag for the normalization of the array f in the implicit solution scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00109">109</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00115">115</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1979,7 +2009,7 @@ Here is the caller graph for this function:</div>
 
 <p>Flag for the normalization of the array q in the implicit solution scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00106">106</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00112">112</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -1995,7 +2025,7 @@ Here is the caller graph for this function:</div>
 
 <p>Coefficients for the implicit part of the Runge-Kutta scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00079">79</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00081">81</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -2011,7 +2041,7 @@ Here is the caller graph for this function:</div>
 
 <p>Coefficients for the explicit part of the Runge-Kutta scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00077">77</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00079">79</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -2027,7 +2057,7 @@ Here is the caller graph for this function:</div>
 
 <p>Flag for the search of optimal step size in the implicit solution scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00112">112</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00118">118</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -2155,7 +2185,7 @@ Here is the caller graph for this function:</div>
 
 <p>Intermediate solutions of the Runge-Kutta scheme. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00089">89</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00091">91</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -2187,7 +2217,39 @@ Here is the caller graph for this function:</div>
 
 <p>Sum of all the terms of the equations except the transient term. </p>
 
-<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00115">115</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00121">121</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adcd7b18e2113f76851edf67942aacfd8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real*8, dimension(:,:,:,:), allocatable solver_2d::si_nh</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Intermediate semi-implicit non-hyperbolic terms of the Runge-Kutta scheme. </p>
+
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00097">97</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1cc2db16ecb9630d0a18ede2aab3095d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real*8, dimension(:,:), allocatable solver_2d::si_nhj</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Local Intermediate semi-impl non-hyperbolic terms of the Runge-Kutta scheme. </p>
+
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00109">109</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
 
 </div>
 </div>
@@ -2235,10 +2297,38 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
+<a class="anchor" id="af7aa9cf63d9bab1d54ad2ae44b2d5327"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real*8 solver_2d::t_imex1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00124">124</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae14ef20c2c0f4311ee0d9f9d802a79c1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real*8 solver_2d::t_imex2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="solver__2d_8f90_source.html#l00124">124</a> of file <a class="el" href="solver__2d_8f90_source.html">solver_2d.f90</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 5 2018 10:53:41 for IMEX_SfloW2D by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 13 2018 12:40:56 for IMEX_SfloW2D by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>
