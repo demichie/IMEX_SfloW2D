@@ -10,7 +10,11 @@ MODULE parameters_2d
 
   REAL*8 :: eps_newton        !< threshold for the convergence of the
                               !< Newton's method 
+
+  REAL*8 :: dt0               !< Initial time step
+
   REAL*8 :: max_dt            !< Largest time step allowed
+
   REAL*8 :: cfl               !< Courant-Friedrichs-Lewy parameter 
 
   REAL*8 :: eps_sing               !< parameter for desingularization
@@ -61,6 +65,12 @@ MODULE parameters_2d
   !> .
   LOGICAL :: temperature_flag
 
+  !> Flag to choose if we model solid phase transport
+  !> - T      => Solve for transport equation for the solid_phase
+  !> - F      => Do no solve for transport equation for the solid_phase
+  !> .
+  LOGICAL :: solid_transport_flag
+
   !> Flag to choose if there is a source of mass within the domain
   !> - T      => source term added to the system
   !> - F      => source term not added to the system 
@@ -99,8 +109,13 @@ MODULE parameters_2d
   !> Ambient temperature
   REAL*8 :: T_ambient
 
-  !> Volumetric fraction of sediment in the flow
-  REAL*8 :: sed_vol_fract
+  !> Initial sediment concentration in the pile of material
+  REAL*8 :: xs_init
+
+  !> Ambient sediment concentration
+  REAL*8 :: xs_ambient
+
+  REAL*8 :: sed_vol_perc
 
   INTEGER :: n_vars        !< Number of conservative variables
   INTEGER :: n_eqns   !< Number of equations
@@ -120,7 +135,7 @@ MODULE parameters_2d
   !> - 'superbee' => superbee limiter (Roe, 1985);
   !> - 'van_leer' => monotonized central-difference limiter (van Leer, 1977)
   !> .
-  INTEGER, ALLOCATABLE :: limiter(:)
+  INTEGER :: limiter(10)
 
   !> Finite volume method:\n
   !> - 'LxF'       => lax-friedrichs scheme;
@@ -134,6 +149,8 @@ MODULE parameters_2d
   REAL*8 :: t_end             !< end time for the run
   REAL*8 :: t_output          !< time of the next output
   REAL*8 :: dt_output         !< time interval for the output of the solution
+  REAL*8 :: t_runout          !< time of the next runout output
+  REAL*8 :: t_steady          !< end time when reached steady solution
 
   INTEGER :: verbose_level
 

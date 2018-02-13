@@ -7,7 +7,8 @@
 
 MODULE init_2d
 
-  USE parameters_2d, ONLY : temperature_flag , verbose_level
+  USE parameters_2d, ONLY : temperature_flag , verbose_level ,                  &
+       solid_transport_flag
 
   IMPLICIT none
 
@@ -23,11 +24,13 @@ MODULE init_2d
   REAL*8 :: hB_W         !< Left height
   REAL*8 :: u_W          !< Left velocity x
   REAL*8 :: v_W          !< Left velocity y
+  REAL*8 :: xs_W         !< Left sediment concentration
   REAL*8 :: T_W          !< Left temperature
 
   REAL*8 :: hB_E         !< Right height
   REAL*8 :: u_E          !< Right velocity x
   REAL*8 :: v_E          !< Right velocity y
+  REAL*8 :: xs_E         !< Right sediment concentration
   REAL*8 :: T_E          !< Right temperature
 
 
@@ -92,7 +95,18 @@ CONTAINS
     qp(1,1:i1,:) = hB_W
     qp(2,1:i1,:) = u_W
     qp(3,1:i1,:) = v_W
-    IF ( temperature_flag ) qp(4,1:i1,:) = T_W
+
+    IF ( solid_transport_flag ) THEN
+
+       qp(4,1:i1,:) = xs_W
+
+       IF ( temperature_flag ) qp(5,1:i1,:) = T_W
+
+    ELSE
+
+       IF ( temperature_flag ) qp(4,1:i1,:) = T_W
+
+    END IF
 
 
     IF ( verbose_level .GE. 1 ) WRITE(*,*) 'Left state'
@@ -124,7 +138,18 @@ CONTAINS
     qp(1,i1+1:comp_cells_x,:) = hB_E
     qp(2,i1+1:comp_cells_x,:) = u_E
     qp(3,i1+1:comp_cells_x,:) = v_E
-    IF ( temperature_flag ) qp(4,i1+1:comp_cells_x,:) = T_E
+
+    IF ( solid_transport_flag ) THEN
+
+       qp(4,i1+1:comp_cells_x,:) = xs_E
+
+       IF ( temperature_flag ) qp(5,i1+1:comp_cells_x,:) = T_E
+
+    ELSE
+
+       IF ( temperature_flag ) qp(4,i1+1:comp_cells_x,:) = T_E
+
+    END IF
 
 
     IF ( verbose_level .GE. 1 ) WRITE(*,*) 'Right state'
@@ -190,16 +215,30 @@ CONTAINS
 
          qp(1,j,k) = thickness_function(x_comp(j),y_comp(k),B_cent(j,k))
 
-         qp(2,j,k) = velocity_u_function(x_comp(j),y_comp(k),B_cent(j,k))
+         qp(2,j,k) = velocity_u_function(x_comp(j),y_comp(k))
 
-         qp(3,j,k) = velocity_v_function(x_comp(j),y_comp(k),B_cent(j,k))
+         qp(3,j,k) = velocity_v_function(x_comp(j),y_comp(k))
 
-         IF ( temperature_flag ) THEN
+         IF ( solid_transport_flag ) THEN
 
-            qp(4,j,k) = temperature_function(x_comp(j),y_comp(k))
+            qp(4,j,k) = sediment_function(x_comp(j),y_comp(k))
+
+            IF ( temperature_flag ) THEN
+               
+               qp(5,j,k) = temperature_function(x_comp(j),y_comp(k))
+               
+            END IF
+
+         ELSE
+
+            IF ( temperature_flag ) THEN
+               
+               qp(4,j,k) = temperature_function(x_comp(j),y_comp(k))
+               
+            END IF
 
          END IF
-
+            
       ENDDO
 
     ENDDO
@@ -379,7 +418,7 @@ CONTAINS
   !> \param    y           original grid                (\b input)
   !******************************************************************************
 
-  REAL*8 FUNCTION velocity_u_function(x,y,Bj)
+  REAL*8 FUNCTION velocity_u_function(x,y)
   
     USE parameters_2d, ONLY : released_volume , x_release , y_release
     USE parameters_2d, ONLY : velocity_mod_release, velocity_ang_release
@@ -390,7 +429,6 @@ CONTAINS
     IMPLICIT NONE
     
     REAL*8, INTENT(IN) :: x,y
-    REAL*8, INTENT(IN) :: Bj
     
     REAL*8, PARAMETER :: pig = 4.0*ATAN(1.0)
     REAL*8 :: R
@@ -484,7 +522,7 @@ CONTAINS
   !> \param    y           original grid                (\b input)
   !******************************************************************************
   
-  REAL*8 FUNCTION velocity_v_function(x,y,Bj)
+  REAL*8 FUNCTION velocity_v_function(x,y)
   
     USE parameters_2d, ONLY : released_volume , x_release , y_release
     USE parameters_2d, ONLY : velocity_mod_release, velocity_ang_release
@@ -495,7 +533,6 @@ CONTAINS
     IMPLICIT NONE
     
     REAL*8, INTENT(IN) :: x,y
-    REAL*8, INTENT(IN) :: Bj
    
     REAL*8, PARAMETER :: pig = 4.0*ATAN(1.0)
     REAL*8 :: R
@@ -563,6 +600,43 @@ CONTAINS
 
   END FUNCTION velocity_v_function
   
+  !******************************************************************************
+  !> Sediment function
+  !
+  !> This subroutine defines the sediment concentration in the pile and outside 
+  !> as a function of the input (x,y) grid point
+  !> \date OCTOBER 2016
+  !> \param    x           original grid                (\b input)
+  !> \param    y           original grid                (\b input)
+  !******************************************************************************
+
+  REAL*8 FUNCTION sediment_function(x,y)
+  
+    USE parameters_2d, ONLY : released_volume , x_release , y_release
+    USE parameters_2d, ONLY : xs_init , xs_ambient
+  
+    IMPLICIT NONE
+    
+    REAL*8, INTENT(IN) :: x,y
+   
+    REAL*8, PARAMETER :: pig = 4.0*ATAN(1.0)
+    REAL*8 :: R
+   
+    R = ( released_volume / pig )**(1.0/3.0)
+    
+    IF ( DSQRT( (x-x_release)**2 + (y-y_release)**2 ) .LE. R ) THEN
+
+       sediment_function = xs_init
+
+    ELSE
+
+       sediment_function = xs_ambient
+
+    ENDIF
+
+  END FUNCTION sediment_function
+  
+
 
   !******************************************************************************
   !> Temperature function

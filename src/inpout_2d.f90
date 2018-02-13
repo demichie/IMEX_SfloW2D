@@ -23,26 +23,27 @@ MODULE inpout_2d
   USE geometry_2d, ONLY : topography_profile , n_topography_profile_x ,         &
        n_topography_profile_y
   USE init_2d, ONLY : riemann_interface
-  USE parameters_2d, ONLY : temperature_flag , riemann_flag , rheology_flag
+  USE parameters_2d, ONLY : temperature_flag , solid_transport_flag ,           &
+       riemann_flag , rheology_flag
   USE parameters_2d, ONLY : source_flag
 
   ! -- Variables for the namelist INITIAL_CONDITIONS
   USE parameters_2d, ONLY : released_volume , x_release , y_release
   USE parameters_2d, ONLY : velocity_mod_release , velocity_ang_release
-  USE parameters_2d, ONLY : sed_vol_fract
+  USE parameters_2d, ONLY : xs_init , xs_ambient , sed_vol_perc
   USE parameters_2d, ONLY : T_init , T_ambient
 
   ! -- Variables for the namelist LEFT_STATE
-  USE init_2d, ONLY : hB_W , u_W , v_W , T_W
+  USE init_2d, ONLY : hB_W , u_W , v_W , xs_W , T_W
 
   ! -- Variables for the namelist RIGHT_STATE
-  USE init_2d, ONLY : hB_E , u_E , v_E , T_E
+  USE init_2d, ONLY : hB_E , u_E , v_E , xs_E , T_E
 
   ! -- Variables for the namelists LEFT/RIGHT_BOUNDARY_CONDITIONS
   USE parameters_2d, ONLY : bc
 
   ! -- Variables for the namelist NUMERIC_PARAMETERS
-  USE parameters_2d, ONLY : solver_scheme, max_dt , cfl, limiter , theta,       &
+  USE parameters_2d, ONLY : solver_scheme, dt0 , max_dt , cfl, limiter , theta, &
        reconstr_variables , reconstr_coeff , interfaces_relaxation , n_RK   
 
   ! -- Variables for the namelist EXPL_TERMS_PARAMETERS
@@ -70,6 +71,7 @@ MODULE inpout_2d
   CHARACTER(LEN=40) :: probes_file        !< Name of the probes file 
   CHARACTER(LEN=40) :: output_file_2d     !< Name of the output files
   CHARACTER(LEN=40) :: output_esri_file   !< Name of the esri output files
+  CHARACTER(LEN=40) :: runout_file        !< Name of the runout file 
 
   INTEGER, PARAMETER :: input_unit = 7    !< Input data unit
   INTEGER, PARAMETER :: backup_unit = 8   !< Backup input data unit
@@ -78,7 +80,9 @@ MODULE inpout_2d
   INTEGER, PARAMETER :: probes_unit = 11  !< Probes data unit
   INTEGER, PARAMETER :: output_unit_2d = 12  !< Output data 2D unit
   INTEGER, PARAMETER :: output_esri_unit = 13  !< Esri Output unit
-  INTEGER, PARAMETER :: dem_esri_unit = 13  !< Computational grid Esri fmt unit
+  INTEGER, PARAMETER :: dem_esri_unit = 14  !< Computational grid Esri fmt unit
+  INTEGER, PARAMETER :: runout_unit = 15
+  INTEGER, PARAMETER :: dakota_unit = 16
 
   !> Counter for the output files
   INTEGER :: output_idx 
@@ -107,17 +111,23 @@ MODULE inpout_2d
   !> .
   LOGICAL :: output_cons_flag
 
+  !> Flag to save the max runout at ouput times
+  !> - T     => write max runout on file
+  !> - F     => do not write max runout
+  !> .
+  LOGICAL :: output_runout_flag
+
   ! -- Variables for the namelists WEST_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcW , u_bcW , v_bcW ,  hu_bcW , hv_bcW , T_bcW
+  TYPE(bc) :: hB_bcW , u_bcW , v_bcW ,  hu_bcW , hv_bcW , xs_bcW , T_bcW
 
   ! -- Variables for the namelists EAST_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcE , u_bcE , v_bcE , hu_bcE , hv_bcE , T_bcE
+  TYPE(bc) :: hB_bcE , u_bcE , v_bcE , hu_bcE , hv_bcE , xs_bcE , T_bcE
 
   ! -- Variables for the namelists SOUTH_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcS , u_bcS , v_bcS , hu_bcS , hv_bcS , T_bcS
+  TYPE(bc) :: hB_bcS , u_bcS , v_bcS , hu_bcS , hv_bcS , xs_bcS , T_bcS
 
   ! -- Variables for the namelists NORTH_BOUNDARY_CONDITIONS
-  TYPE(bc) :: hB_bcN , u_bcN , v_bcN , hu_bcN , hv_bcN , T_bcN
+  TYPE(bc) :: hB_bcN , u_bcN , v_bcN , hu_bcN , hv_bcN , xs_bcN , T_bcN
 
 
   ! parameters to read a dem file
@@ -131,49 +141,58 @@ MODULE inpout_2d
 
   REAL*8, ALLOCATABLE :: probes_coords(:,:)
 
+  REAL*8 :: dt_runout
+
+  REAL*8, ALLOCATABLE :: h_old(:,:)
+
+  REAL*8 :: x0_runout, y0_runout , init_runout , runout_mom_stop
+
   NAMELIST / run_parameters / run_name , restart , topography_demfile ,         &
        t_start , t_end , dt_output , output_cons_flag , output_esri_flag ,      &
-       output_phys_flag , verbose_level
+       output_phys_flag , output_runout_flag , verbose_level
 
-  NAMELIST / restart_parameters / restart_file , T_init , T_ambient ,           &
-       sed_vol_fract
+  NAMELIST / restart_parameters / restart_file , xs_init , xs_ambient , T_init ,&
+       T_ambient , sed_vol_perc
 
   NAMELIST / newrun_parameters / x0 , y0 , comp_cells_x , comp_cells_y ,        &
-       cell_size , temperature_flag , source_flag , rheology_flag , riemann_flag
+       cell_size , temperature_flag , source_flag , solid_transport_flag ,      &
+       rheology_flag , riemann_flag
 
   NAMELIST / initial_conditions /  released_volume , x_release , y_release ,    &
        velocity_mod_release , velocity_ang_release , T_init , T_ambient
 
-  NAMELIST / left_state / riemann_interface , hB_W , u_W , v_W , T_W
+  NAMELIST / left_state / riemann_interface , hB_W , u_W , v_W , xs_W , T_W
 
-  NAMELIST / right_state / hB_E , u_E , v_E , T_E
+  NAMELIST / right_state / hB_E , u_E , v_E , xs_E , T_E
 
   NAMELIST / west_boundary_conditions / hB_bcW , u_bcW , v_bcW , hu_bcW ,       &
-       hv_bcW , T_bcW
+       hv_bcW , xs_bcW , T_bcW
 
   NAMELIST / east_boundary_conditions / hB_bcE , u_bcE , v_bcE , hu_bcE ,       &
-       hv_bcE , T_bcE
+       hv_bcE , xs_bcE , T_bcE
 
   NAMELIST / south_boundary_conditions / hB_bcS , u_bcS , v_bcS , hu_bcS ,      &
-       hv_bcS , T_bcS
+       hv_bcS , xs_bcS , T_bcS
 
   NAMELIST / north_boundary_conditions / hB_bcN , u_bcN , v_bcN , hu_bcN ,      &
-       hv_bcN , T_bcN
+       hv_bcN , xs_bcN , T_bcN
 
-  NAMELIST / numeric_parameters / solver_scheme, max_dt , cfl, limiter , theta, &
-       reconstr_variables , reconstr_coeff , interfaces_relaxation , n_RK   
+  NAMELIST / numeric_parameters / solver_scheme, dt0 , max_dt , cfl, limiter ,  &
+       theta , reconstr_variables , reconstr_coeff , interfaces_relaxation , n_RK   
 
   NAMELIST / expl_terms_parameters / grav , x_source , y_source , r_source ,    &
        vfr_source , T_source
  
-
   NAMELIST / temperature_parameters / emissivity ,  atm_heat_transf_coeff ,     &
        thermal_conductivity , exp_area_fract , c_p , enne , emme , T_env ,      &
        T_ground , rho
 
   NAMELIST / rheology_parameters / rheology_model , mu , xi , tau , nu_ref ,    &
-       visc_par , T_ref
+       visc_par , T_ref , alpha2 , beta2 , alpha1 , beta1 , Kappa , n_td ,      &
+       gamma_w , gamma_s
 
+  NAMELIST / runout_parameters / x0_runout , y0_runout , dt_runout ,            &
+       runout_mom_stop
 
 CONTAINS
 
@@ -211,13 +230,16 @@ CONTAINS
     output_cons_flag = .TRUE.
     output_esri_flag = .TRUE.
     output_phys_flag = .TRUE.
+    output_runout_flag = .FALSE.
     verbose_level = 0
 
     !-- Inizialization of the Variables for the namelist restart parameters
     restart_file = ''
+    xs_init = 0.D0
+    xs_ambient = 0.D0
     T_init = 0.D0
     T_ambient = 0.D0
-    sed_vol_fract = 0.D0
+    sed_vol_perc = 0.D0
 
     !-- Inizialization of the Variables for the namelist newrun_parameters
     x0 = 0.D0
@@ -228,19 +250,22 @@ CONTAINS
     temperature_flag = .FALSE.
     source_flag = .FALSE.
     rheology_flag = .FALSE.
-    riemann_flag=.TRUE.
+    riemann_flag =.TRUE.
+    solid_transport_flag = .FALSE.
 
     !-- Inizialization of the Variables for the namelist left_state
     riemann_interface = 0.5D0
     hB_W = 2.222D0
     u_W = 0.8246D0
     v_W = 0.D0
+    xs_W = 0.5D0
     T_W = -1.D0
     
     !-- Inizialization of the Variables for the namelist right_state
     hB_E = -1.0D0
     u_E = -1.6359D0
     u_E = 0.D0
+    xs_E = 0.D0
     T_E = -1.D0
 
     !-- Inizialization of the Variables for the namelist west boundary conditions
@@ -253,6 +278,9 @@ CONTAINS
     v_bcW%flag = 1 
     v_bcW%value = 0.d0 
 
+    xs_bcW%flag = 1 
+    xs_bcW%value = 0.d0 
+
     !-- Inizialization of the Variables for the namelist east boundary conditions
     hB_bcE%flag = 1 
     hB_bcE%value = 0.d0 
@@ -262,6 +290,9 @@ CONTAINS
     
     v_bcE%flag = 1 
     v_bcE%value = 0.d0 
+
+    xs_bcE%flag = 1 
+    xs_bcE%value = 0.d0 
 
     !-- Inizialization of the Variables for the namelist south boundary conditions
     hB_bcS%flag = 1 
@@ -273,6 +304,9 @@ CONTAINS
     v_bcS%flag = 1 
     v_bcS%value = 0.d0 
 
+    xs_bcS%flag = 1 
+    xs_bcS%value = 0.d0 
+
     !-- Inizialization of the Variables for the namelist north boundary conditions
     hB_bcN%flag = 1 
     hB_bcN%value = 0.d0 
@@ -283,7 +317,11 @@ CONTAINS
     v_bcN%flag = 1 
     v_bcN%value = 0.d0 
 
+    xs_bcN%flag = 1 
+    xs_bcN%value = 0.d0 
+
     !-- Inizialization of the Variables for the namelist NUMERIC_PARAMETERS
+    dt0 = 1.d-4
     max_dt = 1.d-3
     solver_scheme = 'KT'
     n_RK = 1
@@ -321,6 +359,12 @@ CONTAINS
     tau = 0.D0
     T_ref = 0.D0
     visc_par = 0.0D0
+
+    !-- Inizialization of the Variables for the namelist RUNOUT_PARAMETERS
+    x0_runout = -1
+    y0_runout = -1
+    dt_runout = 60
+    runout_mom_stop = 0.D0
 
     !-------------- Check if input file exists ----------------------------------
     input_file = 'IMEX_SfloW2D.inp'
@@ -402,6 +446,7 @@ CONTAINS
     v_bcW%flag = -1 
     hu_bcW%flag = -1 
     hv_bcW%flag = -1 
+    xs_bcW%flag = -1 
     T_bcW%flag = -1 
 
     hB_bcE%flag = -1 
@@ -409,6 +454,7 @@ CONTAINS
     v_bcE%flag = -1 
     hu_bcE%flag = -1 
     hv_bcE%flag = -1 
+    xs_bcE%flag = -1 
     T_bcE%flag = -1 
 
     hB_bcS%flag = -1 
@@ -416,6 +462,7 @@ CONTAINS
     v_bcS%flag = -1 
     hu_bcS%flag = -1 
     hv_bcS%flag = -1 
+    xs_bcS%flag = -1 
     T_bcS%flag = -1 
 
     hB_bcN%flag = -1 
@@ -423,8 +470,10 @@ CONTAINS
     v_bcN%flag = -1 
     hu_bcN%flag = -1 
     hv_bcN%flag = -1 
+    xs_bcN%flag = -1 
     T_bcN%flag = -1 
 
+    sed_vol_perc = -1.D0
 
     rheology_model = -1
     mu = -1
@@ -433,6 +482,15 @@ CONTAINS
     nu_ref = -1
     visc_par = -1
     T_ref = -1
+
+    alpha2 = -1 
+    beta2 = -1
+    alpha1 = -1
+    beta1 = -1
+    Kappa = -1
+    n_td = -1
+    gamma_w = -1
+    gamma_s = -1
 
     exp_area_fract = -1.D0
     emissivity = -1.D0             
@@ -446,6 +504,9 @@ CONTAINS
     rho = -1.D0
 
     grav = -1.D0
+
+    x0_runout = -1.D0
+    y0_runout = -1.D0
 
 
   END SUBROUTINE init_param
@@ -534,21 +595,37 @@ CONTAINS
 
     END IF
        
+    IF ( solid_transport_flag ) THEN
        
-    IF ( temperature_flag ) THEN
-
-       n_vars = 4
-       n_eqns = 4
-
+       IF ( temperature_flag ) THEN
+          
+          n_vars = 5
+          n_eqns = 5
+          
        ELSE
+          
+          n_vars = 4
+          n_eqns = 4
+          
+       END IF
+   
+    ELSE
 
-       n_vars = 3
-       n_eqns = 3
+       IF ( temperature_flag ) THEN
+          
+          n_vars = 4
+          n_eqns = 4
+          
+       ELSE
+          
+          n_vars = 3
+          n_eqns = 3
+          
+       END IF
 
     END IF
-   
-    ALLOCATE( limiter(n_vars) )
-    ALLOCATE( bcW(n_vars) , bcE(n_vars) , bcS(n_vars) , bcN(n_vars) , )
+
+    ALLOCATE( bcW(n_vars) , bcE(n_vars) , bcS(n_vars) , bcN(n_vars) )
 
     IF ( restart ) THEN
 
@@ -562,7 +639,19 @@ CONTAINS
           STOP
           
        ELSE
-          
+   
+          IF ( ( sed_vol_perc .LT. -1.D0 ) .OR. ( sed_vol_perc .GT. 100.D0 ) )   &
+               THEN
+
+             WRITE(*,*) 'ERROR: problem with namelist RESTART_PARAMETERS'
+             WRITE(*,*) 'SED_VOL_PERC =' , sed_vol_perc
+             STOP
+             
+          END IF
+       
+          xs_init = 1.D-2 * sed_vol_perc 
+          xs_ambient = 1.D-2 * sed_vol_perc 
+
           REWIND(input_unit)
           
        END IF
@@ -639,7 +728,7 @@ CONTAINS
        ELSE
 
           READ(input_unit,initial_conditions,IOSTAT=ios)
-
+          
           IF ( ios .NE. 0 ) THEN
              
              WRITE(*,*) 'IOSTAT=',ios
@@ -650,19 +739,18 @@ CONTAINS
           ELSE
              
              REWIND(input_unit)
- 
+             
           END IF
-            
-       IF ( ( temperature_flag ) .AND. ( T_init*T_ambient .EQ. 0.D0 ) ) THEN
-
-          WRITE(*,*) 'T_init=',T_init
-          WRITE(*,*) 'T_ambient=',T_ambient
-          WRITE(*,*) 'Add the two variables to the namelist INITIAL_CONDITIONS'
-          STOP
-
-       END IF
-
-     
+          
+          IF ( ( temperature_flag ) .AND. ( T_init*T_ambient .EQ. 0.D0 ) ) THEN
+             
+             WRITE(*,*) 'T_init=',T_init
+             WRITE(*,*) 'T_ambient=',T_ambient
+             WRITE(*,*) 'Add the two variables to namelist INITIAL_CONDITIONS'
+             STOP
+             
+          END IF
+                    
        END IF
 
     END IF
@@ -720,11 +808,12 @@ CONTAINS
 
     END IF
 
-    IF ( verbose_level .GE. 1 ) WRITE(*,*) 'Limiters',limiter
+    IF ( verbose_level .GE. 1 ) WRITE(*,*) 'Limiters',limiter(1:n_vars)
 
-    IF ( ( MAXVAL(limiter) .GT. 3 ) .OR. ( MINVAL(limiter) .LT. 0 ) ) THEN
+    IF ( ( MAXVAL(limiter(1:n_vars)) .GT. 3 ) .OR.                              &
+         ( MINVAL(limiter(1:n_vars)) .LT. 0 ) ) THEN
 
-       WRITE(*,*) 'WARNING: wrong limiter ',limiter
+       WRITE(*,*) 'WARNING: wrong limiter ',limiter(1:n_vars)
        WRITE(*,*) 'Choose among: none, minmod,superbee,van_leer'
        STOP         
 
@@ -732,29 +821,65 @@ CONTAINS
 
     IF ( reconstr_variables .EQ. 'phys' ) THEN
 
-       IF ( temperature_flag ) THEN
+       IF ( solid_transport_flag ) THEN
 
-          WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
-          WRITE(*,*) 'h+B,u,v,T'
-
+          IF ( temperature_flag ) THEN
+             
+             WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+             WRITE(*,*) 'h+B,u,v,xs,T'
+             
+          ELSE
+             
+             WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+             WRITE(*,*) 'h+B,u,v,xs'
+             
+          END IF
+       
        ELSE
 
-          WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
-          WRITE(*,*) 'h+B,u,v'
+          IF ( temperature_flag ) THEN
+             
+             WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+             WRITE(*,*) 'h+B,u,v,T'
+             
+          ELSE
+             
+             WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+             WRITE(*,*) 'h+B,u,v'
+             
+          END IF
 
        END IF
-       
+
     ELSEIF ( reconstr_variables .EQ. 'cons' ) THEN
 
-       IF ( temperature_flag ) THEN
+       IF ( solid_transport_flag ) THEN
 
-          WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
-          WRITE(*,*) 'h+B,hu,hv,T'
-
+          IF ( temperature_flag ) THEN
+             
+             WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+             WRITE(*,*) 'h+B,hu,hv,xs,T'
+             
+          ELSE
+             
+             WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+             WRITE(*,*) 'h+B,hu,hv,xs'
+             
+          END IF
+          
        ELSE
 
-          WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
-          WRITE(*,*) 'h+B,hu,hv'
+          IF ( solid_transport_flag ) THEN
+             
+             WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+             WRITE(*,*) 'h+B,hu,hv,T'
+             
+          ELSE
+             
+             WRITE(*,*) 'Linear reconstruction and b. c. applied to variables:'
+             WRITE(*,*) 'h+B,hu,hv'
+             
+          END IF
 
        END IF
 
@@ -842,6 +967,15 @@ CONTAINS
 
        END IF
        
+       IF ( ( solid_transport_flag ) .AND. ( xs_bcW%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist WEST_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for sediment conentration not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
        IF ( ( temperature_flag ) .AND. ( T_bcW%flag .EQ. -1 ) ) THEN 
           
           WRITE(*,*) 'ERROR: problem with namelist WEST_BOUNDARY_CONDITIONS'
@@ -935,6 +1069,15 @@ CONTAINS
 
        END IF
 
+       IF ( ( solid_transport_flag ) .AND. ( xs_bcE%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist EAST_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for sediment concentration not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+    
        IF ( ( temperature_flag ) .AND. ( T_bcE%flag .EQ. -1 ) ) THEN 
           
           WRITE(*,*) 'ERROR: problem with namelist EAST_BOUNDARY_CONDITIONS'
@@ -1031,6 +1174,15 @@ CONTAINS
 
        END IF
        
+       IF ( ( solid_transport_flag ) .AND. ( xs_bcS%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist SOUTH_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for sediment concentrations not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
        IF ( ( temperature_flag ) .AND. ( T_bcS%flag .EQ. -1 ) ) THEN 
           
           WRITE(*,*) 'ERROR: problem with namelist SOUTH_BOUNDARY_CONDITIONS'
@@ -1123,6 +1275,15 @@ CONTAINS
 
        END IF
        
+       IF (( solid_transport_flag ) .AND. ( xs_bcN%flag .EQ. -1 ) ) THEN 
+          
+          WRITE(*,*) 'ERROR: problem with namelist NORTH_BOUNDARY_CONDITIONS'
+          WRITE(*,*) 'B.C. for sediment concentrations not set properly'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       END IF
+
        IF ( ( temperature_flag ) .AND. ( T_bcN%flag .EQ. -1 ) ) THEN 
           
           WRITE(*,*) 'ERROR: problem with namelist NORTH_BOUNDARY_CONDITIONS'
@@ -1148,16 +1309,36 @@ CONTAINS
        END IF
        
     END IF
+
+    IF ( solid_transport_flag ) THEN
     
-    IF ( temperature_flag ) THEN
+       bcW(4) = xs_bcW
+       bcE(4) = xs_bcE
+       bcS(4) = xs_bcS
+       bcN(4) = xs_bcN
+    
+       IF ( temperature_flag ) THEN
+          
+          bcW(5) = T_bcW
+          bcE(5) = T_bcE
+          bcS(5) = T_bcS
+          bcN(5) = T_bcN
        
-       bcW(4) = T_bcW
-       bcE(4) = T_bcE
-       bcS(4) = T_bcS
-       bcN(4) = T_bcN
+       END IF
+    
+    ELSE
+
+       IF ( temperature_flag ) THEN
+          
+          bcW(4) = T_bcW
+          bcE(4) = T_bcE
+          bcS(4) = T_bcS
+          bcN(4) = T_bcN
+       
+       END IF
        
     END IF
-    
+
 
     ! ------- READ expl_terms_parameters NAMELIST -------------------------------
 
@@ -1490,6 +1671,19 @@ CONTAINS
 
        ELSEIF ( rheology_model .EQ. 4 ) THEN
 
+          IF ( .NOT. solid_transport_flag ) THEN
+
+             IF ( sed_vol_perc .EQ. -1.D0 ) THEN
+             
+                WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
+                WRITE(*,*) 'RHEOLOGY_MODEL =' , rheology_model
+                WRITE(*,*) 'SED_VOL_PERC = ' , sed_vol_perc
+                STOP
+                
+             END IF
+                
+          END IF
+
           IF ( alpha2 .EQ. -1.D0 ) THEN
              
              WRITE(*,*) 'ERROR: problem with namelist RHEOLOGY_PARAMETERS'
@@ -1550,7 +1744,7 @@ CONTAINS
              WRITE(*,*) 'GAMMA_W =' , gamma_w 
              WRITE(*,*) 'Please check the input file'
              STOP
-
+             
           END IF
 
           IF ( gamma_s .EQ. -1.D0 ) THEN
@@ -1575,6 +1769,7 @@ CONTAINS
              STOP
 
        END IF
+
 
     END IF
 
@@ -1657,36 +1852,43 @@ CONTAINS
        READ(2001,*) chara, cellsize
        READ(2001,*) chara, nodata_value
 
-       IF ( x0 .LT. xllcorner ) THEN 
+       ! The values read from the DEM files are associated to the center of the
+       ! pixels. x0 is the left margin of the computational domain and has to be
+       ! greater than the center of the first pixel.
+       IF ( x0 .LT. xllcorner + 0.5D0 * cellsize ) THEN 
 
           WRITE(*,*) 'Computational domain problem'
-          WRITE(*,*) 'x0 < xllcorner',x0,xllcorner
+          WRITE(*,*) 'x0 < xllcorner+0.5*cellsize',x0,xllcorner+0.5D0*cellsize
           STOP
 
        END IF
 
-       IF ( x0+comp_cells_x*cell_size .GT. xllcorner+ncols*cellsize ) THEN 
+       ! The right margin of the computational domain should be smaller then the
+       ! center of the last pixel
+       IF ( x0 + ( comp_cells_x ) * cell_size .GT.                              &
+            xllcorner + ( 0.5D0 + ncols ) * cellsize ) THEN 
 
           WRITE(*,*) 'Computational domain problem'
           WRITE(*,*) 'right edge > xllcorner+ncols*cellsize',                   &
-               x0+comp_cells_x*cell_size , xllcorner+ncols*cellsize
+               x0+comp_cells_x*cell_size , xllcorner+(0.5D0+ncols)*cellsize
           STOP
 
        END IF
 
-       IF ( y0 .LT. yllcorner ) THEN 
+       IF ( y0 .LT. yllcorner+0.5D0*cellsize ) THEN 
 
           WRITE(*,*) 'Computational domain problem'
-          WRITE(*,*) 'y0 < yllcorner',y0,yllcorner
+          WRITE(*,*) 'y0 < yllcorner+0.5*cellsize',y0,yllcorner+0.5D0*cellsize
           STOP
 
        END IF
 
-       IF ( y0+comp_cells_y*cell_size .GT. yllcorner+nrows*cellsize ) THEN 
+       IF ( ABS( ( y0 + comp_cells_y * cell_size ) - ( yllcorner + 0.5D0 +      &
+            nrows * cellsize ) ) .LT. 1.D-10 ) THEN 
 
           WRITE(*,*) 'Computational domain problem'
           WRITE(*,*) 'top edge > yllcorner+nrows*cellsize',                     &
-               y0+comp_cells_y*cell_size , yllcorner+nrows*cellsize
+               y0+comp_cells_y*cell_size , yllcorner+(0.5D0+nrows)*cellsize
           STOP
 
        END IF
@@ -1703,23 +1905,19 @@ CONTAINS
        ALLOCATE( topography_profile( 3 , n_topography_profile_x ,               &
             n_topography_profile_y) )
 
-       topography_profile(1,1,:) = xllcorner
+       DO j=1,n_topography_profile_x 
 
-       DO j=2,n_topography_profile_x 
-
-          topography_profile(1,j,:) = xllcorner + (j-1) * cellsize
+          topography_profile(1,j,:) = xllcorner + ( j - 0.5D0 ) * cellsize
 
        ENDDO
 
-       topography_profile(2,:,1) = yllcorner
+       DO k=1,n_topography_profile_y
 
-       DO k=2,n_topography_profile_y
-
-          topography_profile(2,:,k) = yllcorner + (k-1) * cellsize
+          topography_profile(2,:,k) = yllcorner + ( k - 0.5D0 ) * cellsize
 
        ENDDO
 
-       ! store in opposite sense
+       ! Read topography values (starting at the upper-left corner)
 
        DO k=1,n_topography_profile_y
 
@@ -1738,6 +1936,72 @@ CONTAINS
 
     ENDIF
 
+    ! ------- READ runout_parameters NAMELIST --------------------------------
+
+    IF ( output_runout_flag ) THEN
+
+       READ(input_unit, runout_parameters,IOSTAT=ios)
+       
+       IF ( ios .NE. 0 ) THEN
+          
+          WRITE(*,*) 'IOSTAT=',ios
+          WRITE(*,*) 'ERROR: problem with namelist RUNOUT_PARAMETERS'
+          WRITE(*,*) 'Please check the input file'
+          STOP
+          
+       ELSE
+          
+          REWIND(input_unit)
+          
+       END IF
+       
+       IF ( ( x0_runout .EQ. -1.D0 ) .AND. ( y0_runout .EQ. -1.D0 ) ) THEN
+          
+          WRITE(*,*) 'Runout reference location not defined'
+          
+       ELSE
+
+          IF ( x0_runout .LT. x0 ) THEN
+             
+             WRITE(*,*) 'Computational domain problem'
+             WRITE(*,*) 'x0_runout < x0',x0,x0_runout
+             STOP
+             
+          END IF
+          
+          IF ( x0 .GT. x0+comp_cells_x*cell_size ) THEN
+             
+             WRITE(*,*) 'Computational domain problem'
+             WRITE(*,*) 'x0_runout > x0+comp_cells_x*cell_size' , x0 ,          &
+                  x0_runout+comp_cells_x*cell_size
+             STOP
+             
+          END IF
+          
+          IF ( y0_runout .LT. y0 ) THEN
+             
+             WRITE(*,*) 'Computational domain problem'
+             WRITE(*,*) 'y0_runout < y0',y0,y0_runout
+             STOP
+             
+          END IF
+          
+          IF ( y0 .GT. y0+comp_cells_y*cell_size ) THEN
+             
+             WRITE(*,*) 'Computational domain problem'
+             WRITE(*,*) 'y0_runout > y0+comp_cells_y*cell_size' , y0 ,          &
+                  y0_runout+comp_cells_y*cell_size
+             STOP
+             
+          END IF
+          
+       END IF
+       
+       runout_file = TRIM(run_name)//'_runout'//'.txt'
+
+       OPEN(runout_unit,FILE=runout_file,STATUS='unknown',form='formatted')
+  
+    END IF
 
 
     !------ search for check points --------------------------------------------
@@ -1778,7 +2042,9 @@ CONTAINS
     GOTO 310
 300 tend1 = .TRUE.
 310 CONTINUE
-    
+   
+
+ 
 
     ! ----- end search for check points -----------------------------------------
 
@@ -1834,6 +2100,9 @@ CONTAINS
 
     IF ( rheology_flag ) WRITE(backup_unit,rheology_parameters)
 
+    IF ( output_runout_flag ) WRITE(backup_unit, runout_parameters)
+
+
     IF ( .NOT.topography_demfile ) THEN
 
        WRITE(backup_unit,*) '''TOPOGRAPHY_PROFILE'''
@@ -1868,14 +2137,10 @@ CONTAINS
        END DO
        
     END IF
-    
-    
+        
     CLOSE(backup_unit)
 
-
   END SUBROUTINE read_param
-
-
 
   !******************************************************************************
   !> \brief Read the input file
@@ -2027,6 +2292,8 @@ CONTAINS
 
     REAL*8 :: xj , yk
 
+    REAL*8 :: sed_vol_fract_init
+
     INQUIRE (FILE=restart_file,exist=lexist)
 
     IF (lexist .EQV. .FALSE.) THEN
@@ -2071,18 +2338,16 @@ CONTAINS
           
        END IF
        
-       IF ( DABS( xllcorner - (x0 + 0.5D0*cellsize) ) .GT. 1.D-5*cellsize ) THEN
+       IF ( DABS( xllcorner - x0 ) .GT. 1.D-5*cellsize ) THEN
           
-          WRITE(*,*) 'xllcorner not equal to x0+0.5*cellsize', xllcorner ,      &
-               x0+0.5*cellsize
+          WRITE(*,*) 'xllcorner not equal to x0', xllcorner , x0
           STOP
           
        END IF
        
-       IF ( DABS( yllcorner - (y0 + 0.5D0*cellsize) ) .GT. 1.D-5*cellsize ) THEN
+       IF ( DABS( yllcorner - y0 ) .GT. 1.D-5*cellsize ) THEN
           
-          WRITE(*,*) 'yllcorner not equal to y0+0.5*cellsize', yllcorner ,      &
-               y0+0.5*cellsize
+          WRITE(*,*) 'yllcorner not equal to y0', yllcorner , y0
           STOP
           
        END IF
@@ -2113,19 +2378,58 @@ CONTAINS
        WRITE(*,*) 'Total volume =', cellsize**2 * SUM(thickness_init)
 
        q(1,:,:) = B_cent(:,:) + thickness_init(:,:)
+
+       WRITE(*,*) 'Total volume =',cellsize**2 * SUM( thickness_init(:,:) )
+
        q(2,:,:) = 0.D0
        q(3,:,:) = 0.D0
 
-       IF ( temperature_flag ) THEN
+       IF ( solid_transport_flag ) THEN
 
-          q(4,:,:) = thickness_init(:,:) * T_init
-
+          q(4,:,:) = thickness_init(:,:) * xs_ambient
+          
           WHERE ( thickness_init .GT. 0.D0 )
-          
-             q(4,:,:) = thickness_init(:,:) * T_ambient
-          
+             
+             q(4,:,:) = thickness_init(:,:) * xs_init
+             
           END WHERE
+       
+          WRITE(*,*) 'MAXVAL(q(4,:,:))',MAXVAL(q(4,:,:))
+          WRITE(*,*) 'xs_ambient,xs_init',xs_ambient,xs_init
+
+
+          sed_vol_fract_init = xs_init * gamma_w / ( xs_init * gamma_w +        &
+               ( 1.D0 - xs_init ) * gamma_s )
+
+          WRITE(*,*) 'Total sediment volume =',cellsize**2*SUM( thickness_init* &
+               sed_vol_fract_init )
+
+          IF ( temperature_flag ) THEN
+             
+             q(5,:,:) = thickness_init(:,:) * T_init
+             
+             WHERE ( thickness_init .GT. 0.D0 )
+                
+                q(5,:,:) = thickness_init(:,:) * T_ambient
+                
+             END WHERE
     
+          END IF
+
+       ELSE
+
+          IF ( temperature_flag ) THEN
+             
+             q(4,:,:) = thickness_init(:,:) * T_init
+             
+             WHERE ( thickness_init .GT. 0.D0 )
+                
+                q(4,:,:) = thickness_init(:,:) * T_ambient
+                
+             END WHERE
+    
+          END IF
+
        END IF
 
        output_idx = 0
@@ -2167,13 +2471,36 @@ CONTAINS
              IF ( verbose_level .GE. 2 ) THEN
                 
                 WRITE(*,*) 'x,y,q,B',xj,yk,q(:,j,k),B_cent(j,k)
-                WRITE(*,*) 'h,T',q(1,j,k)-B_cent(j,k), q(4,j,k)                 &
-                     / ( q(1,j,k)-B_cent(j,k) )
-                READ(*,*)
+                
+                WRITE(*,*) 'h',q(1,j,k)-B_cent(j,k)
+                
+                IF ( solid_transport_flag ) THEN
+
+                   WRITE(*,*)  'xs', q(4,j,k) / ( q(1,j,k)-B_cent(j,k) )
+                   
+                   IF ( temperature_flag ) THEN
+                      
+                      WRITE(*,*) 'T', q(5,j,k) / ( q(1,j,k)-B_cent(j,k) )
+                      
+                   END IF
+                
+                   READ(*,*)
+
+                ELSE
+
+                   IF ( temperature_flag ) THEN
+                      
+                      WRITE(*,*) 'T', q(4,j,k) / ( q(1,j,k)-B_cent(j,k) )
+                      
+                   END IF
+                   
+                   READ(*,*)
+                   
+                END IF
                 
              END IF
              
-             IF ( q(1,j,k) .LE. B_cent(j,k) ) THEN
+             IF ( q(1,j,k) .LE. B_cent(j,k)+1.D-10 ) THEN
 
                 IF ( verbose_level .GE. 2 ) THEN
 
@@ -2193,9 +2520,16 @@ CONTAINS
        END DO
 
        WRITE(*,*) 'Total volume =',dx*dy* SUM( q(1,:,:)-B_cent(:,:) )
+
+       IF ( solid_transport_flag ) THEN
+
+          WRITE(*,*) 'Total sediment volume =',dx*dy* SUM( q(4,:,:) *           &
+               ( q(1,:,:)-B_cent(:,:) ) )
           
-1003   FORMAT(5e20.12)
-1004   FORMAT(6e20.12)
+       END IF
+
+1003   FORMAT(6e20.12)
+1004   FORMAT(7e20.12)
 
        j = SCAN(restart_file, '.' , .TRUE. )
        
@@ -2209,7 +2543,8 @@ CONTAINS
     
     ELSE
    
-       WRITE(*,*) 'boh'
+       WRITE(*,*) 'Restart file not in the right format (*.asc or *)'
+       STOP
 
     END IF
  
@@ -2240,7 +2575,7 @@ CONTAINS
     USE constitutive_2d, ONLY : qc_to_qp
 
     ! external variables
-    USE constitutive_2d, ONLY : h , u , v , T
+    USE constitutive_2d, ONLY : h , u , v , xs , T
 
     USE geometry_2d, ONLY : comp_cells_x , B_cent , comp_cells_y , x_comp, y_comp
     ! USE geometry_2d, ONLY : x0 , dx , B_ver , y0 , dy
@@ -2322,33 +2657,49 @@ CONTAINS
           
           DO j = 1,comp_cells_x
              
-             DO i = 1,n_vars
-                
-                ! Exponents with more than 2 digits cause problems reading
-                ! into matlab... reset tiny values to zero:
-                IF ( dabs(q(i,j,k)) .LT. 1d-99) q(i,j,k) = 0.d0
-                
-             END DO
-             
              CALL qc_to_qp(q(:,j,k),B_cent(j,k),qp(:))
 
              IF ( dabs(REAL(h)) .LT. 1d-99) h = DCMPLX(0.d0,0.d0)
              IF ( dabs(REAL(u)) .LT. 1d-99) u = DCMPLX(0.d0,0.d0) 
              IF ( dabs(REAL(v)) .LT. 1d-99) v = DCMPLX(0.d0,0.d0) 
              
-             IF ( temperature_flag ) THEN
+             IF ( solid_transport_flag ) THEN
 
-                IF ( dabs(REAL(T)) .LT. 1d-99) T = DCMPLX(0.d0,0.d0) 
+                IF ( dabs(REAL(xs)) .LT. 1d-99) xs = DCMPLX(0.d0,0.d0) 
 
-                WRITE(output_unit_2d,1010) x_comp(j), y_comp(k), REAL(h),       &
-                     REAL(u), REAL(v) , B_cent(j,k) , REAL(h) + B_cent(j,k) ,   &
-                     REAL(T)
-                
+                IF ( temperature_flag ) THEN
+
+                   IF ( dabs(REAL(T)) .LT. 1d-99) T = DCMPLX(0.d0,0.d0) 
+
+                   WRITE(output_unit_2d,1010) x_comp(j), y_comp(k), REAL(h),       &
+                        REAL(u), REAL(v) , B_cent(j,k) , REAL(h) + B_cent(j,k) ,   &
+                        REAL(xs) , REAL(T)
+                   
+                ELSE
+                   
+                   WRITE(output_unit_2d,1009) x_comp(j), y_comp(k), REAL(h),       &
+                        REAL(u), REAL(v) , B_cent(j,k) , REAL(h) + B_cent(j,k) ,   &
+                        REAL(xs)
+                   
+                END IF
+
              ELSE
 
-                WRITE(output_unit_2d,1009) x_comp(j), y_comp(k), REAL(h),       &
-                     REAL(u), REAL(v) , B_cent(j,k) , REAL(h) + B_cent(j,k)
+                IF ( temperature_flag ) THEN
 
+                   IF ( dabs(REAL(T)) .LT. 1d-99) T = DCMPLX(0.d0,0.d0) 
+
+                   WRITE(output_unit_2d,1012) x_comp(j), y_comp(k), REAL(h),       &
+                        REAL(u), REAL(v) , B_cent(j,k) , REAL(h) + B_cent(j,k) ,   &
+                        REAL(T)
+                   
+                ELSE
+                   
+                   WRITE(output_unit_2d,1011) x_comp(j), y_comp(k), REAL(h),       &
+                        REAL(u), REAL(v) , B_cent(j,k) , REAL(h) + B_cent(j,k)
+                   
+                END IF
+                
              END IF
 
           END DO
@@ -2364,10 +2715,12 @@ CONTAINS
 
     END IF
 
-1007 FORMAT(6e20.12)
-1008 FORMAT(5e20.12)
-1009 FORMAT(7e20.12)
-1010 FORMAT(8e20.12)
+1007 FORMAT(7e20.12)
+1008 FORMAT(6e20.12)
+1009 FORMAT(8e20.12)
+1010 FORMAT(9e20.12)
+1011 FORMAT(7e20.12)
+1012 FORMAT(8e20.12)
 
     t_output = time + dt_output
 
@@ -2393,8 +2746,8 @@ CONTAINS
 
   SUBROUTINE output_esri(output_idx)
 
-    USE geometry_2d, ONLY : dx , dy , B_cent , B_ver , grid_output
-    USE geometry_2d, ONLY : comp_interfaces_x , comp_interfaces_y
+    USE geometry_2d, ONLY : B_cent , grid_output
+    ! USE geometry_2d, ONLY : comp_interfaces_x , comp_interfaces_y
     USE solver_2d, ONLY : q
 
     IMPLICIT NONE
@@ -2410,8 +2763,8 @@ CONTAINS
        
        WRITE(dem_esri_unit,'(A,I5)') 'ncols ', comp_cells_x
        WRITE(dem_esri_unit,'(A,I5)') 'nrows ', comp_cells_y
-       WRITE(dem_esri_unit,'(A,F15.3)') 'xllcorner ', x0 + 0.5D0 * dx
-       WRITE(dem_esri_unit,'(A,F15.3)') 'yllcorner ', y0 + 0.5D0 * dy
+       WRITE(dem_esri_unit,'(A,F15.3)') 'xllcorner ', x0
+       WRITE(dem_esri_unit,'(A,F15.3)') 'yllcorner ', y0
        WRITE(dem_esri_unit,'(A,F15.3)') 'cellsize ', cell_size
        WRITE(dem_esri_unit,'(A,I5)') 'NODATA_value ', -9999
         
@@ -2423,25 +2776,6 @@ CONTAINS
        
        CLOSE(dem_esri_unit)
 
-       OPEN(dem_esri_unit,FILE='dem_interfaces_esri.asc',status='unknown',      &
-            form='formatted')
-       
-       WRITE(dem_esri_unit,'(A,I5)') 'ncols ', comp_interfaces_x
-       WRITE(dem_esri_unit,'(A,I5)') 'nrows ', comp_interfaces_y
-       WRITE(dem_esri_unit,'(A,F15.3)') 'xllcorner ', x0 
-       WRITE(dem_esri_unit,'(A,F15.3)') 'yllcorner ', y0 
-       WRITE(dem_esri_unit,'(A,F15.3)') 'cellsize ', cell_size
-       WRITE(dem_esri_unit,'(A,I5)') 'NODATA_value ', -9999
-        
-       DO j = comp_interfaces_y,1,-1
-          
-          WRITE(dem_esri_unit,*) B_ver(1:comp_interfaces_x,j)
-          
-       ENDDO
-       
-       CLOSE(dem_esri_unit)
-
-       
     END IF
     
     idx_string = lettera(output_idx-1)
@@ -2463,8 +2797,8 @@ CONTAINS
 
     WRITE(output_esri_unit,'(A,I5)') 'ncols ', comp_cells_x
     WRITE(output_esri_unit,'(A,I5)') 'nrows ', comp_cells_y
-    WRITE(output_esri_unit,'(A,F15.3)') 'xllcorner ', x0 + 0.5D0 * dx
-    WRITE(output_esri_unit,'(A,F15.3)') 'yllcorner ', y0 + 0.5D0 * dy
+    WRITE(output_esri_unit,'(A,F15.3)') 'xllcorner ', x0
+    WRITE(output_esri_unit,'(A,F15.3)') 'yllcorner ', y0
     WRITE(output_esri_unit,'(A,F15.3)') 'cellsize ', cell_size
     WRITE(output_esri_unit,'(A,I5)') 'NODATA_value ', -9999
         
@@ -2495,8 +2829,8 @@ CONTAINS
 
        WRITE(output_esri_unit,'(A,I5)') 'ncols ', comp_cells_x
        WRITE(output_esri_unit,'(A,I5)') 'nrows ', comp_cells_y
-       WRITE(output_esri_unit,'(A,F15.3)') 'xllcorner ', x0 + 0.5D0 * dx
-       WRITE(output_esri_unit,'(A,F15.3)') 'yllcorner ', y0 + 0.5D0 * dy
+       WRITE(output_esri_unit,'(A,F15.3)') 'xllcorner ', x0
+       WRITE(output_esri_unit,'(A,F15.3)') 'yllcorner ', y0
        WRITE(output_esri_unit,'(A,F15.3)') 'cellsize ', cell_size
        WRITE(output_esri_unit,'(A,I5)') 'NODATA_value ', -9999
        
@@ -2516,6 +2850,8 @@ CONTAINS
   SUBROUTINE close_units
 
     IMPLICIT NONE
+
+    IF ( output_runout_flag) CLOSE(runout_unit)
 
   END SUBROUTINE close_units
 
@@ -2554,6 +2890,18 @@ CONTAINS
     RETURN
   END FUNCTION lettera
 
+  !******************************************************************************
+  !> \brief Write solution at selected points on file
+  !
+  !> This subroutine writes on a file the thickness at selected points, defined
+  !> by an appropriate card in the input file.
+  !> in the initial solution.
+  !> \param[in]   output_idx      output index
+  !> @author 
+  !> Mattia de' Michieli Vitturi
+  !> \date 12/02/2018
+  !******************************************************************************
+
   SUBROUTINE output_probes(output_idx)
 
     USE geometry_2d, ONLY : x_comp , y_comp , B_cent 
@@ -2590,6 +2938,118 @@ CONTAINS
     CLOSE(probes_unit)
 
   END SUBROUTINE output_probes
+
+  !******************************************************************************
+  !> \brief Write runout on file
+  !
+  !> This subroutine writes on a file the flow runout. It is calculated as the 
+  !> linear horizontal distance from the point with the highest topography value
+  !> in the initial solution.
+  !> \param[in]     time             actual time
+  !> \param[inout]  stop_flag        logical to check if flow has stopped
+  !> @author 
+  !> Mattia de' Michieli Vitturi
+  !> \date 12/02/2018
+  !******************************************************************************
+
+  SUBROUTINE output_runout(time,stop_flag)
+
+    USE geometry_2d, ONLY : x_comp , y_comp , B_cent 
+    USE parameters_2d, ONLY : t_runout , t_steady
+    USE solver_2d, ONLY : q
+
+
+    IMPLICIT NONE
+
+    REAL*8, INTENT(IN) :: time
+    LOGICAL, INTENT(INOUT) :: stop_flag
+
+    REAL*8, ALLOCATABLE :: X(:,:), Y(:,:) , dist(:,:)
+    INTEGER :: sX, sY
+    INTEGER :: imax(2) , imin(2)
+    REAL*8 :: max_mom
+
+    sX = size(x_comp) 
+    sY = size(y_comp) 
+
+    ALLOCATE( X(sX,sY) , Y(sX,sY) , dist(sX,sY) )
+
+    X(:,:) = SPREAD( x_comp, 2, sY )
+    Y(:,:) = SPREAD( y_comp, 1, sX )
+    
+    dist(:,:) = 0.D0
+
+    IF ( time .EQ. t_start ) THEN
+
+       ALLOCATE( h_old(sX,sY) )
+
+       h_old(:,:) = q(1,:,:) - B_cent(:,:) 
+      
+       IF ( ( x0_runout .EQ. -1 ) .AND. ( y0_runout .EQ. -1 ) ) THEN
+          
+          WHERE( q(1,:,:) - B_cent(:,:) > 1.D-5 ) dist = B_cent
+          imin = MAXLOC( dist )
+          
+          x0_runout = X(imin(1),imin(2))
+          y0_runout = Y(imin(1),imin(2))
+
+          WRITE(*,*) 'Runout calculated as linear distance from: (' ,          &
+               x0_runout ,',',y0_runout,')'
+
+          WHERE( q(1,:,:) - B_cent(:,:)>1.D-5 ) dist = DSQRT( (X-x0_runout)**2 &
+               + ( Y - y0_runout )**2 )
+
+          imax = MAXLOC( dist )
+          
+          init_runout = dist(imax(1),imax(2))
+
+       END IF
+
+       max_mom = 0.D0
+       
+    ELSE
+
+       WHERE( h_old(:,:) > 1.D-5 ) dist = DSQRT( q(2,:,:)**2 + q(3,:,:)**2 )  
+
+       max_mom = MAXVAL( dist )
+
+       h_old(:,:) = q(1,:,:) - B_cent(:,:) 
+
+    END IF
+
+
+    WHERE( q(1,:,:) - B_cent(:,:) > 1.D-5 ) dist = DSQRT( ( X - x0_runout )**2 &
+         + ( Y - y0_runout )**2 )
+
+    imax = MAXLOC( dist )
+
+    WRITE(runout_unit,'(A,F12.3,A,F12.3,A,F12.3)') 'Time (s) = ',time ,        &
+         ' Runout (m) = ',dist(imax(1),imax(2)) - init_runout,' Max mom = ', &
+         max_mom
+    CALL flush(runout_unit)
+
+    t_runout = time + dt_runout
+
+    IF ( ( time .GT. t_start ) .AND. ( max_mom .LT. runout_mom_stop ) ) THEN
+
+       WRITE(*,*) 'Steady solution reached, max mom = ', max_mom
+       stop_flag = .TRUE.
+
+    END IF
+
+    IF ( time .EQ. t_steady ) THEN
+
+       OPEN(dakota_unit,FILE='dakota.txt',status='unknown',form='formatted')
+
+       WRITE(dakota_unit,*) 'final runout =', dist(imax(1),imax(2)) - init_runout
+
+       CLOSE(dakota_unit)
+
+    END IF
+
+    DEALLOCATE( X , Y , dist )
+
+  END SUBROUTINE output_runout
 
 END MODULE inpout_2d
 

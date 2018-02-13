@@ -6,6 +6,7 @@ MODULE constitutive_2d
   USE parameters_2d, ONLY : n_eqns , n_vars
   USE parameters_2d, ONLY : rheology_flag , rheology_model
   USE parameters_2d, ONLY : temperature_flag
+  USE parameters_2d, ONLY : solid_transport_flag
 
   IMPLICIT none
 
@@ -19,6 +20,7 @@ MODULE constitutive_2d
   COMPLEX*16 :: u      !< velocity (x direction)
   COMPLEX*16 :: v      !< velocity (y direction)
   COMPLEX*16 :: T      !< temperature
+  COMPLEX*16 :: xs     !< sediment concentration
 
   !> gravitational acceleration
   REAL*8 :: grav
@@ -124,8 +126,15 @@ CONTAINS
     implicit_flag(2) = .TRUE.
     implicit_flag(3) = .TRUE.
 
-    IF ( temperature_flag ) implicit_flag(4) = .TRUE.
+    IF ( solid_transport_flag ) THEN
 
+       IF ( temperature_flag ) implicit_flag(5) = .TRUE.
+
+    ELSE
+
+       IF ( temperature_flag ) implicit_flag(4) = .TRUE.
+
+    END IF
 
     n_nh = COUNT( implicit_flag )
 
@@ -135,7 +144,7 @@ CONTAINS
   !> \brief Physical variables
   !
   !> This subroutine evaluates from the conservative local variables qj
-  !> the local physical variables  (\f$h+B, u, v, T \f$).
+  !> the local physical variables  (\f$h+B, u, v, xs , T \f$).
   !> \param[in]    r_qj     real conservative variables 
   !> \param[in]    c_qj     complex conservative variables 
   !> @author 
@@ -173,20 +182,50 @@ CONTAINS
 
        v = qj(3) / h
 
-       IF ( temperature_flag ) T = qj(4) / h
-
     ELSE
 
        u = DSQRT(2.D0) * h * qj(2) / CDSQRT( h**4 + eps_sing )
 
        v = DSQRT(2.D0) * h * qj(3) / CDSQRT( h**4 + eps_sing )
 
-       IF ( temperature_flag ) THEN
+    END IF
 
-          T =  DSQRT(2.D0) * h * qj(4) / CDSQRT( h**4 + eps_sing )
+    IF ( solid_transport_flag ) THEN
 
+       IF ( REAL( h ) .GT. 1.D-25 ) THEN
+          
+          xs = qj(4) / h
+          
+          IF ( temperature_flag ) T = qj(5) / h
+          
+       ELSE
+          
+          xs = DSQRT(2.D0) * h * qj(4) / CDSQRT( h**4 + eps_sing )
+          
+          IF ( temperature_flag ) THEN
+             
+             T =  DSQRT(2.D0) * h * qj(5) / CDSQRT( h**4 + eps_sing )
+             
+          END IF
+          
        END IF
 
+    ELSE
+
+       IF ( temperature_flag ) THEN
+
+          IF ( REAL( h ) .GT. 1.D-25 ) THEN
+          
+             T = qj(4) / h
+          
+          ELSE
+          
+             T =  DSQRT(2.D0) * h * qj(4) / CDSQRT( h**4 + eps_sing )
+             
+          END IF
+          
+       END IF
+     
     END IF
     
   END SUBROUTINE phys_var
@@ -339,7 +378,8 @@ CONTAINS
   !> - qp(1) = \f$ h+B \f$
   !> - qp(2) = \f$ u \f$
   !> - qp(3) = \f$ v \f$
-  !> - qp(4) = \f$ T \f$
+  !> - qp(4) = \f$ xs \f$
+  !> - qp(5) = \f$ T \f$
   !> .
   !> The physical variables are those used for the linear reconstruction at the
   !> cell interfaces. Limiters are applied to the reconstructed slopes.
@@ -362,8 +402,18 @@ CONTAINS
     qp(2) = REAL(u)
     qp(3) = REAL(v)
 
-    IF ( temperature_flag ) qp(4) = REAL(T)
-
+    IF ( solid_transport_flag ) THEN
+       
+       qp(4) = REAL(xs)
+       
+       IF ( temperature_flag ) qp(5) = REAL(T)
+       
+    ELSE
+       
+       IF ( temperature_flag ) qp(4) = REAL(T)
+       
+    END IF
+    
     
   END SUBROUTINE qc_to_qp
 
@@ -375,7 +425,8 @@ CONTAINS
   !> - qp(1) = \f$ h + B \f$
   !> - qp(2) = \f$ u \f$
   !> - qp(3) = \f$ v \f$
-  !> - qp(4) = \f$ T \f$
+  !> - qp(4) = \f$ xs \f$
+  !> - qp(5) = \f$ T \f$
   !> .
   !> \param[in]    qp      physical variables  
   !> \param[out]   qc      conservative variables 
@@ -394,18 +445,39 @@ CONTAINS
     REAL*8 :: r_hB      !> topography + height 
     REAL*8 :: r_u       !> velocity
     REAL*8 :: r_v       !> velocity
+    REAL*8 :: r_xs      !> sediment concentration
     REAL*8 :: r_T       !> temperature
 
     r_hB = qp(1)
     r_u  = qp(2)
     r_v  = qp(3)
-    r_T  = qp(4)
 
     qc(1) = r_hB
     qc(2) = ( r_hB - B ) * r_u
     qc(3) = ( r_hB - B ) * r_v
 
-    IF ( temperature_flag ) qc(4) = ( r_hB - B ) * r_T 
+    IF ( solid_transport_flag ) THEN
+       
+       r_xs = qp(4)
+       qc(4) = ( r_hB - B ) * r_xs 
+       
+       IF ( temperature_flag ) THEN
+          
+          r_T  = qp(5)
+          qc(5) = ( r_hB - B ) * r_T 
+       
+       END IF
+
+    ELSE
+
+       IF ( temperature_flag ) THEN
+          
+          r_T  = qp(4)
+          qc(4) = ( r_hB - B ) * r_T 
+       
+       END IF
+
+    END IF
 
   END SUBROUTINE qp_to_qc
 
@@ -436,6 +508,7 @@ CONTAINS
     REAL*8 :: r_hB      !> topography + height 
     REAL*8 :: r_u       !> velocity
     REAL*8 :: r_v       !> velocity
+    REAL*8 :: r_xs      !> sediment concentration
     REAL*8 :: r_T       !> temperature
 
     ! Desingularization
@@ -445,12 +518,32 @@ CONTAINS
     r_u = REAL(u)
     r_v = REAL(v)
 
-    IF ( temperature_flag ) r_T = REAL(T)
-
     qc(1) = r_hB
     qc(2) = REAL(h) * r_u
     qc(3) = REAL(h) * r_v
-    IF ( temperature_flag ) qc(4) = REAL(h) * r_T 
+    
+    IF ( solid_transport_flag ) THEN
+       
+       r_xs = REAL(xs)
+       qc(4) = REAL(h) * r_xs
+       
+       IF ( temperature_flag ) THEN
+          
+          r_T = REAL(T)
+          qc(5) = REAL(h) * r_T 
+          
+       END IF
+       
+    ELSE
+       
+       IF ( temperature_flag ) THEN
+          
+          r_T = REAL(T)
+          qc(4) = REAL(h) * r_T 
+          
+       END IF
+       
+    END IF
     
   END SUBROUTINE qrec_to_qc
 
@@ -522,16 +615,23 @@ CONTAINS
 
           flux(3) = u_temp * qj(3)
 
-          ! Temperature flux in x-direction: U*T*h
-          IF ( temperature_flag ) flux(4) = u_temp * qj(4)
+          IF ( solid_transport_flag ) THEN
+
+             flux(4) = u_temp * qj(4)
+
+             ! Temperature flux in x-direction: U*T*h
+             IF ( temperature_flag ) flux(5) = u_temp * qj(5)
+             
+          ELSE
+
+             ! Temperature flux in x-direction: U*T*h
+             IF ( temperature_flag ) flux(4) = u_temp * qj(4)
+              
+          END IF
 
        ELSE
 
-          flux(2) = 0.D0
-
-          flux(3) = 0.D0
-
-          IF ( temperature_flag ) flux(4) = 0.D0
+          flux(2:n_eqns) = 0.D0
 
        ENDIF
 
@@ -551,16 +651,23 @@ CONTAINS
           
           flux(3) = h_temp * v_temp**2 + 0.5D0 * grav * h_temp**2
 
-          ! Temperature flux in x-direction: V*T*h
-          IF ( temperature_flag ) flux(4) = v_temp * qj(4)
+          IF ( solid_transport_flag ) THEN
+
+             flux(4) = v_temp * qj(4)
+
+             ! Temperature flux in x-direction: V*T*h
+             IF ( temperature_flag ) flux(5) = v_temp * qj(5)
+             
+          ELSE
+
+             ! Temperature flux in x-direction: V*T*h
+             IF ( temperature_flag ) flux(4) = v_temp * qj(4)
+
+          END IF
 
        ELSE
 
-          flux(2) = 0.D0
-
-          flux(3) = 0.D0
-
-          IF ( temperature_flag ) flux(4) = 0.D0
+          flux(2:n_eqns) = 0.D0
 
        ENDIF
 
@@ -602,7 +709,8 @@ CONTAINS
        c_qj , c_nh_term_impl , r_qj , r_nh_term_impl )
 
     USE COMPLEXIFY 
-    USE parameters_2d, ONLY : sed_vol_fract
+    USE parameters_2d, ONLY : sed_vol_perc
+
     IMPLICIT NONE
 
     REAL*8, INTENT(IN) :: Bj
@@ -720,13 +828,12 @@ CONTAINS
        
           IF ( REAL(mod_vel) .NE. 0.D0 ) THEN 
           
+             ! IMPORTANT: grav3_surv is always negative 
              forces_term(2) = forces_term(2) -  ( u / mod_vel ) *               &
-                  ( mu * h * ( - grav * grav3_surf )                            &
-                  + ( grav / xi ) * mod_vel ** 2 )
+                  ( grav / xi ) * mod_vel ** 2
           
              forces_term(3) = forces_term(3) -  ( v / mod_vel ) *               &
-                  ( mu * h * ( - grav * grav3_surf )                            &
-                  + ( grav / xi ) * mod_vel ** 2 )
+                  ( grav / xi ) * mod_vel ** 2
           
           ENDIF
         
@@ -772,15 +879,16 @@ CONTAINS
 
           h_threshold = 1.D-20
 
-          sed_vol_fract_cmplx = DCMPLX(sed_vol_fract,0.D0)
+          sed_vol_fract_cmplx = DCMPLX(sed_vol_perc/100.D0,0.D0)
 
           ! Convert from mass fraction to volume fraction
-          ! sed_vol_fract = xs * gamma_w / ( xs * gamma_w + (  DCMPLX(1.D0,0.D0) - xs ) * gamma_s )
+          ! sed_vol_fract_cmplx = xs * gamma_w / ( xs * gamma_w +               &
+          !                 (  DCMPLX(1.D0,0.D0) - xs ) * gamma_s )
 
           !IF ( xs .NE. 0.D0 ) THEN
              
              !WRITE(*,*) 'xs',xs
-             !WRITE(*,*) 'sed_vol_fract',sed_vol_fract
+             !WRITE(*,*) 'sed_vol_fract',DBLE(sed_vol_fract_cmplx)
              !READ(*,*) 
              
           !END IF
@@ -808,7 +916,10 @@ CONTAINS
              
              ! Turbulent dispersive component
              s_td = n_td**2 * mod_vel**2 / ( h**(4.D0/3.D0) )
-             
+          
+             ! WRITE(*,*) 's_terms',REAL(s_y),REAL(s_v),REAL(s_td)
+             ! WRITE(*,*) ' u', REAL(u)
+
           ELSE
              
              ! Yield slope component
@@ -819,12 +930,12 @@ CONTAINS
                   h_threshold**2 )
              
              ! Turbulent dispersive components
-             s_td = n_td**2 * mod_vel**2 / ( h_threshold**(4.D0/3.D0) )
+             s_td = n_td**2 * (mod_vel**2) / ( h_threshold**(4.D0/3.D0) )
              
           END IF
           
-          ! Total friction slope
-          s_f = s_y + s_v + s_td
+          ! Total implicit friction slope
+          s_f = s_v + s_td
           
           IF ( mod_vel .GT. 0.D0 ) THEN
 
@@ -833,11 +944,20 @@ CONTAINS
   
           END IF
 
+
+          !WRITE(*,*) 's_terms',DBLE(s_y), &
+          !     DBLE(Kappa * fluid_visc / ( 8.D0 * gamma_m * h**2 )), &
+          !     DBLE(n_td**2 / ( h**(4.D0/3.D0) ))
+
+          !WRITE(*,*) 'grav*h',grav*h
+
+          !WRITE(*,*) 'eval_nh',DBLE(u),DBLE(forces_term(2))
+
        ELSEIF ( rheology_model .EQ. 5 ) THEN
 
           tau = 1.D-3 / ( 1.D0 + 10.D0 * h ) * mod_vel
           
-          IF ( REAL(mod_vel) .NE. 0.D0 ) THEN
+          IF ( DBLE(mod_vel) .NE. 0.D0 ) THEN
              
              forces_term(2) = forces_term(2) - tau * ( u / mod_vel )
              forces_term(3) = forces_term(3) - tau * ( v / mod_vel )
@@ -922,7 +1042,15 @@ CONTAINS
 
         END IF
 
-       relaxation_term(4) = radiative_term + convective_term + conductive_term
+        IF ( solid_transport_flag ) THEN
+
+           relaxation_term(5) = radiative_term + convective_term + conductive_term
+
+        ELSE
+
+           relaxation_term(4) = radiative_term + convective_term + conductive_term
+
+        END IF
 
     END IF
 
@@ -940,6 +1068,182 @@ CONTAINS
 
   END SUBROUTINE eval_nonhyperbolic_terms
 
+  !******************************************************************************
+  !> \brief Non-Hyperbolic semi-implicit terms
+  !
+  !> This subroutine evaluates the non-hyperbolic terms that are solved
+  !> semi-implicitely by the solver. For example, any discontinuous term that
+  !> appears in the friction terms.
+  !> \date 20/01/2018
+  !> \param[in]     c_qj            complex conservative variables 
+  !> \param[in]     r_qj            real conservative variables 
+  !> \param[out]    c_nh_term_impl  complex non-hyperbolic terms     
+  !> \param[out]    r_nh_term_impl  real non-hyperbolic terms
+  !******************************************************************************
+
+  SUBROUTINE eval_nh_semi_impl_terms( Bj , grav3_surf , c_qj ,                  &
+       c_nh_semi_impl_term , r_qj , r_nh_semi_impl_term )
+
+    USE COMPLEXIFY 
+    USE parameters_2d, ONLY : sed_vol_perc
+
+    IMPLICIT NONE
+
+    REAL*8, INTENT(IN) :: Bj
+    REAL*8, INTENT(IN) :: grav3_surf
+
+    COMPLEX*16, INTENT(IN), OPTIONAL :: c_qj(n_vars)
+    COMPLEX*16, INTENT(OUT), OPTIONAL :: c_nh_semi_impl_term(n_eqns)
+    REAL*8, INTENT(IN), OPTIONAL :: r_qj(n_vars)
+    REAL*8, INTENT(OUT), OPTIONAL :: r_nh_semi_impl_term(n_eqns)
+
+    COMPLEX*16 :: qj(n_vars)
+
+    COMPLEX*16 :: forces_term(n_eqns)
+
+    INTEGER :: i
+
+    COMPLEX*16 :: mod_vel
+    
+    REAL*8 :: h_threshold
+
+    !--- Lahars rheology model variables
+    
+    !> Yield strenght
+    COMPLEX*8 :: tau_y
+
+    !> Sediment volume fraction
+    COMPLEX*8 :: sed_vol_fract_cmplx
+
+    !> Specific weight of sediment mixture
+    COMPLEX*8 :: gamma_m
+
+    !> Yield slope component of total friction
+    COMPLEX*8 :: s_y
+
+
+
+    IF ( present(c_qj) .AND. present(c_nh_semi_impl_term) ) THEN
+
+       qj = c_qj
+
+    ELSEIF ( present(r_qj) .AND. present(r_nh_semi_impl_term) ) THEN
+
+       DO i = 1,n_vars
+
+          qj(i) = DCMPLX( r_qj(i) )
+
+       END DO
+
+    ELSE
+
+       WRITE(*,*) 'Constitutive, eval_fluxes: problem with arguments'
+       STOP
+
+    END IF
+
+    ! initialize and evaluate the forces terms
+    forces_term(1:n_eqns) = DCMPLX(0.D0,0.D0)
+
+    IF (rheology_flag) THEN
+
+       CALL phys_var(Bj,c_qj = qj)
+    
+       mod_vel = CDSQRT( u**2 + v**2 )
+       
+       ! Voellmy Salm rheology
+       IF ( rheology_model .EQ. 1 ) THEN
+
+          IF ( mod_vel .GT. 0.D0 ) THEN
+
+             forces_term(2) = forces_term(2) -  ( u / mod_vel ) *               &
+                  mu * h * ( - grav * grav3_surf )
+             
+             forces_term(3) = forces_term(3) -  ( v / mod_vel ) *               &
+                  mu * h * ( - grav * grav3_surf )
+             
+          END IF
+
+          ! Plastic rheology
+       ELSEIF ( rheology_model .EQ. 2 ) THEN
+          
+
+       ! Temperature dependent rheology
+       ELSEIF ( rheology_model .EQ. 3 ) THEN
+
+          
+       ! Lahars rheology (O'Brien 1993, FLO2D)
+       ELSEIF ( rheology_model .EQ. 4 ) THEN
+
+          h_threshold = 1.D-20
+
+          sed_vol_fract_cmplx = DCMPLX( sed_vol_perc*1.D-2 , 0.D0 )
+
+          ! Convert from mass fraction to volume fraction
+          ! sed_vol_fract_cmplx = xs * gamma_w / ( xs * gamma_w +               &
+          !                 (  DCMPLX(1.D0,0.D0) - xs ) * gamma_s )
+
+          !IF ( xs .NE. 0.D0 ) THEN
+             
+             !WRITE(*,*) 'xs',xs
+             !WRITE(*,*) 'sed_vol_fract',DBLE(sed_vol_fract_cmplx)
+             !READ(*,*) 
+             
+          !END IF
+
+
+          ! Mixture density
+          gamma_m = ( DCMPLX(1.D0,0.D0) - sed_vol_fract_cmplx ) * gamma_w       &
+               + sed_vol_fract_cmplx * gamma_s 
+
+          ! Yield strength
+          tau_y = alpha2 * CDEXP( beta2 * sed_vol_fract_cmplx )
+
+          IF ( h .GT. h_threshold ) THEN
+             
+             ! Yield slope component
+             s_y = tau_y / ( gamma_m * h )
+                       
+          ELSE
+             
+             ! Yield slope component
+             s_y = tau_y / ( gamma_m * h_threshold )
+                          
+          END IF
+            
+          IF ( mod_vel .GT. 0.D0 ) THEN
+
+             forces_term(2) = forces_term(2) - grav * h * ( u / mod_vel ) * s_y
+             forces_term(3) = forces_term(3) - grav * h * ( v / mod_vel ) * s_y
+  
+          END IF
+
+       ELSEIF ( rheology_model .EQ. 5 ) THEN
+
+          
+       ENDIF
+              
+    ENDIF
+
+    IF ( temperature_flag ) THEN
+
+
+    END IF
+
+    
+    IF ( present(c_qj) .AND. present(c_nh_semi_impl_term) ) THEN
+
+       c_nh_semi_impl_term = forces_term
+
+    ELSEIF ( present(r_qj) .AND. present(r_nh_semi_impl_term) ) THEN
+
+       r_nh_semi_impl_term = DBLE( forces_term )
+
+    END IF 
+
+  END SUBROUTINE eval_nh_semi_impl_terms
+
+  
   !******************************************************************************
   !> \brief Explicit Forces term
   !
@@ -979,8 +1283,16 @@ CONTAINS
     expl_term(3) = grav * REAL(h) * Bprimej_y
 
     IF ( temperature_flag .AND. source_flag ) THEN
+
+       IF ( solid_transport_flag ) THEN
     
-       expl_term(4) = - source_xy * vel_source * T_source
+          expl_term(5) = - source_xy * vel_source * T_source
+
+       ELSE
+
+          expl_term(4) = - source_xy * vel_source * T_source
+
+       END IF
 
        IF ( rheology_model .EQ. 3 ) THEN
               
@@ -994,11 +1306,22 @@ CONTAINS
              visc_heat_coeff = 0.D0
              
           END IF
-          
-          ! Viscous heating
-          ! Last R.H.S. term in equation 4 from Costa & Macedonio, 2005
-          expl_term(4) = expl_term(4) - visc_heat_coeff * ( REAL(u)**2          &
-               + REAL(v)**2 ) * DEXP( - visc_par * ( REAL(T) - T_ref ) ) 
+
+          IF ( solid_transport_flag ) THEN
+                          
+             ! Viscous heating
+             ! Last R.H.S. term in equation 4 from Costa & Macedonio, 2005
+             expl_term(5) = expl_term(5) - visc_heat_coeff * ( REAL(u)**2          &
+                  + REAL(v)**2 ) * DEXP( - visc_par * ( REAL(T) - T_ref ) ) 
+             
+          ELSE
+
+             ! Viscous heating
+             ! Last R.H.S. term in equation 4 from Costa & Macedonio, 2005
+             expl_term(4) = expl_term(4) - visc_heat_coeff * ( REAL(u)**2          &
+                  + REAL(v)**2 ) * DEXP( - visc_par * ( REAL(T) - T_ref ) ) 
+             
+          END IF
 
        END IF
           

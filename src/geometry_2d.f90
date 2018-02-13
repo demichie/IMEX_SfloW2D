@@ -192,15 +192,11 @@ CONTAINS
        ENDDO
 
        ! all the other cells
-       DO j=1,comp_cells_x
-
-          !x_stag(j+1) = x_stag(j) + dx
+       DO j = 1,comp_cells_x
 
           x_comp(j) = 0.5 * ( x_stag(j) + x_stag(j+1) )
 
-          DO k=1,comp_cells_y
-
-             !y_stag(k+1) = y_stag(k) + dy
+          DO k = 1,comp_cells_y
 
              y_comp(k) = 0.5 * ( y_stag(k) + y_stag(k+1) )
 
@@ -211,7 +207,7 @@ CONTAINS
                      topography_profile(2,n_topography_profile_x,:) ,           &
                      topography_profile(3,n_topography_profile_x,:) ,           &
                      y_stag(k+1) , B_ver(j+1,k+1) )
-
+                
                 ! top row
              ELSEIF ( j.NE.comp_cells_x .AND. k.EQ.comp_cells_y ) THEN
 
@@ -235,15 +231,21 @@ CONTAINS
 
              ENDIF
 
+             ! Eq. 3.12 K&P
+             B_cent(j,k) = 0.25 * ( B_ver(j,k) + B_ver(j+1,k) + B_ver(j,k+1)    &
+                  + B_ver(j+1,k+1) )
+
+             ! Eq. 3.13 K&P
              B_stag_x(j+1,k) = 0.5D0 * (B_ver(j+1,k+1)+B_ver(j+1,k))
+
+             ! Eq. 3.14 K&P
              B_stag_y(j,k+1) = 0.5D0 * (B_ver(j+1,k+1)+B_ver(j,k+1))
 
-             B_cent(j,k) = 0.25 * ( B_stag_x(j,k) + B_stag_x(j+1,k)             &
-                  + B_stag_y(j,k) + B_stag_y(j,k+1) )
-
+             ! Second factor in RHS 1st Eq. 3.16 K&P
              B_prime_x(j,k) = ( B_stag_x(j+1,k) - B_stag_x(j,k) ) /             &
                   (  x_stag(j+1) - x_stag(j) )
 
+             ! Second factor in RHS 2nd Eq. 3.16 K&P
              B_prime_y(j,k) = ( B_stag_y(j,k+1) - B_stag_y(j,k) ) /             &
                   (  y_stag(k+1) - y_stag(k) )
 
@@ -306,6 +308,7 @@ CONTAINS
           
           DO k=1,comp_interfaces_y
              
+             ! Eq. 3.14 K&P
              B_stag_y(j,k) = 0.5D0 * ( B_ver(j+1,k) + B_ver(j,k) )
              
           END DO
@@ -316,6 +319,7 @@ CONTAINS
           
           DO k=1,comp_cells_y
              
+             ! Eq. 3.13 K&P
              B_stag_x(j,k) = 0.5D0 * ( B_ver(j,k+1) + B_ver(j,k) )
              
           END DO
@@ -326,13 +330,16 @@ CONTAINS
           
           DO k=1,comp_cells_y
 
-             B_cent(j,k) = 0.25D0 * ( B_stag_x(j,k) + B_stag_x(j+1,k) +      &
-                  B_stag_y(j,k) + B_stag_y(j,k+1) )
+             ! Eq. 3.12 K&P
+             B_cent(j,k) = 0.25D0 * ( B_ver(j,k) + B_ver(j+1,k) + B_ver(j,k+1)  &
+                  + B_ver(j+1,k+1) )
              
-             B_prime_x(j,k) = ( B_stag_x(j+1,k) - B_stag_x(j,k) ) /          &
+             ! Second factor in RHS 1st Eq. 3.16 K&P
+             B_prime_x(j,k) = ( B_stag_x(j+1,k) - B_stag_x(j,k) ) /             &
                   (  x_stag(j+1) - x_stag(j) )
 
-             B_prime_y(j,k) = ( B_stag_y(j,k+1) - B_stag_y(j,k) ) /          &
+             ! Second factor in RHS 2nd Eq. 3.16 K&P
+             B_prime_y(j,k) = ( B_stag_y(j,k+1) - B_stag_y(j,k) ) /             &
                   (  y_stag(k+1) - y_stag(k) )
 
           END DO
@@ -341,7 +348,8 @@ CONTAINS
 
     ENDIF
 
-    ! we calculate g components wrt surface reference system Tx, Ty and N
+    ! this coefficient is used when the the scalar dot between the normal to the 
+    ! topography and gravity is computed
     DO j = 1,comp_cells_x
 
        DO k=1,comp_cells_y
