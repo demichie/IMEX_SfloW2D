@@ -1,2 +1,0 @@
-This example is based on the benchmark BM2 presented in Cordonnier et al. (2015), derived from Lister (1992). A Newtonian liquid with kinematic viscosity 11.3E-4 and density 1000 kg/m-3 is injected at a constant supply rate  Q=1.4180E-6 m3/s. The isothermal flow spreads onto an inclined plane of slope 2.5°. This benchmark provides useful results on how well fast-computing models handle a simple viscous flow geometry.
-
