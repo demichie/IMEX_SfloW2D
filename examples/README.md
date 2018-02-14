@@ -8,3 +8,5 @@ In this folder some examples are provided:
 - **Example 6**. 2D simulation of pyroclastic avalnche performed over the 2014 Digital Elevation Model of Mount Etna.
 
 In each folder there are pre-processing and post-processing Phyton scripts. For the usage read the file README.txt.
+
+All the examples are described and documented in the [Wiki](https://github.com/demichie/IMEX_SfloW2D/wiki) of the model.
