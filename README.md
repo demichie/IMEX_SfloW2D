@@ -8,7 +8,7 @@ The model is discretized in time with an explicit-implicit Runge-Kutta method wh
 
 The code can deal with different scenarios, but its first aim is to treat gravitational flows over topographies described as digital elevation models (DEMs) in the ESRI ascii format. The output files can be handled very well with gnuplot, in particular with the package it is provided a small script that create a video from the output data saved at different times. Moreover it is possible to save the solution as as ESRI ascii files, suitable for GIS softwares.
 
-### Compilation
+### Installation
 
 To compile:
 
