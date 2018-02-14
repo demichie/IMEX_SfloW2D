@@ -115,7 +115,6 @@ def make_frame(t):
 
 animation = mpy.VideoClip(make_frame, duration=duration/speed_factor)
 animation.write_gif(runname+".gif", fps=fps_orig*speed_factor)
-
-
+animation.write_videofile(runname+".mp4", fps=fps_orig*speed_factor)
 
 
